@@ -46,14 +46,34 @@ apart after about 4 steps. **Target: problems with more than 4 steps** — the t
   significant). Raw accuracy only drops for problems with very many carries, which are also the long problems.
 - **Combining two separate calculations** ("merge"): could not be measured — the diagnosis problems did not vary it.
 
-### Did training fix it?
-To be filled in when the paper run finishes (around Oct 8 evening): accuracy on long problems (> 4 steps) before
-vs after training, for the targeted arm and the matched control.
+### Did training fix it? (paper run `80b37628b193`, finished 2026-10-09, mean of 3 seeds)
+Accuracy on **long problems (more than 4 steps)** in probe stories the model never trained on, before → after:
+
+| Training data | Long problems (> 4 steps) | Short problems (≤ 4 steps) |
+|---|---|---|
+| Untrained model | 18% | 52% |
+| Real GSM8K problems only | 9% (worse) | 41% |
+| **Aimed at long problems (targeted, 3:1)** | **54%** | 66% |
+| Aimed at long problems, more of it (targeted, 9:1) | 66% | 75% |
+| Just as hard, other reason (matched control) | 65% | 87% |
+| Generated problems, not aimed (untargeted) | 71% | 82% |
+
+In plain words:
+- **Long problems got much easier for every kind of generated training data** (18% → 54-71%).
+- **Aiming at "many steps" did not beat the other generated data**, even on long problems. It did make the
+  *number of steps* matter less than any other training did (the steps effect shrank by about 1.0 vs ~0 for the
+  others), but it taught less about **multiplication and division**, which long problems also contain. The other
+  arms improved those a lot, and that counted for more.
+- **On real test problems (GSM8K, GSM-Symbolic) all trained models got worse by about 16-24 points** — the
+  known cost of the short training-solution style (`docs/RUNNING.md` §10-13) — and targeted was no different from
+  the matched control there.
+
+Full numbers: `docs/RUNNING.md` §14.
 
 ---
 
 ## Qwen3-1.7B — not diagnosed yet
 
-Its paper run (job `409305f3e2f2`) starts after the 0.6B run, around **Oct 8 evening**; the diagnosis takes
-about 3 hours. This section will then be filled in the same way. It may be weak at something different from
+Its paper run (job `409305f3e2f2`) started 2026-10-09 01:19 with its baseline; the diagnosis follows (about 3
+hours). This section will then be filled in the same way. It may be weak at something different from
 0.6B — that comparison is one of the things the paper looks at.
