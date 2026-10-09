@@ -484,3 +484,37 @@ $env:HF_HUB_OFFLINE='1'; $env:HF_DATASETS_OFFLINE='1'
 $env:PYTORCH_CUDA_ALLOC_CONF='max_split_size_mb:256,garbage_collection_threshold:0.8'
 .venv\Scripts\python -m dreammachine.jobs.worker --until-empty
 ```
+
+## 15. Paper run, Qwen3-1.7B — GPU-verified, PAPER, paper-eligible, 2026-10-09/10
+Job `409305f3e2f2` (commit `d49128d`, clean tree; own baseline and diagnosis). Same protocol as §14. Target found
+by its diagnosis: again `steps` > 4. Full tables: `runs/pipelines/409305f3e2f2/report.md` and `results.json`.
+**Timing:** baseline 67 min, diagnosis 120 min, training ~1.5 h, evaluation ~15 min; whole run ~27 h incl. one
+fragmentation OOM (§14 note) and its restart.
+
+Baseline (untrained, on the 1,392-problem baseline set): GSM8K 0.815 (n 660), GSM-Symbolic main 0.773 (300),
+probes train-families 0.625, held-out families 0.583 (216 each).
+
+| Arm (mean of 3 seeds) | GSM8K | GSM-Symbolic | probes train fam. | probes held-out fam. | held-out slice > 4 steps (base 0.41) |
+|---|---|---|---|---|---|
+| real_only | 0.666 (−0.15) | 0.625 (−0.14) | 0.514 (−0.13) | 0.499 (−0.07) | 0.34 |
+| untargeted 3:1 | 0.660 (−0.15) | 0.600 (−0.16) | 0.973 (+0.33) | 0.926 (+0.36) | 0.89 |
+| matched_control 3:1 | 0.652 (−0.16) | 0.578 (−0.18) | 0.946 (+0.30) | 0.919 (+0.35) | 0.87 |
+| targeted 3:1 | 0.663 (−0.15) | 0.593 (−0.17) | 0.963 (+0.32) | 0.872 (+0.30) | 0.86 |
+| targeted 9:1 | 0.656 (−0.16) | 0.568 (−0.19) | 0.963 (+0.32) | 0.894 (+0.32) | 0.87 |
+
+(Δ vs the untrained model on the same problems; every GSM8K / GSM-Symbolic Δ has its 95% CI below 0. The identical
+train-family numbers of the two targeted arms were checked: different adapters, per-seed scores 131/130/129 vs
+130/129/131 of 135 — a coincidence near the ceiling.)
+
+**Headline (D8), targeted − matched_control at 3:1:** GSM8K +0.011 [−0.017, +0.039], p 0.42; GSM-Symbolic
++0.015 [−0.020, +0.050], p 0.41. **No difference** — same as 0.6B.
+
+**Findings (and comparison with 0.6B, §14)**
+1. **Same headline for both model sizes: targeting does not beat the matched control on real problems.**
+2. **Real-problem cost is a bit smaller for 1.7B** (−0.14 to −0.19 vs −0.16 to −0.24 for 0.6B).
+3. **Probes are near the ceiling for 1.7B** (0.87-0.97 for every generated arm); on the > 4-steps slice the arms
+   are equal (0.86-0.89). Targeted is slightly below matched control and untargeted on held-out families
+   (−0.05, CI just below 0).
+4. η changes are unreliable here: with 87-97% of probes right the LLTM is poorly identified (changes up to ±4).
+5. The diagnosis found the same main weakness as for 0.6B (`steps`), but weaker (effect 1.87 vs 2.99).
+Interpretation for the paper: PLAN.md open question 10.

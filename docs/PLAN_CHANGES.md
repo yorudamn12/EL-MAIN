@@ -6,7 +6,8 @@ here in the same commit. The full text of any old version: `git show <commit>:PL
 
 | Date | Commit | What changed in PLAN.md | Why |
 |---|---|---|---|
-| 2026-10-09 | (this commit) | New open question 10: how to read the first paper result (0.6B: no targeting benefit on real problems; targeted below matched control on probes) | The Qwen3-0.6B paper run finished |
+| 2026-10-10 | (this commit) | Open question 10: added the Qwen3-1.7B result (same headline: no targeting benefit on real problems) | The Qwen3-1.7B paper run finished |
+| 2026-10-09 | `4875189` | New open question 10: how to read the first paper result (0.6B: no targeting benefit on real problems; targeted below matched control on probes) | The Qwen3-0.6B paper run finished |
 | 2026-10-07 | `6960704` | D8 decided (headline = targeted − matched control on GSM8K + GSM-Symbolic); D14 decided (self-distillation not in the paper); new **D15** (smaller evaluations: 1,392 before / 770 after training, GSM-Symbolic p1/p2 dropped, no 1:1 ratio → 15 trainings per model, merged adapters for evaluation); new **D16** (a paper run reuses an earlier baseline + diagnosis of the same model); open questions 1, 7, 9 resolved, 2 and 8 updated | The user's decisions of 2026-10-07, to cut GPU time from ~8.8 to ~4 days and settle the GSM8K question |
 | 2026-10-06 | `0f5d63f` | Question 7: result of self-distillation with up to 8 tries (−0.08 on GSM8K, targeted gain gone) and the recommendation | Dev-set test (option a2) finished |
 | 2026-10-06 | `d25e54a` | Question 7: result of longer code-written solutions (−0.28, the model loops) | Dev-set test (option b) finished |
