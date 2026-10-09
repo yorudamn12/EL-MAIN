@@ -472,3 +472,15 @@ held-out families 0.324 (432 each).
    on GSM8K (−0.036 vs real_only at 9:1, p 0.054).
 5. real_only training lowers every measure, probes included.
 Interpretation for the paper is the team's (open question 10 in PLAN.md).
+
+**Qwen3-1.7B paper run (job `409305f3e2f2`, running):** measured so far: baseline 67 min, diagnosis 120 min,
+training ~1.5 h, evaluation ~17 min. On 2026-10-09 08:18 `train:matched_control_r3_s0` stopped with a CUDA
+out-of-memory error at step 100/846 caused by **memory fragmentation** (1.03 GiB requested; 1.36 GiB reserved but
+split into smaller blocks). Resumed with the worker started under
+`PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:256,garbage_collection_threshold:0.8` (PyTorch allocator settings only:
+no change to the protocol, data or maths); it passed step 200 normally. Start the paper worker this way from now on:
+```powershell
+$env:HF_HUB_OFFLINE='1'; $env:HF_DATASETS_OFFLINE='1'
+$env:PYTORCH_CUDA_ALLOC_CONF='max_split_size_mb:256,garbage_collection_threshold:0.8'
+.venv\Scripts\python -m dreammachine.jobs.worker --until-empty
+```
