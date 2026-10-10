@@ -103,15 +103,34 @@ Merging the trained add-on (LoRA adapter) into the model before testing: **1.84x
   straight to training. 1.7B has no earlier baseline on the test sets, so it runs its own once.
 - Total GPU time for both models went from about 8.8 days to **about 4 days**.
 
-### 5.3 Status right now
-| Job | Model | State | Expected finish |
+### 5.3 Status (updated 2026-10-10 04:30) — both paper runs are done
+| Job | Model | State | Finish |
 |---|---|---|---|
-| `80b37628b193` | Qwen3-0.6B | training started 2026-10-07 11:54 | ~30 h → around **Oct 8 evening** |
-| `409305f3e2f2` | Qwen3-1.7B | queued, starts automatically after 0.6B | ~2.5–3.5 days more → around **Oct 11–12** |
+| `80b37628b193` | Qwen3-0.6B | **done**, paper-eligible | finished 2026-10-09 01:19 |
+| `409305f3e2f2` | Qwen3-1.7B | **done**, paper-eligible | finished 2026-10-10 04:04 |
 
-The 1.7B time is a guess until its first training is measured. Results will appear in
-`runs/pipelines/<job>/results.json` and `report.md`. Worker log: `runs/paper_worker.log`.
-**While these run, no file in the repo is changed** — a changed file would make the run "not paper-eligible".
+The 0.6B run was stopped once (2026-10-08 ~02:30) because the laptop ran low on memory; it was resumed from its
+last checkpoint, nothing finished was lost, ~9 hours were lost. Since then the worker runs in its own minimized
+window ("DreamMachine paper worker"), outside Claude Code. The 1.7B time is a guess until its first training is
+measured. Results: `runs/pipelines/<job>/results.json` and `report.md`. Worker log: `runs/paper_worker.log`.
+Doc edits during a run are committed at once (a run checks for a clean repo when it starts).
+
+### 5.3a First paper result: Qwen3-0.6B (in plain words; numbers in `docs/RUNNING.md` §14)
+- **Headline (targeted vs matched control on real test problems): no difference.** GSM8K −1.2 points
+  (CI −3.9 to +1.4), GSM-Symbolic −0.2 points (CI −3.7 to +3.2).
+- **Every trained model got worse on real test problems** (about −16 to −24 points) — the expected style cost.
+- **On generated problems, all generated training data helped a lot** (+25 to +58 points), but **targeted helped
+  less than matched control and untargeted** — even on the long problems it was aimed at.
+- **Targeting did shrink the "many steps" weakness the most**, but the other data fixed multiplication and division
+  more, which long problems also need. Details in `docs/weakness.md`.
+- What this means for the paper is a team decision (PLAN.md open question 10).
+
+### 5.3b Second paper result: Qwen3-1.7B (numbers in `docs/RUNNING.md` §15)
+- **Same headline: targeted vs matched control on real test problems — no difference** (GSM8K +1.1 points,
+  CI −1.7 to +3.9; GSM-Symbolic +1.5, CI −2.0 to +5.0).
+- Real-test cost a bit smaller than for 0.6B (about −14 to −19 points).
+- The diagnosis found the same main weakness (many steps), but milder; training on any generated data made long
+  problems easy (41% → 86-89%), so the arms are almost equal on the probes.
 
 ### 5.4 How the diagnosis (and everything else) is saved on this laptop
 Yes — when a model is weak at, for example, multi-step problems, that is written down, in three places:
@@ -143,6 +162,8 @@ Where to look now: Qwen3-0.6B → `runs/pipelines/04f319d1cca7/` (diagnosis made
 ## 6. Next steps
 
 **Claude (after the runs):**
+0. Done: both paper runs finished and written up — 0.6B on 2026-10-09 (`docs/RUNNING.md` §14), 1.7B on
+   2026-10-10 (§15), both in `docs/weakness.md`. Next: the team decides how to read the result (PLAN.md question 10).
 1. Watch the runs; resume any step that fails.
 2. Update the 1.7B time estimate after its first training.
 3. After the 1.7B diagnosis (around Oct 8 evening): fill in its section of `docs/weakness.md`. After each run
