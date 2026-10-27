@@ -1,5 +1,8 @@
-
 [build]
   base = "frontend"
   command = "npm run build"
   publish = "dist"
+
+# The hosted site cannot reach the backend on 127.0.0.1 (API_CONTRACT.md §1.1), so it runs on fixtures.
+[build.environment]
+  VITE_USE_MOCK = "true"

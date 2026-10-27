@@ -13,7 +13,7 @@ but hard for a different reason. Science: `docs/RESEARCH.md`. Status of parts: `
 - Order of truth: code on the branch > `PLAN.md` > `docs/API_CONTRACT.md` (law for the frontend) > `docs/RESEARCH.md`.
   If plan and code disagree: **stop and ask**.
 - Do not invent function names, paths, dataset fields, model names, prompt texts or numbers. Open the file.
-- **Backend only.** No frontend code (Manus AI builds it later from the contract).
+- **Backend first.** The frontend lives in `frontend/` (built by the teammate on branch `dreammachine-ui-update`, merged 2026-10-27 and wired to the API by Claude at the user's request). Change it only when asked; it must keep following the contract.
 - Do not edit `docs/RESEARCH.md` or any `CONFIRMED` component without the user's explicit OK.
   Claude may set `IMPLEMENTED`; only the team sets `CONFIRMED`.
 - Label every result **CPU-verified** or **GPU-verified**. Never claim a GPU result that was not run.

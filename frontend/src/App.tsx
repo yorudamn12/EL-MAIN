@@ -1,62 +1,82 @@
-
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./App.css";
+import {
+  api, USE_MOCK,
+  type Arm, type Baseline, type Diagnosis, type Feature, type Health, type Meta, type Model,
+  type Pipeline, type PipelineSummary, type Presets, type Results, type System,
+} from "./api";
 
 type Tab = "Overview" | "Experiments" | "Diagnosis" | "Results";
+const tabs: Tab[] = ["Overview", "Experiments", "Diagnosis", "Results"];
+const ARM_LABEL: Record<string, string> = {
+  real_only: "Real only", untargeted: "Untargeted", matched_control: "Matched control", targeted: "Targeted",
+};
+const pct = (x: number | null | undefined, d = 1) => (x == null ? "—" : `${(x * 100).toFixed(d)}%`);
+const signed = (x: number) => `${x >= 0 ? "+" : ""}${(x * 100).toFixed(1)} pts`;
+const errText = (e: unknown) => (e instanceof Error ? e.message : String(e));
 
-const tabs: Tab[] = [
-  "Overview",
-  "Experiments",
-  "Diagnosis",
-  "Results",
-];
-
-const initialExperiments = [
-  { id: "EXP-024", name: "Baseline neural model", arm: "Control", status: "Complete", score: "84.2%" },
-  { id: "EXP-023", name: "Targeted learning pass", arm: "Targeted", status: "Complete", score: "89.6%" },
-  { id: "EXP-022", name: "Untargeted training", arm: "Untargeted", status: "Complete", score: "82.8%" },
-];
+function useAsync<T>(fn: (() => Promise<T>) | null, deps: unknown[]) {
+  const [state, set] = useState<{ data: T | null; error: string }>({ data: null, error: "" });
+  useEffect(() => {
+    let live = true;
+    if (!fn) { set({ data: null, error: "" }); return; }
+    fn().then((data) => live && set({ data, error: "" }), (e) => live && set({ data: null, error: errText(e) }));
+    return () => { live = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+  return state;
+}
 
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>("Overview");
-  const [activeArm, setActiveArm] = useState("Targeted");
-  const [trainingSteps, setTrainingSteps] = useState(5);
-  const [learningRate, setLearningRate] = useState("0.001");
-  const [running, setRunning] = useState(false);
-  const [selectedWeakness, setSelectedWeakness] = useState("Pattern recognition");
-  const [showNotes, setShowNotes] = useState(false);
-  const [experiments, setExperiments] = useState(initialExperiments);
   const [notice, setNotice] = useState("");
+  const [health, setHealth] = useState<Health | null>(null);
+  const [system, setSystem] = useState<System | null>(null);
+  const [offline, setOffline] = useState("");
+  const [list, setList] = useState<PipelineSummary[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [pipeline, setPipeline] = useState<Pipeline | null>(null);
+  const [targetFeature, setTargetFeature] = useState<Feature | "">("");
 
-  function launchExperiment() {
-    if (running) return;
+  const models = useAsync<Model[]>(() => api.models(), []);
+  const presets = useAsync<Presets>(() => api.presets(), []);
+  const meta = useAsync<Meta>(() => api.meta(), []);
 
-    setRunning(true);
-    setNotice("Experiment queued in the local demo environment.");
+  const refresh = useCallback(async () => {
+    try {
+      const [h, s, l] = await Promise.all([api.health(), api.system(), api.pipelines()]);
+      setHealth(h); setSystem(s); setList(l.items); setOffline("");
+    } catch (e) { setOffline(errText(e)); }
+  }, []);
+  useEffect(() => {
+    void refresh();
+    const t = window.setInterval(() => void refresh(), 3000);
+    return () => window.clearInterval(t);
+  }, [refresh]);
 
-    window.setTimeout(() => {
-      const score = (85 + Math.random() * 10).toFixed(1);
+  // default selection: newest pipeline
+  useEffect(() => {
+    if (!selectedId && list.length) setSelectedId((list.find((p) => p.status === "done") ?? list[0]).id);
+  }, [list, selectedId]);
 
-      setExperiments((previous) => [
-        {
-          id: `EXP-${String(25 + previous.length - initialExperiments.length).padStart(3, "0")}`,
-          name: `${activeArm} training run`,
-          arm: activeArm,
-          status: "Complete",
-          score: `${score}%`,
-        },
-        ...previous,
-      ]);
+  // poll the selected pipeline every 2 s while it is active
+  const active = pipeline?.status === "queued" || pipeline?.status === "running";
+  useEffect(() => {
+    if (!selectedId) { setPipeline(null); return; }
+    let live = true;
+    const load = () => api.pipeline(selectedId).then((p) => live && setPipeline(p), () => undefined);
+    void load();
+    const t = active ? window.setInterval(load, 2000) : undefined;
+    return () => { live = false; if (t) window.clearInterval(t); };
+  }, [selectedId, active]);
 
-      setRunning(false);
-      setNotice("Demo run completed. Results are simulated, not from a live model.");
-    }, 1400);
+  function select(id: string, tab?: Tab) {
+    setSelectedId(id);
+    if (tab) setActiveTab(tab);
   }
 
-  function openExperiment() {
-    setActiveTab("Experiments");
-    setNotice("Configure your next experiment below.");
-  }
+  const doneCount = list.filter((p) => p.status === "done").length;
+  const workerLabel = offline ? "Backend offline" : system?.worker.alive ? "Worker running" : "Worker not running";
 
   return (
     <div className="app-shell">
@@ -99,7 +119,7 @@ function App() {
             <span className="status-dot" />
             <div>
               <div className="status-title">Research environment</div>
-              <div className="status-subtitle">Local demo mode</div>
+              <div className="status-subtitle">{USE_MOCK ? "Mock data mode" : workerLabel}</div>
             </div>
           </div>
 
@@ -123,19 +143,16 @@ function App() {
           </div>
           <div className="topbar-right">
             <span className="live-indicator">
-              <span className="status-dot" /> DEMO ENVIRONMENT
+              <span className="status-dot" />{" "}
+              {USE_MOCK ? "MOCK DATA" : offline ? "BACKEND OFFLINE" : `LIVE · API ${health?.api_version ?? ""}`}
             </span>
-            <button
-              className="icon-button"
-              title="Show research notes"
-              onClick={() => setShowNotes((value) => !value)}
-            >
-              ?
-            </button>
           </div>
         </header>
 
         <div className="page-content">
+          {offline && !USE_MOCK && (
+            <div className="notice"><span>✳</span> {offline}</div>
+          )}
           {notice && (
             <div className="notice">
               <span>✳</span> {notice}
@@ -172,7 +189,7 @@ function App() {
                     understand what fails, and turn your next hypothesis
                     into a measurable experiment.
                   </p>
-                  <button className="primary-button" onClick={openExperiment}>
+                  <button className="primary-button" onClick={() => setActiveTab("Experiments")}>
                     Design an experiment <span>↗</span>
                   </button>
                   <div className="hero-footnote">
@@ -196,36 +213,22 @@ function App() {
                 </div>
               </section>
 
+              
               <section className="section-heading">
                 <div>
                   <div className="eyebrow">AT A GLANCE</div>
                   <h2>Research pulse</h2>
                 </div>
-                <span className="section-meta">DEMO DATA · 01</span>
+                <span className="section-meta">{USE_MOCK ? "MOCK DATA" : "LIVE FROM BACKEND"}</span>
               </section>
 
               <section className="metrics-grid">
-                <MetricCard
-                  label="Experiments"
-                  value={String(experiments.length).padStart(2, "0")}
-                  detail="Recorded in this session"
-                  icon="◎"
-                  color="orange"
-                />
-                <MetricCard
-                  label="Best accuracy"
-                  value="89.6%"
-                  detail="Highest recorded demo score"
-                  icon="↗"
-                  color="green"
-                />
-                <MetricCard
-                  label="Model status"
-                  value="Ready"
-                  detail="Local simulation available"
-                  icon="◈"
-                  color="red"
-                />
+                <MetricCard label="Experiments" value={String(list.length).padStart(2, "0")}
+                  detail={`${doneCount} finished`} icon="◎" color="orange" />
+                <MetricCard label="GPU" value={system?.gpu.available ? "Ready" : "None"}
+                  detail={system?.gpu.name ?? "No CUDA device reported"} icon="↗" color="green" />
+                <MetricCard label="Worker" value={offline ? "Offline" : system?.worker.alive ? "Alive" : "Stopped"}
+                  detail={system?.worker.current_step ?? workerLabel} icon="◈" color="red" />
               </section>
 
               <section className="bottom-grid">
@@ -235,20 +238,18 @@ function App() {
                       <div className="eyebrow">LATEST ACTIVITY</div>
                       <h3>Recent experiments</h3>
                     </div>
-                    <button className="text-button" onClick={() => setActiveTab("Experiments")}>
-                      View all ↗
-                    </button>
+                    <button className="text-button" onClick={() => setActiveTab("Experiments")}>View all ↗</button>
                   </div>
-                  <ExperimentTable experiments={experiments.slice(0, 3)} />
+                  <ExperimentTable rows={list.slice(0, 3)} onSelect={(id) => select(id, "Results")} />
                 </div>
 
                 <div className="panel insight-panel">
                   <div className="insight-icon">✳</div>
                   <div className="eyebrow">RESEARCH NOTE · 001</div>
-                  <h3>Curiosity is a method.</h3>
+                  <h3>Targeting vs difficulty.</h3>
                   <p>
-                    A useful experiment doesn't just improve a score.
-                    It tells you why a model behaves the way it does.
+                    The matched control is as hard as the targeted set but hard for a different reason.
+                    A real effect must beat it, not just the baseline.
                   </p>
                   <button className="text-button" onClick={() => setActiveTab("Diagnosis")}>
                     Investigate weaknesses ↗
@@ -263,318 +264,359 @@ function App() {
               <PageIntro
                 eyebrow="LABORATORY / 01"
                 title={<>Design the <em>unknown.</em></>}
-                description="Configure training conditions, choose an experimental arm, and explore simulated outcomes."
+                description="Start a real explore pipeline: baseline, diagnosis, targeted data, QLoRA training and re-test. Explore runs are not paper evidence."
               />
-
               <section className="experiment-layout">
-                <div className="panel experiment-config">
-                  <div className="panel-heading">
-                    <div>
-                      <div className="eyebrow">CONFIGURATION</div>
-                      <h3>New experiment</h3>
-                    </div>
-                    <span className="config-number">01</span>
-                  </div>
-
-                  <label className="field-label">TRAINING ARM</label>
-                  <div className="arm-options">
-                    {[
-                      { name: "Targeted", description: "Focus on a selected weakness", icon: "◎" },
-                      { name: "Control", description: "Maintain baseline conditions", icon: "◈" },
-                      { name: "Untargeted", description: "Train without a specific target", icon: "✳" },
-                    ].map((arm) => (
-                      <button
-                        key={arm.name}
-                        className={`arm-option ${activeArm === arm.name ? "selected" : ""}`}
-                        onClick={() => setActiveArm(arm.name)}
-                      >
-                        <span className="arm-icon">{arm.icon}</span>
-                        <span className="arm-text">
-                          <strong>{arm.name}</strong>
-                          <small>{arm.description}</small>
-                        </span>
-                        <span className="arm-check">
-                          {activeArm === arm.name ? "●" : "○"}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="field-row">
-                    <div>
-                      <label className="field-label" htmlFor="training-steps">
-                        TRAINING STEPS
-                      </label>
-                      <p className="field-help">Number of simulated iterations</p>
-                    </div>
-                    <strong className="range-value">{trainingSteps}</strong>
-                  </div>
-                  <input
-                    id="training-steps"
-                    className="range-input"
-                    type="range"
-                    min="2"
-                    max="7"
-                    value={trainingSteps}
-                    onChange={(event) => setTrainingSteps(Number(event.target.value))}
-                  />
-                  <div className="range-labels">
-                    <span>2 steps</span><span>7 steps</span>
-                  </div>
-
-                  <label className="field-label" htmlFor="learning-rate">
-                    LEARNING RATE
-                  </label>
-                  <select
-                    id="learning-rate"
-                    className="select-input"
-                    value={learningRate}
-                    onChange={(event) => setLearningRate(event.target.value)}
-                  >
-                    <option value="0.0001">0.0001 — Conservative</option>
-                    <option value="0.001">0.001 — Balanced</option>
-                    <option value="0.01">0.01 — Aggressive</option>
-                  </select>
-
-                  <div className="config-summary">
-                    <span>Configuration summary</span>
-                    <div><span>Arm</span><strong>{activeArm}</strong></div>
-                    <div><span>Steps</span><strong>{trainingSteps}</strong></div>
-                    <div><span>Learning rate</span><strong>{learningRate}</strong></div>
-                  </div>
-
-                  <button className="primary-button launch-button" onClick={launchExperiment} disabled={running}>
-                    {running ? "Running simulation..." : "Launch demo experiment"}
-                    <span>{running ? "◌" : "↗"}</span>
-                  </button>
-                  <p className="disclaimer">
-                    Local simulation only. This does not train a real model.
-                  </p>
-                </div>
-
+                <NewExperiment
+                  models={models.data ?? []} presets={presets.data} meta={meta.data}
+                  presetFeature={targetFeature} disabled={!!offline}
+                  onCreated={(p) => { setNotice(`Queued ${p.name}.`); select(p.id); void refresh(); }}
+                  onError={setNotice}
+                />
                 <div className="experiment-side">
-                  <div className="panel preview-panel">
-                    <div className="eyebrow">EXPERIMENT PREVIEW</div>
-                    <div className="preview-visual">
-                      <div className="preview-ring ring-a" />
-                      <div className="preview-ring ring-b" />
-                      <div className="preview-center">D</div>
-                      <span className="preview-node node-a" />
-                      <span className="preview-node node-b" />
-                      <span className="preview-node node-c" />
-                    </div>
-                    <h3>{activeArm} training</h3>
-                    <p>
-                      {activeArm === "Targeted"
-                        ? "Direct attention towards a defined model weakness."
-                        : activeArm === "Control"
-                        ? "Maintain a baseline for comparing experimental changes."
-                        : "Explore general training without a specific weakness target."}
-                    </p>
-                    <div className="preview-meta">
-                      <span>ESTIMATED STEPS</span><strong>{trainingSteps}</strong>
-                    </div>
-                  </div>
-
-                  <div className="panel principle-panel">
-                    <span className="principle-star">✳</span>
-                    <div className="eyebrow">EXPERIMENTAL PRINCIPLE</div>
-                    <h3>Change one variable at a time.</h3>
-                    <p>Clear comparisons make results easier to interpret.</p>
-                  </div>
+                  <PipelinePanel pipeline={pipeline} onChanged={(p) => { setPipeline(p); void refresh(); }} onError={setNotice} />
                 </div>
               </section>
-
               <section className="panel table-panel">
                 <div className="panel-heading">
                   <div><div className="eyebrow">HISTORY</div><h3>Experiment log</h3></div>
-                  <span className="section-meta">{experiments.length} RUNS</span>
+                  <span className="section-meta">{list.length} RUNS</span>
                 </div>
-                <ExperimentTable experiments={experiments} />
+                <ExperimentTable rows={list} onSelect={(id) => select(id)} selectedId={selectedId} />
               </section>
             </>
           )}
 
           {activeTab === "Diagnosis" && (
-            <>
-              <PageIntro
-                eyebrow="ANALYSIS / 02"
-                title={<>Find the <em>signal.</em></>}
-                description="Explore example model weaknesses and identify a direction for your next investigation."
-              />
-
-              <section className="diagnosis-layout">
-                <div className="panel weakness-panel">
-                  <div className="eyebrow">WEAKNESS CATALOGUE</div>
-                  <h3>What needs attention?</h3>
-                  <p className="panel-description">
-                    Select a category to explore its possible symptoms and research direction.
-                  </p>
-
-                  {[
-                    { name: "Pattern recognition", tag: "PERCEPTION", number: "01", color: "orange" },
-                    { name: "Generalization", tag: "ROBUSTNESS", number: "02", color: "green" },
-                    { name: "Training stability", tag: "OPTIMIZATION", number: "03", color: "red" },
-                    { name: "Data sensitivity", tag: "INPUT QUALITY", number: "04", color: "purple" },
-                  ].map((item) => (
-                    <button
-                      key={item.name}
-                      className={`weakness-item ${selectedWeakness === item.name ? "selected" : ""}`}
-                      onClick={() => setSelectedWeakness(item.name)}
-                    >
-                      <span className={`weakness-number ${item.color}`}>{item.number}</span>
-                      <span className="weakness-copy">
-                        <strong>{item.name}</strong>
-                        <small>{item.tag}</small>
-                      </span>
-                      <span className="weakness-arrow">↗</span>
-                    </button>
-                  ))}
-                </div>
-
-                <div className="panel diagnosis-detail">
-                  <div className="detail-topline">
-                    <span className="eyebrow">DIAGNOSTIC BRIEF</span>
-                    <span className="detail-index">DM / {["01", "02", "03", "04"][[
-                      "Pattern recognition", "Generalization", "Training stability", "Data sensitivity"
-                    ].indexOf(selectedWeakness)]}</span>
-                  </div>
-                  <div className="diagnosis-symbol">⌘</div>
-                  <h2>{selectedWeakness}</h2>
-                  <p className="diagnosis-description">
-                    {selectedWeakness === "Pattern recognition"
-                      ? "The model may struggle to identify meaningful structures when examples vary in presentation or complexity."
-                      : selectedWeakness === "Generalization"
-                      ? "Performance may decline when the model encounters examples that differ from its training distribution."
-                      : selectedWeakness === "Training stability"
-                      ? "Training behaviour may fluctuate across iterations, making learning outcomes difficult to reproduce."
-                      : "Small changes in input quality or representation may lead to disproportionate changes in model output."}
-                  </p>
-
-                  <div className="detail-divider" />
-                  <div className="eyebrow">POSSIBLE RESEARCH DIRECTION</div>
-                  <h3>
-                    {selectedWeakness === "Pattern recognition"
-                      ? "Compare targeted and baseline training"
-                      : selectedWeakness === "Generalization"
-                      ? "Evaluate performance on held-out examples"
-                      : selectedWeakness === "Training stability"
-                      ? "Compare outcomes across learning rates"
-                      : "Investigate sensitivity to input variation"}
-                  </h3>
-                  <p className="panel-description">
-                    Treat this as a hypothesis to investigate, not a confirmed diagnosis.
-                  </p>
-
-                  <button className="primary-button" onClick={openExperiment}>
-                    Build an experiment <span>↗</span>
-                  </button>
-                </div>
-              </section>
-
-              <div className="note-strip">
-                <span>✳</span>
-                <p><strong>Research reminder</strong> — a suspected weakness needs evidence. Compare outcomes before drawing conclusions.</p>
-              </div>
-            </>
+            <DiagnosisTab pipeline={pipeline} onBuild={(f) => { setTargetFeature(f); setActiveTab("Experiments"); }} />
           )}
 
-          {activeTab === "Results" && (
-            <>
-              <PageIntro
-                eyebrow="OBSERVATIONS / 03"
-                title={<>Measure what <em>matters.</em></>}
-                description="Review illustrative evaluation metrics and compare the example training arms."
-              />
-
-              <section className="metrics-grid results-metrics">
-                <MetricCard label="Baseline accuracy" value="84.2%" detail="Illustrative reference score" icon="◈" color="red" />
-                <MetricCard label="Targeted accuracy" value="89.6%" detail="+5.4 percentage points" icon="↗" color="green" />
-                <MetricCard label="Control accuracy" value="84.2%" detail="Reference condition" icon="◎" color="orange" />
-              </section>
-
-              <section className="results-layout">
-                <div className="panel chart-panel">
-                  <div className="panel-heading">
-                    <div><div className="eyebrow">MODEL EVALUATION</div><h3>Illustrative accuracy trend</h3></div>
-                    <span className="chart-badge">DEMO</span>
-                  </div>
-
-                  <div className="chart-legend">
-                    <span><i className="legend-dot targeted" /> Targeted</span>
-                    <span><i className="legend-dot control" /> Control</span>
-                  </div>
-
-                  <div className="bar-chart">
-                    {[
-                      { label: "Pass 1", targeted: 56, control: 48 },
-                      { label: "Pass 2", targeted: 65, control: 54 },
-                      { label: "Pass 3", targeted: 72, control: 61 },
-                      { label: "Pass 4", targeted: 80, control: 68 },
-                      { label: "Pass 5", targeted: 90, control: 73 },
-                    ].map((item) => (
-                      <div className="bar-group" key={item.label}>
-                        <div className="bar-pair">
-                          <div className="bar targeted-bar" style={{ height: `${item.targeted}%` }} />
-                          <div className="bar control-bar" style={{ height: `${item.control}%` }} />
-                        </div>
-                        <span>{item.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="chart-axis-label">SIMULATED TRAINING PASSES</div>
-                </div>
-
-                <div className="panel findings-panel">
-                  <div className="eyebrow">OBSERVATIONS</div>
-                  <h3>What stands out?</h3>
-                  <div className="finding">
-                    <span className="finding-number">01</span>
-                    <div><strong>Higher example score</strong><p>The targeted arm has the highest illustrative final score.</p></div>
-                  </div>
-                  <div className="finding">
-                    <span className="finding-number">02</span>
-                    <div><strong>Consistent comparison</strong><p>A control condition helps contextualize changes.</p></div>
-                  </div>
-                  <div className="finding">
-                    <span className="finding-number">03</span>
-                    <div><strong>Evidence still matters</strong><p>Real conclusions require actual evaluation data.</p></div>
-                  </div>
-                  <button className="secondary-button" onClick={() => setShowNotes((value) => !value)}>
-                    {showNotes ? "Hide research notes" : "Read research notes"} <span>↗</span>
-                  </button>
-                </div>
-              </section>
-
-              {showNotes && (
-                <section className="panel research-notes">
-                  <div className="eyebrow">RESEARCH NOTES</div>
-                  <h3>Interpret with care.</h3>
-                  <p>
-                    All displayed metrics and chart values are illustrative placeholders.
-                    They are not measurements from a trained model. Replace them with
-                    actual evaluation outputs before making scientific claims.
-                  </p>
-                </section>
-              )}
-
-              <section className="panel table-panel">
-                <div className="panel-heading">
-                  <div><div className="eyebrow">RECORDED RUNS</div><h3>Evaluation history</h3></div>
-                  <button className="text-button" onClick={() => setActiveTab("Experiments")}>New experiment ↗</button>
-                </div>
-                <ExperimentTable experiments={experiments} />
-              </section>
-            </>
-          )}
+          {activeTab === "Results" && <ResultsTab pipeline={pipeline} list={list} onSelect={select} />}
         </div>
 
         <footer className="footer">
           <span>DreamMachine <span className="footer-separator">/</span> Research Lab</span>
-          <span>CONTRACT V0.2.1 <span className="footer-separator">·</span> MOCK ENVIRONMENT</span>
+          <span>CONTRACT V{health?.api_version ?? "0.2.1"} <span className="footer-separator">·</span> {USE_MOCK ? "MOCK ENVIRONMENT" : "LIVE BACKEND"}</span>
         </footer>
       </main>
     </div>
+  );
+}
+
+function NewExperiment({ models, presets, meta, presetFeature, disabled, onCreated, onError }: {
+  models: Model[]; presets: Presets | null; meta: Meta | null; presetFeature: Feature | ""; disabled: boolean;
+  onCreated: (p: Pipeline) => void; onError: (m: string) => void;
+}) {
+  const d = presets?.explore.defaults;
+  const allowed = presets?.explore.allowed;
+  const [model, setModel] = useState("");
+  const [name, setName] = useState("");
+  const [strategy, setStrategy] = useState<"auto" | "feature" | "untargeted">("auto");
+  const [feature, setFeature] = useState<Feature | "">("");
+  const [arms, setArms] = useState<Arm[] | null>(null);
+  const [ratio, setRatio] = useState<number | null>(null);
+  const [seeds, setSeeds] = useState<number[] | null>(null);
+  const [limit, setLimit] = useState<number | null | undefined>(undefined);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (presetFeature) { setStrategy("feature"); setFeature(presetFeature); }
+  }, [presetFeature]);
+
+  const curModel = model || models[0]?.id || "";
+  const curArms = arms ?? d?.arms ?? [];
+  const curRatio = ratio ?? d?.ratio ?? 3;
+  const curSeeds = seeds ?? d?.seeds ?? [0];
+  const curLimit = limit === undefined ? d?.benchmark_limit ?? null : limit;
+  const toggle = <T,>(xs: T[], x: T) => (xs.includes(x) ? xs.filter((y) => y !== x) : [...xs, x]);
+  const armChoices: Arm[] = strategy === "untargeted" ? ["untargeted", "real_only"] : ["targeted", "matched_control", "untargeted", "real_only"];
+  const shownArms = curArms.filter((a) => armChoices.includes(a));
+
+  async function launch() {
+    setBusy(true);
+    try {
+      const target = strategy === "feature"
+        ? (feature ? { strategy: "feature" as const, feature } : null)
+        : { strategy };
+      if (!target) throw new Error("Choose which feature to target.");
+      const p = await api.create({
+        mode: "explore", model: curModel, name: name || undefined, benchmarks: d?.benchmarks,
+        benchmark_limit: curLimit, target, arms: shownArms, ratio: curRatio, seeds: curSeeds,
+      });
+      onCreated(p);
+    } catch (e) { onError(errText(e)); } finally { setBusy(false); }
+  }
+
+  return (
+    <div className="panel experiment-config">
+      <div className="panel-heading">
+        <div><div className="eyebrow">CONFIGURATION</div><h3>New experiment</h3></div>
+        <span className="config-number">01</span>
+      </div>
+
+      <label className="field-label" htmlFor="model">MODEL</label>
+      <select id="model" className="select-input" value={curModel} onChange={(e) => setModel(e.target.value)}>
+        {models.map((m) => <option key={m.id} value={m.id}>{m.display_name}</option>)}
+      </select>
+
+      <label className="field-label" htmlFor="exp-name">NAME (OPTIONAL)</label>
+      <input id="exp-name" className="select-input" value={name} maxLength={80} onChange={(e) => setName(e.target.value)} />
+
+      <label className="field-label" htmlFor="strategy">TARGET</label>
+      <select id="strategy" className="select-input" value={strategy}
+        onChange={(e) => setStrategy(e.target.value as typeof strategy)}>
+        <option value="auto">Auto — worst significant weakness</option>
+        <option value="feature">Pick a feature</option>
+        <option value="untargeted">Untargeted</option>
+      </select>
+      {strategy === "feature" && (
+        <select className="select-input" value={feature} onChange={(e) => setFeature(e.target.value as Feature)}>
+          <option value="">Select a feature…</option>
+          {meta?.features.map((f) => <option key={f.name} value={f.name}>{f.label}</option>)}
+        </select>
+      )}
+
+      <label className="field-label">TRAINING ARMS</label>
+      <div className="arm-options">
+        {armChoices.map((a) => (
+          <button key={a} className={`arm-option ${shownArms.includes(a) ? "selected" : ""}`}
+            onClick={() => setArms(toggle(shownArms, a))}>
+            <span className="arm-text"><strong>{ARM_LABEL[a]}</strong>
+              <small>{meta?.arms.find((x) => x.name === a)?.description ?? ""}</small></span>
+            <span className="arm-check">{shownArms.includes(a) ? "●" : "○"}</span>
+          </button>
+        ))}
+      </div>
+
+      <label className="field-label" htmlFor="ratio">SYNTHETIC : REAL RATIO</label>
+      <select id="ratio" className="select-input" value={curRatio} onChange={(e) => setRatio(Number(e.target.value))}>
+        {(allowed?.ratio ?? [1, 3, 9]).map((r) => <option key={r} value={r}>{r}:1</option>)}
+      </select>
+
+      <label className="field-label">SEEDS</label>
+      <div className="arm-options">
+        {(allowed?.seeds ?? [0, 1, 2]).map((s) => (
+          <button key={s} className={`arm-option ${curSeeds.includes(s) ? "selected" : ""}`}
+            onClick={() => { const n = toggle(curSeeds, s); if (n.length) setSeeds(n); }}>
+            <span className="arm-text"><strong>Seed {s}</strong></span>
+            <span className="arm-check">{curSeeds.includes(s) ? "●" : "○"}</span>
+          </button>
+        ))}
+      </div>
+
+      <label className="field-label" htmlFor="limit">BENCHMARK ITEMS (EMPTY = FULL SETS)</label>
+      <input id="limit" className="select-input" type="number" min={allowed?.min_benchmark_limit ?? 10}
+        value={curLimit ?? ""} onChange={(e) => setLimit(e.target.value === "" ? null : Number(e.target.value))} />
+
+      <button className="primary-button launch-button" onClick={() => void launch()}
+        disabled={busy || disabled || !curModel || !shownArms.length}>
+        {busy ? "Submitting..." : "Launch experiment"}<span>{busy ? "◌" : "↗"}</span>
+      </button>
+      <p className="disclaimer">Real run on the local GPU worker. Takes from minutes to hours.</p>
+    </div>
+  );
+}
+
+function PipelinePanel({ pipeline, onChanged, onError }: {
+  pipeline: Pipeline | null; onChanged: (p: Pipeline) => void; onError: (m: string) => void;
+}) {
+  if (!pipeline) return <div className="panel preview-panel"><div className="eyebrow">PROGRESS</div><h3>No experiment selected</h3></div>;
+  const act = (fn: (id: string) => Promise<Pipeline>) => fn(pipeline.id).then(onChanged, (e) => onError(errText(e)));
+  const running = pipeline.status === "queued" || pipeline.status === "running";
+  return (
+    <div className="panel preview-panel">
+      <div className="eyebrow">PROGRESS · {pipeline.mode.toUpperCase()}</div>
+      <h3>{pipeline.name}</h3>
+      <p>
+        {pipeline.status.toUpperCase()} · {pipeline.progress.done_steps}/{pipeline.progress.total_steps} steps
+        {pipeline.eta_s ? ` · ~${Math.round(pipeline.eta_s / 60)} min left` : ""}
+        {pipeline.target?.feature ? ` · target ${pipeline.target.feature}` : ""}
+      </p>
+      {pipeline.error && <p className="disclaimer">{pipeline.error.code}: {pipeline.error.message}</p>}
+      {pipeline.warnings.map((w) => <p key={w} className="disclaimer">{w}</p>)}
+      <div className="table-scroll">
+        <table className="experiment-table">
+          <tbody>
+            {pipeline.steps.map((s) => (
+              <tr key={s.key}>
+                <td><strong>{s.label}</strong><small>{s.key}</small></td>
+                <td><span className="table-status"><span />{s.status}</span></td>
+                <td className="score-cell">{s.status === "running" ? pct(s.progress.fraction, 0) : ""}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {running && <button className="secondary-button" onClick={() => void act(api.cancel)}>Cancel <span>×</span></button>}
+      {(pipeline.status === "failed" || pipeline.status === "cancelled") && (
+        <button className="secondary-button" onClick={() => void act(api.resume)}>Resume <span>↗</span></button>
+      )}
+    </div>
+  );
+}
+
+function DiagnosisTab({ pipeline, onBuild }: { pipeline: Pipeline | null; onBuild: (f: Feature) => void }) {
+  const ready = !!pipeline?.steps.some((s) => s.stage === "diagnose" && (s.status === "done" || s.status === "skipped"));
+  const id = pipeline?.id;
+  const diag = useAsync<Diagnosis>(ready && id ? () => api.diagnosis(id) : null, [id, ready]);
+  const base = useAsync<Baseline>(ready && id ? () => api.baseline(id) : null, [id, ready]);
+  const [sel, setSel] = useState<Feature | null>(null);
+  const ws = diag.data?.weaknesses ?? [];
+  const cur = ws.find((w) => w.feature === sel) ?? ws[0];
+  const maxEffect = Math.max(0.001, ...ws.map((w) => Math.abs(w.effect)));
+
+  return (
+    <>
+      <PageIntro eyebrow="ANALYSIS / 02" title={<>Find the <em>signal.</em></>}
+        description={pipeline ? `Measured weaknesses of ${pipeline.model} from "${pipeline.name}".` : "Select or start an experiment first."} />
+      {!ready && <div className="note-strip"><span>✳</span><p>Diagnosis is not finished for this experiment yet.</p></div>}
+      {ready && diag.error && <div className="note-strip"><span>✳</span><p>{diag.error}</p></div>}
+      {diag.data && (
+        <section className="diagnosis-layout">
+          <div className="panel weakness-panel">
+            <div className="eyebrow">WEAKNESS RANKING</div>
+            <h3>What needs attention?</h3>
+            <p className="panel-description">
+              Probe accuracy {pct(diag.data.probe_accuracy)}.
+              {base.data && " Baseline: " + base.data.benchmarks.map((b) => `${b.name} ${pct(b.accuracy)}`).join(", ") + "."}
+            </p>
+            {ws.map((w) => (
+              <button key={w.feature} className={`weakness-item ${cur?.feature === w.feature ? "selected" : ""}`}
+                onClick={() => setSel(w.feature)}>
+                <span className={`weakness-number ${w.significant ? "red" : "orange"}`}>{String(w.rank).padStart(2, "0")}</span>
+                <span className="weakness-copy">
+                  <strong>{w.label}</strong>
+                  <small>{w.significant ? "SIGNIFICANT" : "NOT SIGNIFICANT"} · EFFECT {w.effect.toFixed(2)}</small>
+                  <span style={{ display: "block", height: 4, borderRadius: 2, background: "currentColor", opacity: 0.35,
+                    width: `${(Math.abs(w.effect) / maxEffect) * 100}%` }} />
+                </span>
+                <span className="weakness-arrow">↗</span>
+              </button>
+            ))}
+          </div>
+          {cur && (
+            <div className="panel diagnosis-detail">
+              <div className="detail-topline">
+                <span className="eyebrow">DIAGNOSTIC BRIEF</span>
+                <span className="detail-index">{diag.data.target?.feature === cur.feature ? "CHOSEN TARGET" : `RANK ${cur.rank}`}</span>
+              </div>
+              <div className="diagnosis-symbol">⌘</div>
+              <h2>{cur.label}</h2>
+              <p className="diagnosis-description">
+                η = {cur.eta.toFixed(2)}
+                {cur.ci_low != null && cur.ci_high != null ? ` (95% CI ${cur.ci_low.toFixed(2)} to ${cur.ci_high.toFixed(2)})` : ""}.
+                Each extra unit lowers the log-odds of a correct answer by that much; effect = η × the feature's range.
+              </p>
+              <div className="detail-divider" />
+              <button className="primary-button" onClick={() => onBuild(cur.feature)}>
+                Build an experiment targeting this <span>↗</span>
+              </button>
+            </div>
+          )}
+        </section>
+      )}
+    </>
+  );
+}
+
+function ResultsTab({ pipeline, list, onSelect }: {
+  pipeline: Pipeline | null; list: PipelineSummary[]; onSelect: (id: string) => void;
+}) {
+  const evaluated = !!pipeline?.steps.some((s) => s.stage === "evaluate" && s.status === "done");
+  const id = pipeline?.id;
+  const res = useAsync<Results>(evaluated && id ? () => api.results(id) : null, [id, evaluated, pipeline?.status]);
+  const r = res.data;
+  const benchNames = r ? Object.keys(r.baseline) : [];
+  const armOf = (a: Arm) => r?.arms.find((x) => x.arm === a);
+  const targeted = armOf("targeted");
+  const control = armOf("matched_control");
+  const first = benchNames[0];
+  const tgtGain = targeted && first ? targeted.benchmarks[first]?.vs_base.mean_diff : undefined;
+  const ctlGain = control && first ? control.benchmarks[first]?.vs_base.mean_diff : undefined;
+
+  return (
+    <>
+      <PageIntro eyebrow="OBSERVATIONS / 03" title={<>Measure what <em>matters.</em></>}
+        description="Accuracy per arm versus the untrained model, and targeted versus matched control." />
+      <div className="panel">
+        <label className="field-label" htmlFor="res-pick">EXPERIMENT</label>
+        <select id="res-pick" className="select-input" value={id ?? ""} onChange={(e) => onSelect(e.target.value)}>
+          {list.map((p) => <option key={p.id} value={p.id}>{p.name} · {p.status}</option>)}
+        </select>
+      </div>
+      {!evaluated && <div className="note-strip"><span>✳</span><p>No evaluation has finished for this experiment yet.</p></div>}
+      {res.error && <div className="note-strip"><span>✳</span><p>{res.error}</p></div>}
+      {r && first && (
+        <>
+          <section className="metrics-grid results-metrics">
+            <MetricCard label={`Baseline · ${first}`} value={pct(r.baseline[first].accuracy)} detail={`n = ${r.baseline[first].n}`} icon="◈" color="red" />
+            <MetricCard label="Targeted" value={pct(targeted?.benchmarks[first]?.accuracy_mean)}
+              detail={tgtGain == null ? "not trained" : `${signed(tgtGain)} vs base`} icon="↗" color="green" />
+            <MetricCard label="Matched control" value={pct(control?.benchmarks[first]?.accuracy_mean)}
+              detail={ctlGain == null ? "not trained" : `${signed(ctlGain)} vs base`} icon="◎" color="orange" />
+          </section>
+
+          <section className="results-layout">
+            <div className="panel chart-panel">
+              <div className="panel-heading">
+                <div><div className="eyebrow">MODEL EVALUATION</div><h3>Accuracy per benchmark</h3></div>
+                <span className="chart-badge">{r.mode.toUpperCase()}{r.complete ? "" : " · PARTIAL"}</span>
+              </div>
+              <div className="chart-legend">
+                <span><i className="legend-dot targeted" /> Targeted</span>
+                <span><i className="legend-dot control" /> Matched control</span>
+              </div>
+              <div className="bar-chart">
+                {benchNames.map((b) => (
+                  <div className="bar-group" key={b}>
+                    <div className="bar-pair">
+                      <div className="bar targeted-bar" style={{ height: `${(targeted?.benchmarks[b]?.accuracy_mean ?? 0) * 100}%` }} />
+                      <div className="bar control-bar" style={{ height: `${(control?.benchmarks[b]?.accuracy_mean ?? 0) * 100}%` }} />
+                    </div>
+                    <span>{b}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="panel findings-panel">
+              <div className="eyebrow">PRIMARY QUESTION · {r.primary?.status?.toUpperCase() ?? "N/A"}</div>
+              <h3>{r.primary?.question ?? "No targeted + matched-control pair"}</h3>
+              {r.primary?.results.map((x) => (
+                <div className="finding" key={x.benchmark}>
+                  <span className="finding-number">{x.significant ? "✓" : "–"}</span>
+                  <div><strong>{x.benchmark}: {signed(x.mean_diff)}</strong>
+                    <p>95% CI {signed(x.ci_low)} to {signed(x.ci_high)} · {x.significant ? "significant" : "not significant"}</p></div>
+                </div>
+              ))}
+              {r.mode !== "paper" && <p className="disclaimer">Explore run — not paper evidence.</p>}
+              {r.warnings.map((w) => <p key={w} className="disclaimer">{w}</p>)}
+            </div>
+          </section>
+
+          <section className="panel table-panel">
+            <div className="panel-heading"><div><div className="eyebrow">VS UNTRAINED MODEL</div><h3>Arms</h3></div></div>
+            <div className="table-scroll">
+              <table className="experiment-table">
+                <thead><tr><th>ARM</th><th>BENCHMARK</th><th>ACCURACY</th><th>CHANGE (95% CI)</th></tr></thead>
+                <tbody>
+                  {r.arms.flatMap((a) => Object.entries(a.benchmarks).map(([b, v]) => (
+                    <tr key={`${a.arm}${a.ratio}${b}`}>
+                      <td><span className={`arm-pill ${a.arm}`}>{ARM_LABEL[a.arm]}</span><small>ratio {a.ratio} · {a.seeds.length} seed(s)</small></td>
+                      <td>{b}</td>
+                      <td className="score-cell">{pct(v.accuracy_mean)}</td>
+                      <td style={v.regression ? { color: "#d33" } : undefined}>
+                        {signed(v.vs_base.mean_diff)} ({signed(v.vs_base.ci_low)} to {signed(v.vs_base.ci_high)}){v.regression ? " ▼ regression" : ""}
+                      </td>
+                    </tr>
+                  )))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </>
+      )}
+    </>
   );
 }
 
@@ -621,36 +663,25 @@ function MetricCard({
   );
 }
 
-type Experiment = {
-  id: string;
-  name: string;
-  arm: string;
-  status: string;
-  score: string;
-};
 
-function ExperimentTable({ experiments }: { experiments: Experiment[] }) {
+
+function ExperimentTable({ rows, onSelect, selectedId }: {
+  rows: PipelineSummary[]; onSelect: (id: string) => void; selectedId?: string | null;
+}) {
+  if (!rows.length) return <p className="panel-description">No experiments yet.</p>;
   return (
     <div className="table-scroll">
       <table className="experiment-table">
         <thead>
-          <tr>
-            <th>EXPERIMENT</th>
-            <th>TRAINING ARM</th>
-            <th>STATUS</th>
-            <th>SCORE</th>
-          </tr>
+          <tr><th>EXPERIMENT</th><th>MODE</th><th>STATUS</th><th>PROGRESS</th></tr>
         </thead>
         <tbody>
-          {experiments.map((experiment) => (
-            <tr key={experiment.id}>
-              <td>
-                <strong>{experiment.name}</strong>
-                <small>{experiment.id}</small>
-              </td>
-              <td><span className={`arm-pill ${experiment.arm.toLowerCase()}`}>{experiment.arm}</span></td>
-              <td><span className="table-status"><span />{experiment.status}</span></td>
-              <td className="score-cell">{experiment.score}</td>
+          {rows.map((p) => (
+            <tr key={p.id} onClick={() => onSelect(p.id)} style={{ cursor: "pointer", opacity: selectedId && selectedId !== p.id ? 0.7 : 1 }}>
+              <td><strong>{p.name}</strong><small>{p.id} · {p.model}</small></td>
+              <td><span className={`arm-pill ${p.mode === "paper" ? "targeted" : "control"}`}>{p.mode}</span></td>
+              <td><span className="table-status"><span />{p.status}</span></td>
+              <td className="score-cell">{pct(p.progress.fraction, 0)}</td>
             </tr>
           ))}
         </tbody>
