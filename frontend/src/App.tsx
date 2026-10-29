@@ -22,6 +22,11 @@ const ARM_ICON: Record<string, string> = { targeted: "✦", matched_control: "�
 const ARM_PILL: Record<string, string> = {
   targeted: "targeted", matched_control: "control", untargeted: "untargeted", real_only: "untargeted",
 };
+const BENCH_LABEL: Record<string, string> = {
+  gsm8k: "GSM8K", "gsm_symbolic:main": "GSM-Symbolic",
+  probes_train_families: "Probes · train", probes_heldout_families: "Probes · held-out",
+};
+const benchLabel = (b: string) => BENCH_LABEL[b] ?? b.replace(/_/g, " ");
 const pct = (x: number | null | undefined, d = 1) => (x == null ? "—" : `${(x * 100).toFixed(d)}%`);
 const signed = (x: number) => `${x >= 0 ? "+" : ""}${(x * 100).toFixed(1)} pts`;
 const errText = (e: unknown) => (e instanceof Error ? e.message : String(e));
@@ -559,8 +564,6 @@ function PipelinePanel({ pipeline, onChanged, onError }: {
   );
 }
 
-const WEAKNESS_COLORS = ["orange", "green", "red", "purple"];
-
 function DiagnosisTab({ pipeline, onBuild }: { pipeline: Pipeline | null; onBuild: (f: Feature) => void }) {
   const ready = !!pipeline?.steps.some((s) => s.stage === "diagnose" && (s.status === "done" || s.status === "skipped"));
   const id = pipeline?.id;
@@ -569,6 +572,7 @@ function DiagnosisTab({ pipeline, onBuild }: { pipeline: Pipeline | null; onBuil
   const [sel, setSel] = useState<Feature | null>(null);
   const ws = diag.data?.weaknesses ?? [];
   const cur = ws.find((w) => w.feature === sel) ?? ws[0];
+  const maxEffect = Math.max(0.001, ...ws.map((w) => Math.abs(w.effect)));
 
   return (
     <>
@@ -590,22 +594,32 @@ function DiagnosisTab({ pipeline, onBuild }: { pipeline: Pipeline | null; onBuil
               {base.data && " Baseline: " + base.data.benchmarks.map((b) => `${b.name} ${pct(b.accuracy)}`).join(", ") + "."}
             </p>
 
-            {ws.map((w, i) => (
-              <button
-                key={w.feature}
-                className={`weakness-item ${cur?.feature === w.feature ? "selected" : ""}`}
-                onClick={() => setSel(w.feature)}
-              >
-                <span className={`weakness-number ${WEAKNESS_COLORS[i % WEAKNESS_COLORS.length]}`}>
-                  {String(w.rank).padStart(2, "0")}
-                </span>
-                <span className="weakness-copy">
-                  <strong>{w.label}</strong>
-                  <small>{w.significant ? "SIGNIFICANT" : "NOT SIGNIFICANT"} · EFFECT {w.effect.toFixed(2)}</small>
-                </span>
-                <span className="weakness-arrow">↗</span>
-              </button>
-            ))}
+            {ws.map((w) => {
+              const isTarget = diag.data?.target?.feature === w.feature;
+              return (
+                <button
+                  key={w.feature}
+                  className={`weakness-item ${cur?.feature === w.feature ? "selected" : ""} ${w.significant ? "is-significant" : ""}`}
+                  onClick={() => setSel(w.feature)}
+                >
+                  <span className="weakness-number">{String(w.rank).padStart(2, "0")}</span>
+                  <span className="weakness-copy">
+                    <span className="weakness-head">
+                      <strong>{w.label}</strong>
+                      {isTarget && <span className="weakness-chip target">TARGET</span>}
+                      <span className={`weakness-chip ${w.significant ? "sig" : "nosig"}`}>
+                        {w.significant ? "SIGNIFICANT" : "NOT SIGNIFICANT"}
+                      </span>
+                    </span>
+                    <span className="effect-track">
+                      <span className="effect-fill" style={{ width: `${Math.max(3, (Math.abs(w.effect) / maxEffect) * 100)}%` }} />
+                    </span>
+                    <small>Effect {w.effect.toFixed(2)} · η {w.eta.toFixed(2)}</small>
+                  </span>
+                  <span className="weakness-arrow">↗</span>
+                </button>
+              );
+            })}
           </div>
 
           {cur && (
@@ -708,15 +722,23 @@ function ResultsTab({ pipeline, list, onSelect, showNotes, toggleNotes, onNew }:
               </div>
 
               <div className="bar-chart">
-                {benchNames.map((b) => (
-                  <div className="bar-group" key={b}>
-                    <div className="bar-pair">
-                      <div className="bar targeted-bar" style={{ height: `${(targeted?.benchmarks[b]?.accuracy_mean ?? 0) * 100}%` }} />
-                      <div className="bar control-bar" style={{ height: `${(control?.benchmarks[b]?.accuracy_mean ?? 0) * 100}%` }} />
+                {benchNames.map((b) => {
+                  const t = targeted?.benchmarks[b]?.accuracy_mean;
+                  const c = control?.benchmarks[b]?.accuracy_mean;
+                  return (
+                    <div className="bar-group" key={b} title={b}>
+                      <div className="bar-values">
+                        <span className="targeted-value">{pct(t, 0)}</span>
+                        <span className="control-value">{pct(c, 0)}</span>
+                      </div>
+                      <div className="bar-pair">
+                        <div className="bar targeted-bar" style={{ ["--bar-height" as string]: `${(t ?? 0) * 100}%` }} />
+                        <div className="bar control-bar" style={{ ["--bar-height" as string]: `${(c ?? 0) * 100}%` }} />
+                      </div>
+                      <span className="bar-label">{benchLabel(b)}</span>
                     </div>
-                    <span>{b}</span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
               <div className="chart-axis-label">ACCURACY BY BENCHMARK</div>
             </div>

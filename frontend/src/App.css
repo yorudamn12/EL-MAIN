@@ -2724,3 +2724,124 @@ body {
   flex-direction: column;
   gap: 17px;
 }
+
+/* =========================================
+   Results chart: live-data labels
+   ========================================= */
+
+.bar-chart .bar-label {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.3;
+  min-height: 2.6em;
+  padding-inline: 2px;
+  font-size: 11px;
+}
+
+.bar-chart .bar-values {
+  flex-wrap: nowrap !important;
+}
+
+/* =========================================
+   Diagnosis: weakness ranking
+   ========================================= */
+
+.weakness-panel .weakness-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  margin: 0 0 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.weakness-panel .weakness-item:last-child {
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.weakness-panel .weakness-item:hover {
+  transform: translateY(-1px);
+  border-color: #E1B9C4;
+  box-shadow: 0 6px 18px rgba(133, 46, 71, .08);
+}
+
+.weakness-panel .weakness-item.selected {
+  margin-inline: 0;
+  padding-inline: 16px;
+  border-color: var(--dm-ruby, #852e47);
+  background: #FBF3F5;
+  box-shadow: inset 3px 0 0 var(--dm-ruby, #852e47), 0 6px 18px rgba(133, 46, 71, .08);
+}
+
+.weakness-panel .weakness-number {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--muted);
+  background: #F1EBE2;
+}
+
+.weakness-panel .weakness-item.is-significant .weakness-number {
+  color: #fff;
+  background: linear-gradient(135deg, #A84B66, #852E47);
+}
+
+.weakness-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+}
+
+.weakness-head strong {
+  font-size: 13px;
+}
+
+.weakness-chip {
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: .06em;
+}
+
+.weakness-chip.sig { color: #4a5a30; background: #E8EEDA; }
+.weakness-chip.nosig { color: var(--muted); background: #F1EBE2; }
+.weakness-chip.target { color: #fff; background: #852E47; }
+
+.effect-track {
+  display: block;
+  height: 6px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #F1EBE2;
+}
+
+.effect-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: #C9BBAA;
+  transition: width 600ms cubic-bezier(.2, .8, .2, 1);
+}
+
+.weakness-item.is-significant .effect-fill {
+  background: linear-gradient(90deg, #852E47, #D28A9A);
+}
+
+.weakness-panel .weakness-copy small {
+  margin-top: 8px;
+  font-family: var(--mono);
+  letter-spacing: .03em;
+}
