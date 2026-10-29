@@ -86,7 +86,7 @@ function App() {
               }}
             >
               <span className="nav-icon">
-                {["Γùê", "ΓùÄ", "Γîÿ", "Γåù"][index]}
+                {["◉", "✦", "⌘", "↗"][index]}
               </span>
               <span>{tab}</span>
               {activeTab === tab && <span className="nav-indicator" />}
@@ -109,7 +109,7 @@ function App() {
               <div className="profile-name">Researcher</div>
               <div className="profile-role">Personal workspace</div>
             </div>
-            <span className="profile-menu">┬╖┬╖┬╖</span>
+            <span className="profile-menu">···</span>
           </div>
         </div>
       </aside>
@@ -138,8 +138,8 @@ function App() {
         <div className="page-content">
           {notice && (
             <div className="notice">
-              <span>Γ£│</span> {notice}
-              <button onClick={() => setNotice("")}>├ù</button>
+              <span>✳</span> {notice}
+              <button onClick={() => setNotice("")}>×</button>
             </div>
           )}
 
@@ -173,7 +173,7 @@ function App() {
                     into a measurable experiment.
                   </p>
                   <button className="primary-button" onClick={openExperiment}>
-                    Design an experiment <span>Γåù</span>
+                    Design an experiment <span>↗</span>
                   </button>
                   <div className="hero-footnote">
                     <span className="status-dot" /> READY FOR EXPLORATION
@@ -192,7 +192,7 @@ function App() {
                   <span className="orbit-particle particle-three" />
                   <span className="orbit-particle particle-four" />
                   <div className="orbit-label label-top">LEARNING</div>
-                  <div className="orbit-label label-bottom">NEURAL SYSTEMS ┬╖ 01</div>
+                  <div className="orbit-label label-bottom">NEURAL SYSTEMS · 01</div>
                 </div>
               </section>
 
@@ -201,7 +201,7 @@ function App() {
                   <div className="eyebrow">AT A GLANCE</div>
                   <h2>Research pulse</h2>
                 </div>
-                <span className="section-meta">DEMO DATA ┬╖ 01</span>
+                <span className="section-meta">DEMO DATA · 01</span>
               </section>
 
               <section className="metrics-grid">
@@ -209,21 +209,21 @@ function App() {
                   label="Experiments"
                   value={String(experiments.length).padStart(2, "0")}
                   detail="Recorded in this session"
-                  icon="ΓùÄ"
+                  icon="✦"
                   color="orange"
                 />
                 <MetricCard
                   label="Best accuracy"
                   value="89.6%"
                   detail="Highest recorded demo score"
-                  icon="Γåù"
+                  icon="↗"
                   color="green"
                 />
                 <MetricCard
                   label="Model status"
                   value="Ready"
                   detail="Local simulation available"
-                  icon="Γùê"
+                  icon="◉"
                   color="red"
                 />
               </section>
@@ -236,22 +236,22 @@ function App() {
                       <h3>Recent experiments</h3>
                     </div>
                     <button className="text-button" onClick={() => setActiveTab("Experiments")}>
-                      View all Γåù
+                      View all ↗
                     </button>
                   </div>
                   <ExperimentTable experiments={experiments.slice(0, 3)} />
                 </div>
 
                 <div className="panel insight-panel">
-                  <div className="insight-icon">Γ£│</div>
-                  <div className="eyebrow">RESEARCH NOTE ┬╖ 001</div>
+                  <div className="insight-icon">✳</div>
+                  <div className="eyebrow">RESEARCH NOTE · 001</div>
                   <h3>Curiosity is a method.</h3>
                   <p>
                     A useful experiment doesn't just improve a score.
                     It tells you why a model behaves the way it does.
                   </p>
                   <button className="text-button" onClick={() => setActiveTab("Diagnosis")}>
-                    Investigate weaknesses Γåù
+                    Investigate weaknesses ↗
                   </button>
                 </div>
               </section>
@@ -279,9 +279,9 @@ function App() {
                   <label className="field-label">TRAINING ARM</label>
                   <div className="arm-options">
                     {[
-                      { name: "Targeted", description: "Focus on a selected weakness", icon: "ΓùÄ" },
-                      { name: "Control", description: "Maintain baseline conditions", icon: "Γùê" },
-                      { name: "Untargeted", description: "Train without a specific target", icon: "Γ£│" },
+                      { name: "Targeted", description: "Focus on a selected weakness", icon: "✦" },
+                      { name: "Control", description: "Maintain baseline conditions", icon: "◉" },
+                      { name: "Untargeted", description: "Train without a specific target", icon: "✳" },
                     ].map((arm) => (
                       <button
                         key={arm.name}
@@ -294,7 +294,7 @@ function App() {
                           <small>{arm.description}</small>
                         </span>
                         <span className="arm-check">
-                          {activeArm === arm.name ? "ΓùÅ" : "Γùï"}
+                          {activeArm === arm.name ? "✓" : "○"}
                         </span>
                       </button>
                     ))}
@@ -331,9 +331,9 @@ function App() {
                     value={learningRate}
                     onChange={(event) => setLearningRate(event.target.value)}
                   >
-                    <option value="0.0001">0.0001 ΓÇö Conservative</option>
-                    <option value="0.001">0.001 ΓÇö Balanced</option>
-                    <option value="0.01">0.01 ΓÇö Aggressive</option>
+                    <option value="0.0001">0.0001 — Conservative</option>
+                    <option value="0.001">0.001 — Balanced</option>
+                    <option value="0.01">0.01 — Aggressive</option>
                   </select>
 
                   <div className="config-summary">
@@ -345,7 +345,7 @@ function App() {
 
                   <button className="primary-button launch-button" onClick={launchExperiment} disabled={running}>
                     {running ? "Running simulation..." : "Launch demo experiment"}
-                    <span>{running ? "Γùî" : "Γåù"}</span>
+                    <span>{running ? "↻" : "↗"}</span>
                   </button>
                   <p className="disclaimer">
                     Local simulation only. This does not train a real model.
@@ -377,7 +377,7 @@ function App() {
                   </div>
 
                   <div className="panel principle-panel">
-                    <span className="principle-star">Γ£│</span>
+                    <span className="principle-star">✳</span>
                     <div className="eyebrow">EXPERIMENTAL PRINCIPLE</div>
                     <h3>Change one variable at a time.</h3>
                     <p>Clear comparisons make results easier to interpret.</p>
@@ -427,7 +427,7 @@ function App() {
                         <strong>{item.name}</strong>
                         <small>{item.tag}</small>
                       </span>
-                      <span className="weakness-arrow">Γåù</span>
+                      <span className="weakness-arrow">↗</span>
                     </button>
                   ))}
                 </div>
@@ -439,7 +439,7 @@ function App() {
                       "Pattern recognition", "Generalization", "Training stability", "Data sensitivity"
                     ].indexOf(selectedWeakness)]}</span>
                   </div>
-                  <div className="diagnosis-symbol">Γîÿ</div>
+                  <div className="diagnosis-symbol">⌘</div>
                   <h2>{selectedWeakness}</h2>
                   <p className="diagnosis-description">
                     {selectedWeakness === "Pattern recognition"
@@ -467,14 +467,14 @@ function App() {
                   </p>
 
                   <button className="primary-button" onClick={openExperiment}>
-                    Build an experiment <span>Γåù</span>
+                    Build an experiment <span>↗</span>
                   </button>
                 </div>
               </section>
 
               <div className="note-strip">
-                <span>Γ£│</span>
-                <p><strong>Research reminder</strong> ΓÇö a suspected weakness needs evidence. Compare outcomes before drawing conclusions.</p>
+                <span>✳</span>
+                <p><strong>Research reminder</strong> — a suspected weakness needs evidence. Compare outcomes before drawing conclusions.</p>
               </div>
             </>
           )}
@@ -488,9 +488,9 @@ function App() {
               />
 
               <section className="metrics-grid results-metrics">
-                <MetricCard label="Baseline accuracy" value="84.2%" detail="Illustrative reference score" icon="Γùê" color="red" />
-                <MetricCard label="Targeted accuracy" value="89.6%" detail="+5.4 percentage points" icon="Γåù" color="green" />
-                <MetricCard label="Control accuracy" value="84.2%" detail="Reference condition" icon="ΓùÄ" color="orange" />
+                <MetricCard label="Baseline accuracy" value="84.2%" detail="Illustrative reference score" icon="◉" color="red" />
+                <MetricCard label="Targeted accuracy" value="89.6%" detail="+5.4 percentage points" icon="↗" color="green" />
+                <MetricCard label="Control accuracy" value="84.2%" detail="Reference condition" icon="✦" color="orange" />
               </section>
 
               <section className="results-layout">
@@ -541,7 +541,7 @@ function App() {
                     <div><strong>Evidence still matters</strong><p>Real conclusions require actual evaluation data.</p></div>
                   </div>
                   <button className="secondary-button" onClick={() => setShowNotes((value) => !value)}>
-                    {showNotes ? "Hide research notes" : "Read research notes"} <span>Γåù</span>
+                    {showNotes ? "Hide research notes" : "Read research notes"} <span>↗</span>
                   </button>
                 </div>
               </section>
@@ -561,7 +561,7 @@ function App() {
               <section className="panel table-panel">
                 <div className="panel-heading">
                   <div><div className="eyebrow">RECORDED RUNS</div><h3>Evaluation history</h3></div>
-                  <button className="text-button" onClick={() => setActiveTab("Experiments")}>New experiment Γåù</button>
+                  <button className="text-button" onClick={() => setActiveTab("Experiments")}>New experiment ↗</button>
                 </div>
                 <ExperimentTable experiments={experiments} />
               </section>
@@ -571,7 +571,7 @@ function App() {
 
         <footer className="footer">
           <span>DreamMachine <span className="footer-separator">/</span> Research Lab</span>
-          <span>CONTRACT V0.2.1 <span className="footer-separator">┬╖</span> MOCK ENVIRONMENT</span>
+          <span>CONTRACT V0.2.1 <span className="footer-separator">·</span> MOCK ENVIRONMENT</span>
         </footer>
       </main>
     </div>
