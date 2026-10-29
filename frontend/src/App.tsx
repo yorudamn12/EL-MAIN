@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import { RUN_NOTES, type ArmNote } from "./runNotes";
+import PipelineDiagram from "./PipelineDiagram";
 import {
   api, USE_MOCK,
   type Arm, type Baseline, type Diagnosis, type Feature, type Health, type Meta, type Model,
@@ -315,6 +316,8 @@ function App() {
                 title={<>Design the <em>unknown.</em></>}
                 description="Start a real explore pipeline: baseline, diagnosis, targeted data, QLoRA training and re-test. Explore runs are not paper evidence."
               />
+
+              <PipelineDiagram pipeline={pipeline} />
 
               <section className="experiment-layout">
                 <NewExperiment
