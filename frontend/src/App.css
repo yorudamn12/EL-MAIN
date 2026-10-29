@@ -2548,3 +2548,173 @@ body {
     position: absolute;
   }
 }
+
+
+/* =========================================
+   DREAMMACHINE — RESULTS CHART REFINEMENT
+   ========================================= */
+
+.bar-chart {
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: space-around !important;
+  gap: 14px;
+  width: 100%;
+  min-height: 300px;
+  padding: 18px 12px 8px;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--line, #e9e0d3);
+}
+
+.bar-chart .bar-group {
+  display: flex !important;
+  flex: 1 1 0;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  min-width: 0;
+  gap: 12px;
+}
+
+.bar-chart .bar-values {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  flex-wrap: wrap;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.bar-chart .targeted-value {
+  color: #852e47;
+}
+
+.bar-chart .control-value {
+  color: #4a5a30;
+}
+
+.bar-chart .bar-pair {
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+  gap: 7px;
+  width: 100%;
+  height: 220px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  border-radius: 8px 8px 0 0;
+  background-image: repeating-linear-gradient(
+    to top,
+    transparent 0,
+    transparent 43px,
+    rgba(133, 46, 71, 0.09) 44px,
+    transparent 45px
+  );
+}
+
+.bar-chart .bar {
+  display: block !important;
+  flex: 0 1 30px;
+  width: 30px;
+  min-width: 8px;
+  max-width: 34px;
+  height: var(--bar-height, 50%);
+  min-height: 4px;
+  border-radius: 7px 7px 2px 2px;
+  position: relative;
+  transition:
+    height 700ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 200ms ease,
+    transform 200ms ease;
+  animation: result-bar-enter 800ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transform-origin: bottom;
+}
+
+.bar-chart .targeted-bar {
+  background: linear-gradient(180deg, #a84b66 0%, #852e47 100%);
+  box-shadow: 0 4px 12px rgba(133, 46, 71, 0.16);
+}
+
+.bar-chart .control-bar {
+  background: linear-gradient(180deg, #7d8d58 0%, #4a5a30 100%);
+  box-shadow: 0 4px 12px rgba(74, 90, 48, 0.14);
+  animation-delay: 100ms;
+}
+
+.bar-chart .bar:hover {
+  filter: brightness(1.12);
+  transform: scaleX(1.08);
+}
+
+.bar-chart .bar-label {
+  display: block;
+  width: 100%;
+  text-align: center;
+  color: var(--ink, #342b25);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  padding-bottom: 5px;
+}
+
+.chart-axis-label {
+  margin-top: 14px;
+  text-align: center;
+  color: var(--muted, #93877a);
+  font-family: var(--mono, monospace);
+  font-size: 10px;
+  line-height: 1.7;
+  letter-spacing: 0.08em;
+}
+
+/* Keep the chart readable on smaller screens */
+
+@media (max-width: 700px) {
+  .bar-chart {
+    gap: 5px;
+    padding: 16px 2px 8px;
+    min-height: 250px;
+  }
+
+  .bar-chart .bar-pair {
+    height: 175px;
+    gap: 4px;
+    padding: 0 2px;
+  }
+
+  .bar-chart .bar-values {
+    flex-direction: column;
+    gap: 3px;
+    font-size: 10px;
+  }
+
+  .bar-chart .bar {
+    max-width: 24px;
+  }
+
+  .bar-chart .bar-label {
+    font-size: 10px;
+  }
+}
+
+@keyframes result-bar-enter {
+  from {
+    transform: scaleY(0.05);
+    opacity: 0.35;
+  }
+
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar-chart .bar {
+    animation: none;
+    transition: none;
+  }
+}
