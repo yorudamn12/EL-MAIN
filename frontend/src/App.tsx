@@ -7,9 +7,20 @@ import {
 } from "./api";
 
 type Tab = "Overview" | "Experiments" | "Diagnosis" | "Results";
-const tabs: Tab[] = ["Overview", "Experiments", "Diagnosis", "Results"];
+
+const tabs: Tab[] = [
+  "Overview",
+  "Experiments",
+  "Diagnosis",
+  "Results",
+];
+
 const ARM_LABEL: Record<string, string> = {
   real_only: "Real only", untargeted: "Untargeted", matched_control: "Matched control", targeted: "Targeted",
+};
+const ARM_ICON: Record<string, string> = { targeted: "✦", matched_control: "◉", untargeted: "✳", real_only: "○" };
+const ARM_PILL: Record<string, string> = {
+  targeted: "targeted", matched_control: "control", untargeted: "untargeted", real_only: "untargeted",
 };
 const pct = (x: number | null | undefined, d = 1) => (x == null ? "—" : `${(x * 100).toFixed(d)}%`);
 const signed = (x: number) => `${x >= 0 ? "+" : ""}${(x * 100).toFixed(1)} pts`;
@@ -29,6 +40,7 @@ function useAsync<T>(fn: (() => Promise<T>) | null, deps: unknown[]) {
 
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>("Overview");
+  const [showNotes, setShowNotes] = useState(false);
   const [notice, setNotice] = useState("");
   const [health, setHealth] = useState<Health | null>(null);
   const [system, setSystem] = useState<System | null>(null);
@@ -54,7 +66,7 @@ function App() {
     return () => window.clearInterval(t);
   }, [refresh]);
 
-  // default selection: newest pipeline
+  // default selection: newest finished pipeline, else newest
   useEffect(() => {
     if (!selectedId && list.length) setSelectedId((list.find((p) => p.status === "done") ?? list[0]).id);
   }, [list, selectedId]);
@@ -73,6 +85,11 @@ function App() {
   function select(id: string, tab?: Tab) {
     setSelectedId(id);
     if (tab) setActiveTab(tab);
+  }
+
+  function openExperiment() {
+    setActiveTab("Experiments");
+    setNotice("Configure your next experiment below.");
   }
 
   const doneCount = list.filter((p) => p.status === "done").length;
@@ -146,6 +163,13 @@ function App() {
               <span className="status-dot" />{" "}
               {USE_MOCK ? "MOCK DATA" : offline ? "BACKEND OFFLINE" : `LIVE · API ${health?.api_version ?? ""}`}
             </span>
+            <button
+              className="icon-button"
+              title="Show research notes"
+              onClick={() => setShowNotes((value) => !value)}
+            >
+              ?
+            </button>
           </div>
         </header>
 
@@ -189,7 +213,7 @@ function App() {
                     understand what fails, and turn your next hypothesis
                     into a measurable experiment.
                   </p>
-                  <button className="primary-button" onClick={() => setActiveTab("Experiments")}>
+                  <button className="primary-button" onClick={openExperiment}>
                     Design an experiment <span>↗</span>
                   </button>
                   <div className="hero-footnote">
@@ -213,7 +237,6 @@ function App() {
                 </div>
               </section>
 
-              
               <section className="section-heading">
                 <div>
                   <div className="eyebrow">AT A GLANCE</div>
@@ -223,12 +246,27 @@ function App() {
               </section>
 
               <section className="metrics-grid">
-                <MetricCard label="Experiments" value={String(list.length).padStart(2, "0")}
-                  detail={`${doneCount} finished`} icon="✦" color="orange" />
-                <MetricCard label="GPU" value={system?.gpu.available ? "Ready" : "None"}
-                  detail={system?.gpu.name ?? "No CUDA device reported"} icon="↗" color="green" />
-                <MetricCard label="Worker" value={offline ? "Offline" : system?.worker.alive ? "Alive" : "Stopped"}
-                  detail={system?.worker.current_step ?? workerLabel} icon="◉" color="red" />
+                <MetricCard
+                  label="Experiments"
+                  value={String(list.length).padStart(2, "0")}
+                  detail={`${doneCount} finished`}
+                  icon="✦"
+                  color="orange"
+                />
+                <MetricCard
+                  label="GPU"
+                  value={system?.gpu.available ? "Ready" : "None"}
+                  detail={system?.gpu.name ?? "No CUDA device reported"}
+                  icon="↗"
+                  color="green"
+                />
+                <MetricCard
+                  label="Worker"
+                  value={offline ? "Offline" : system?.worker.alive ? "Alive" : "Stopped"}
+                  detail={system?.worker.current_step ?? workerLabel}
+                  icon="◉"
+                  color="red"
+                />
               </section>
 
               <section className="bottom-grid">
@@ -238,7 +276,9 @@ function App() {
                       <div className="eyebrow">LATEST ACTIVITY</div>
                       <h3>Recent experiments</h3>
                     </div>
-                    <button className="text-button" onClick={() => setActiveTab("Experiments")}>View all ↗</button>
+                    <button className="text-button" onClick={() => setActiveTab("Experiments")}>
+                      View all ↗
+                    </button>
                   </div>
                   <ExperimentTable rows={list.slice(0, 3)} onSelect={(id) => select(id, "Results")} />
                 </div>
@@ -246,10 +286,10 @@ function App() {
                 <div className="panel insight-panel">
                   <div className="insight-icon">✳</div>
                   <div className="eyebrow">RESEARCH NOTE · 001</div>
-                  <h3>Targeting vs difficulty.</h3>
+                  <h3>Curiosity is a method.</h3>
                   <p>
-                    The matched control is as hard as the targeted set but hard for a different reason.
-                    A real effect must beat it, not just the baseline.
+                    A useful experiment doesn't just improve a score.
+                    It tells you why a model behaves the way it does.
                   </p>
                   <button className="text-button" onClick={() => setActiveTab("Diagnosis")}>
                     Investigate weaknesses ↗
@@ -266,6 +306,7 @@ function App() {
                 title={<>Design the <em>unknown.</em></>}
                 description="Start a real explore pipeline: baseline, diagnosis, targeted data, QLoRA training and re-test. Explore runs are not paper evidence."
               />
+
               <section className="experiment-layout">
                 <NewExperiment
                   models={models.data ?? []} presets={presets.data} meta={meta.data}
@@ -273,10 +314,19 @@ function App() {
                   onCreated={(p) => { setNotice(`Queued ${p.name}.`); select(p.id); void refresh(); }}
                   onError={setNotice}
                 />
+
                 <div className="experiment-side">
                   <PipelinePanel pipeline={pipeline} onChanged={(p) => { setPipeline(p); void refresh(); }} onError={setNotice} />
+
+                  <div className="panel principle-panel">
+                    <span className="principle-star">✳</span>
+                    <div className="eyebrow">EXPERIMENTAL PRINCIPLE</div>
+                    <h3>Change one variable at a time.</h3>
+                    <p>Clear comparisons make results easier to interpret.</p>
+                  </div>
                 </div>
               </section>
+
               <section className="panel table-panel">
                 <div className="panel-heading">
                   <div><div className="eyebrow">HISTORY</div><h3>Experiment log</h3></div>
@@ -288,10 +338,16 @@ function App() {
           )}
 
           {activeTab === "Diagnosis" && (
-            <DiagnosisTab pipeline={pipeline} onBuild={(f) => { setTargetFeature(f); setActiveTab("Experiments"); }} />
+            <DiagnosisTab pipeline={pipeline} onBuild={(f) => { setTargetFeature(f); openExperiment(); }} />
           )}
 
-          {activeTab === "Results" && <ResultsTab pipeline={pipeline} list={list} onSelect={select} />}
+          {activeTab === "Results" && (
+            <ResultsTab
+              pipeline={pipeline} list={list} onSelect={select}
+              showNotes={showNotes} toggleNotes={() => setShowNotes((v) => !v)}
+              onNew={() => setActiveTab("Experiments")}
+            />
+          )}
         </div>
 
         <footer className="footer">
@@ -331,6 +387,9 @@ function NewExperiment({ models, presets, meta, presetFeature, disabled, onCreat
   const toggle = <T,>(xs: T[], x: T) => (xs.includes(x) ? xs.filter((y) => y !== x) : [...xs, x]);
   const armChoices: Arm[] = strategy === "untargeted" ? ["untargeted", "real_only"] : ["targeted", "matched_control", "untargeted", "real_only"];
   const shownArms = curArms.filter((a) => armChoices.includes(a));
+  const targetText = strategy === "feature"
+    ? meta?.features.find((f) => f.name === feature)?.label ?? "choose a feature"
+    : strategy === "auto" ? "Auto (worst weakness)" : "Untargeted";
 
   async function launch() {
     setBusy(true);
@@ -350,7 +409,10 @@ function NewExperiment({ models, presets, meta, presetFeature, disabled, onCreat
   return (
     <div className="panel experiment-config">
       <div className="panel-heading">
-        <div><div className="eyebrow">CONFIGURATION</div><h3>New experiment</h3></div>
+        <div>
+          <div className="eyebrow">CONFIGURATION</div>
+          <h3>New experiment</h3>
+        </div>
         <span className="config-number">01</span>
       </div>
 
@@ -379,10 +441,16 @@ function NewExperiment({ models, presets, meta, presetFeature, disabled, onCreat
       <label className="field-label">TRAINING ARMS</label>
       <div className="arm-options">
         {armChoices.map((a) => (
-          <button key={a} className={`arm-option ${shownArms.includes(a) ? "selected" : ""}`}
-            onClick={() => setArms(toggle(shownArms, a))}>
-            <span className="arm-text"><strong>{ARM_LABEL[a]}</strong>
-              <small>{meta?.arms.find((x) => x.name === a)?.description ?? ""}</small></span>
+          <button
+            key={a}
+            className={`arm-option ${shownArms.includes(a) ? "selected" : ""}`}
+            onClick={() => setArms(toggle(shownArms, a))}
+          >
+            <span className="arm-icon">{ARM_ICON[a]}</span>
+            <span className="arm-text">
+              <strong>{ARM_LABEL[a]}</strong>
+              <small>{meta?.arms.find((x) => x.name === a)?.description ?? ""}</small>
+            </span>
             <span className="arm-check">{shownArms.includes(a) ? "✓" : "○"}</span>
           </button>
         ))}
@@ -396,8 +464,11 @@ function NewExperiment({ models, presets, meta, presetFeature, disabled, onCreat
       <label className="field-label">SEEDS</label>
       <div className="arm-options">
         {(allowed?.seeds ?? [0, 1, 2]).map((s) => (
-          <button key={s} className={`arm-option ${curSeeds.includes(s) ? "selected" : ""}`}
-            onClick={() => { const n = toggle(curSeeds, s); if (n.length) setSeeds(n); }}>
+          <button
+            key={s}
+            className={`arm-option ${curSeeds.includes(s) ? "selected" : ""}`}
+            onClick={() => { const n = toggle(curSeeds, s); if (n.length) setSeeds(n); }}
+          >
             <span className="arm-text"><strong>Seed {s}</strong></span>
             <span className="arm-check">{curSeeds.includes(s) ? "✓" : "○"}</span>
           </button>
@@ -405,12 +476,25 @@ function NewExperiment({ models, presets, meta, presetFeature, disabled, onCreat
       </div>
 
       <label className="field-label" htmlFor="limit">BENCHMARK ITEMS (EMPTY = FULL SETS)</label>
-      <input id="limit" className="select-input" type="number" min={allowed?.min_benchmark_limit ?? 10}
-        value={curLimit ?? ""} onChange={(e) => setLimit(e.target.value === "" ? null : Number(e.target.value))} />
+      <input
+        id="limit" className="select-input" type="number" min={allowed?.min_benchmark_limit ?? 10}
+        value={curLimit ?? ""} onChange={(e) => setLimit(e.target.value === "" ? null : Number(e.target.value))}
+      />
 
-      <button className="primary-button launch-button" onClick={() => void launch()}
-        disabled={busy || disabled || !curModel || !shownArms.length}>
-        {busy ? "Submitting..." : "Launch experiment"}<span>{busy ? "↻" : "↗"}</span>
+      <div className="config-summary">
+        <span>Configuration summary</span>
+        <div><span>Target</span><strong>{targetText}</strong></div>
+        <div><span>Arms</span><strong>{shownArms.length}</strong></div>
+        <div><span>Ratio</span><strong>{curRatio}:1</strong></div>
+        <div><span>Seeds</span><strong>{curSeeds.join(", ")}</strong></div>
+      </div>
+
+      <button
+        className="primary-button launch-button" onClick={() => void launch()}
+        disabled={busy || disabled || !curModel || !shownArms.length}
+      >
+        {busy ? "Submitting..." : "Launch experiment"}
+        <span>{busy ? "↻" : "↗"}</span>
       </button>
       <p className="disclaimer">Real run on the local GPU worker. Takes from minutes to hours.</p>
     </div>
@@ -420,12 +504,32 @@ function NewExperiment({ models, presets, meta, presetFeature, disabled, onCreat
 function PipelinePanel({ pipeline, onChanged, onError }: {
   pipeline: Pipeline | null; onChanged: (p: Pipeline) => void; onError: (m: string) => void;
 }) {
-  if (!pipeline) return <div className="panel preview-panel"><div className="eyebrow">PROGRESS</div><h3>No experiment selected</h3></div>;
+  const visual = (
+    <div className="preview-visual">
+      <div className="preview-ring ring-a" />
+      <div className="preview-ring ring-b" />
+      <div className="preview-center">D</div>
+      <span className="preview-node node-a" />
+      <span className="preview-node node-b" />
+      <span className="preview-node node-c" />
+    </div>
+  );
+  if (!pipeline) {
+    return (
+      <div className="panel preview-panel">
+        <div className="eyebrow">EXPERIMENT PROGRESS</div>
+        {visual}
+        <h3>No experiment selected</h3>
+        <p>Launch an experiment, or pick one from the log below.</p>
+      </div>
+    );
+  }
   const act = (fn: (id: string) => Promise<Pipeline>) => fn(pipeline.id).then(onChanged, (e) => onError(errText(e)));
   const running = pipeline.status === "queued" || pipeline.status === "running";
   return (
     <div className="panel preview-panel">
       <div className="eyebrow">PROGRESS · {pipeline.mode.toUpperCase()}</div>
+      {visual}
       <h3>{pipeline.name}</h3>
       <p>
         {pipeline.status.toUpperCase()} · {pipeline.progress.done_steps}/{pipeline.progress.total_steps} steps
@@ -455,6 +559,8 @@ function PipelinePanel({ pipeline, onChanged, onError }: {
   );
 }
 
+const WEAKNESS_COLORS = ["orange", "green", "red", "purple"];
+
 function DiagnosisTab({ pipeline, onBuild }: { pipeline: Pipeline | null; onBuild: (f: Feature) => void }) {
   const ready = !!pipeline?.steps.some((s) => s.stage === "diagnose" && (s.status === "done" || s.status === "skipped"));
   const id = pipeline?.id;
@@ -463,14 +569,17 @@ function DiagnosisTab({ pipeline, onBuild }: { pipeline: Pipeline | null; onBuil
   const [sel, setSel] = useState<Feature | null>(null);
   const ws = diag.data?.weaknesses ?? [];
   const cur = ws.find((w) => w.feature === sel) ?? ws[0];
-  const maxEffect = Math.max(0.001, ...ws.map((w) => Math.abs(w.effect)));
 
   return (
     <>
-      <PageIntro eyebrow="ANALYSIS / 02" title={<>Find the <em>signal.</em></>}
-        description={pipeline ? `Measured weaknesses of ${pipeline.model} from "${pipeline.name}".` : "Select or start an experiment first."} />
+      <PageIntro
+        eyebrow="ANALYSIS / 02"
+        title={<>Find the <em>signal.</em></>}
+        description={pipeline ? `Measured weaknesses of ${pipeline.model} from "${pipeline.name}".` : "Select or start an experiment first."}
+      />
       {!ready && <div className="note-strip"><span>✳</span><p>Diagnosis is not finished for this experiment yet.</p></div>}
       {ready && diag.error && <div className="note-strip"><span>✳</span><p>{diag.error}</p></div>}
+
       {diag.data && (
         <section className="diagnosis-layout">
           <div className="panel weakness-panel">
@@ -480,25 +589,32 @@ function DiagnosisTab({ pipeline, onBuild }: { pipeline: Pipeline | null; onBuil
               Probe accuracy {pct(diag.data.probe_accuracy)}.
               {base.data && " Baseline: " + base.data.benchmarks.map((b) => `${b.name} ${pct(b.accuracy)}`).join(", ") + "."}
             </p>
-            {ws.map((w) => (
-              <button key={w.feature} className={`weakness-item ${cur?.feature === w.feature ? "selected" : ""}`}
-                onClick={() => setSel(w.feature)}>
-                <span className={`weakness-number ${w.significant ? "red" : "orange"}`}>{String(w.rank).padStart(2, "0")}</span>
+
+            {ws.map((w, i) => (
+              <button
+                key={w.feature}
+                className={`weakness-item ${cur?.feature === w.feature ? "selected" : ""}`}
+                onClick={() => setSel(w.feature)}
+              >
+                <span className={`weakness-number ${WEAKNESS_COLORS[i % WEAKNESS_COLORS.length]}`}>
+                  {String(w.rank).padStart(2, "0")}
+                </span>
                 <span className="weakness-copy">
                   <strong>{w.label}</strong>
                   <small>{w.significant ? "SIGNIFICANT" : "NOT SIGNIFICANT"} · EFFECT {w.effect.toFixed(2)}</small>
-                  <span style={{ display: "block", height: 4, borderRadius: 2, background: "currentColor", opacity: 0.35,
-                    width: `${(Math.abs(w.effect) / maxEffect) * 100}%` }} />
                 </span>
                 <span className="weakness-arrow">↗</span>
               </button>
             ))}
           </div>
+
           {cur && (
             <div className="panel diagnosis-detail">
               <div className="detail-topline">
                 <span className="eyebrow">DIAGNOSTIC BRIEF</span>
-                <span className="detail-index">{diag.data.target?.feature === cur.feature ? "CHOSEN TARGET" : `RANK ${cur.rank}`}</span>
+                <span className="detail-index">
+                  {diag.data.target?.feature === cur.feature ? "CHOSEN TARGET" : `RANK ${cur.rank}`}
+                </span>
               </div>
               <div className="diagnosis-symbol">⌘</div>
               <h2>{cur.label}</h2>
@@ -507,7 +623,14 @@ function DiagnosisTab({ pipeline, onBuild }: { pipeline: Pipeline | null; onBuil
                 {cur.ci_low != null && cur.ci_high != null ? ` (95% CI ${cur.ci_low.toFixed(2)} to ${cur.ci_high.toFixed(2)})` : ""}.
                 Each extra unit lowers the log-odds of a correct answer by that much; effect = η × the feature's range.
               </p>
+
               <div className="detail-divider" />
+              <div className="eyebrow">POSSIBLE RESEARCH DIRECTION</div>
+              <h3>Compare targeted and matched-control training</h3>
+              <p className="panel-description">
+                Treat this as a hypothesis to investigate: a real effect must beat the matched control, not just the baseline.
+              </p>
+
               <button className="primary-button" onClick={() => onBuild(cur.feature)}>
                 Build an experiment targeting this <span>↗</span>
               </button>
@@ -515,12 +638,18 @@ function DiagnosisTab({ pipeline, onBuild }: { pipeline: Pipeline | null; onBuil
           )}
         </section>
       )}
+
+      <div className="note-strip">
+        <span>✳</span>
+        <p><strong>Research reminder</strong> — a suspected weakness needs evidence. Compare outcomes before drawing conclusions.</p>
+      </div>
     </>
   );
 }
 
-function ResultsTab({ pipeline, list, onSelect }: {
+function ResultsTab({ pipeline, list, onSelect, showNotes, toggleNotes, onNew }: {
   pipeline: Pipeline | null; list: PipelineSummary[]; onSelect: (id: string) => void;
+  showNotes: boolean; toggleNotes: () => void; onNew: () => void;
 }) {
   const evaluated = !!pipeline?.steps.some((s) => s.stage === "evaluate" && s.status === "done");
   const id = pipeline?.id;
@@ -536,24 +665,34 @@ function ResultsTab({ pipeline, list, onSelect }: {
 
   return (
     <>
-      <PageIntro eyebrow="OBSERVATIONS / 03" title={<>Measure what <em>matters.</em></>}
-        description="Accuracy per arm versus the untrained model, and targeted versus matched control." />
+      <PageIntro
+        eyebrow="OBSERVATIONS / 03"
+        title={<>Measure what <em>matters.</em></>}
+        description="Accuracy per arm versus the untrained model, and targeted versus matched control."
+      />
+
       <div className="panel">
         <label className="field-label" htmlFor="res-pick">EXPERIMENT</label>
         <select id="res-pick" className="select-input" value={id ?? ""} onChange={(e) => onSelect(e.target.value)}>
           {list.map((p) => <option key={p.id} value={p.id}>{p.name} · {p.status}</option>)}
         </select>
       </div>
+
       {!evaluated && <div className="note-strip"><span>✳</span><p>No evaluation has finished for this experiment yet.</p></div>}
       {res.error && <div className="note-strip"><span>✳</span><p>{res.error}</p></div>}
+
       {r && first && (
         <>
           <section className="metrics-grid results-metrics">
             <MetricCard label={`Baseline · ${first}`} value={pct(r.baseline[first].accuracy)} detail={`n = ${r.baseline[first].n}`} icon="◉" color="red" />
-            <MetricCard label="Targeted" value={pct(targeted?.benchmarks[first]?.accuracy_mean)}
-              detail={tgtGain == null ? "not trained" : `${signed(tgtGain)} vs base`} icon="↗" color="green" />
-            <MetricCard label="Matched control" value={pct(control?.benchmarks[first]?.accuracy_mean)}
-              detail={ctlGain == null ? "not trained" : `${signed(ctlGain)} vs base`} icon="✦" color="orange" />
+            <MetricCard
+              label="Targeted" value={pct(targeted?.benchmarks[first]?.accuracy_mean)}
+              detail={tgtGain == null ? "not trained" : `${signed(tgtGain)} vs base`} icon="↗" color="green"
+            />
+            <MetricCard
+              label="Matched control" value={pct(control?.benchmarks[first]?.accuracy_mean)}
+              detail={ctlGain == null ? "not trained" : `${signed(ctlGain)} vs base`} icon="✦" color="orange"
+            />
           </section>
 
           <section className="results-layout">
@@ -562,10 +701,12 @@ function ResultsTab({ pipeline, list, onSelect }: {
                 <div><div className="eyebrow">MODEL EVALUATION</div><h3>Accuracy per benchmark</h3></div>
                 <span className="chart-badge">{r.mode.toUpperCase()}{r.complete ? "" : " · PARTIAL"}</span>
               </div>
+
               <div className="chart-legend">
                 <span><i className="legend-dot targeted" /> Targeted</span>
                 <span><i className="legend-dot control" /> Matched control</span>
               </div>
+
               <div className="bar-chart">
                 {benchNames.map((b) => (
                   <div className="bar-group" key={b}>
@@ -577,6 +718,7 @@ function ResultsTab({ pipeline, list, onSelect }: {
                   </div>
                 ))}
               </div>
+              <div className="chart-axis-label">ACCURACY BY BENCHMARK</div>
             </div>
 
             <div className="panel findings-panel">
@@ -585,24 +727,46 @@ function ResultsTab({ pipeline, list, onSelect }: {
               {r.primary?.results.map((x) => (
                 <div className="finding" key={x.benchmark}>
                   <span className="finding-number">{x.significant ? "✓" : "–"}</span>
-                  <div><strong>{x.benchmark}: {signed(x.mean_diff)}</strong>
-                    <p>95% CI {signed(x.ci_low)} to {signed(x.ci_high)} · {x.significant ? "significant" : "not significant"}</p></div>
+                  <div>
+                    <strong>{x.benchmark}: {signed(x.mean_diff)}</strong>
+                    <p>95% CI {signed(x.ci_low)} to {signed(x.ci_high)} · {x.significant ? "significant" : "not significant"}</p>
+                  </div>
                 </div>
               ))}
               {r.mode !== "paper" && <p className="disclaimer">Explore run — not paper evidence.</p>}
               {r.warnings.map((w) => <p key={w} className="disclaimer">{w}</p>)}
+              <button className="secondary-button" onClick={toggleNotes}>
+                {showNotes ? "Hide research notes" : "Read research notes"} <span>↗</span>
+              </button>
             </div>
           </section>
 
+          {showNotes && (
+            <section className="panel research-notes">
+              <div className="eyebrow">RESEARCH NOTES</div>
+              <h3>Interpret with care.</h3>
+              <p>
+                These are measured accuracies from the selected pipeline. Explore runs are never paper evidence,
+                and a gain only counts if it beats the matched control, which is just as hard but hard for a different reason.
+              </p>
+            </section>
+          )}
+
           <section className="panel table-panel">
-            <div className="panel-heading"><div><div className="eyebrow">VS UNTRAINED MODEL</div><h3>Arms</h3></div></div>
+            <div className="panel-heading">
+              <div><div className="eyebrow">VS UNTRAINED MODEL</div><h3>Arms</h3></div>
+              <button className="text-button" onClick={onNew}>New experiment ↗</button>
+            </div>
             <div className="table-scroll">
               <table className="experiment-table">
                 <thead><tr><th>ARM</th><th>BENCHMARK</th><th>ACCURACY</th><th>CHANGE (95% CI)</th></tr></thead>
                 <tbody>
                   {r.arms.flatMap((a) => Object.entries(a.benchmarks).map(([b, v]) => (
                     <tr key={`${a.arm}${a.ratio}${b}`}>
-                      <td><span className={`arm-pill ${a.arm}`}>{ARM_LABEL[a.arm]}</span><small>ratio {a.ratio} · {a.seeds.length} seed(s)</small></td>
+                      <td>
+                        <span className={`arm-pill ${ARM_PILL[a.arm]}`}>{ARM_LABEL[a.arm]}</span>
+                        <small>ratio {a.ratio} · {a.seeds.length} seed(s)</small>
+                      </td>
                       <td>{b}</td>
                       <td className="score-cell">{pct(v.accuracy_mean)}</td>
                       <td style={v.regression ? { color: "#d33" } : undefined}>
@@ -617,6 +781,39 @@ function ResultsTab({ pipeline, list, onSelect }: {
         </>
       )}
     </>
+  );
+}
+
+function ExperimentTable({ rows, onSelect, selectedId }: {
+  rows: PipelineSummary[]; onSelect: (id: string) => void; selectedId?: string | null;
+}) {
+  if (!rows.length) return <p className="panel-description">No experiments yet.</p>;
+  return (
+    <div className="table-scroll">
+      <table className="experiment-table">
+        <thead>
+          <tr>
+            <th>EXPERIMENT</th>
+            <th>MODE</th>
+            <th>STATUS</th>
+            <th>PROGRESS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((p) => (
+            <tr key={p.id} onClick={() => onSelect(p.id)} style={{ cursor: "pointer", opacity: selectedId && selectedId !== p.id ? 0.7 : 1 }}>
+              <td>
+                <strong>{p.name}</strong>
+                <small>{p.id} · {p.model}</small>
+              </td>
+              <td><span className={`arm-pill ${p.mode === "paper" ? "targeted" : "control"}`}>{p.mode}</span></td>
+              <td><span className="table-status"><span />{p.status}</span></td>
+              <td className="score-cell">{pct(p.progress.fraction, 0)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -659,33 +856,6 @@ function MetricCard({
       </div>
       <div className="metric-value">{value}</div>
       <div className="metric-detail"><span />{detail}</div>
-    </div>
-  );
-}
-
-
-
-function ExperimentTable({ rows, onSelect, selectedId }: {
-  rows: PipelineSummary[]; onSelect: (id: string) => void; selectedId?: string | null;
-}) {
-  if (!rows.length) return <p className="panel-description">No experiments yet.</p>;
-  return (
-    <div className="table-scroll">
-      <table className="experiment-table">
-        <thead>
-          <tr><th>EXPERIMENT</th><th>MODE</th><th>STATUS</th><th>PROGRESS</th></tr>
-        </thead>
-        <tbody>
-          {rows.map((p) => (
-            <tr key={p.id} onClick={() => onSelect(p.id)} style={{ cursor: "pointer", opacity: selectedId && selectedId !== p.id ? 0.7 : 1 }}>
-              <td><strong>{p.name}</strong><small>{p.id} · {p.model}</small></td>
-              <td><span className={`arm-pill ${p.mode === "paper" ? "targeted" : "control"}`}>{p.mode}</span></td>
-              <td><span className="table-status"><span />{p.status}</span></td>
-              <td className="score-cell">{pct(p.progress.fraction, 0)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   );
 }
