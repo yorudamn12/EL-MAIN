@@ -106,7 +106,7 @@ function App() {
               }}
             >
               <span className="nav-icon">
-                {["◈", "◎", "⌘", "↗"][index]}
+                {["◉", "✦", "⌘", "↗"][index]}
               </span>
               <span>{tab}</span>
               {activeTab === tab && <span className="nav-indicator" />}
@@ -224,11 +224,11 @@ function App() {
 
               <section className="metrics-grid">
                 <MetricCard label="Experiments" value={String(list.length).padStart(2, "0")}
-                  detail={`${doneCount} finished`} icon="◎" color="orange" />
+                  detail={`${doneCount} finished`} icon="✦" color="orange" />
                 <MetricCard label="GPU" value={system?.gpu.available ? "Ready" : "None"}
                   detail={system?.gpu.name ?? "No CUDA device reported"} icon="↗" color="green" />
                 <MetricCard label="Worker" value={offline ? "Offline" : system?.worker.alive ? "Alive" : "Stopped"}
-                  detail={system?.worker.current_step ?? workerLabel} icon="◈" color="red" />
+                  detail={system?.worker.current_step ?? workerLabel} icon="◉" color="red" />
               </section>
 
               <section className="bottom-grid">
@@ -383,7 +383,7 @@ function NewExperiment({ models, presets, meta, presetFeature, disabled, onCreat
             onClick={() => setArms(toggle(shownArms, a))}>
             <span className="arm-text"><strong>{ARM_LABEL[a]}</strong>
               <small>{meta?.arms.find((x) => x.name === a)?.description ?? ""}</small></span>
-            <span className="arm-check">{shownArms.includes(a) ? "●" : "○"}</span>
+            <span className="arm-check">{shownArms.includes(a) ? "✓" : "○"}</span>
           </button>
         ))}
       </div>
@@ -399,7 +399,7 @@ function NewExperiment({ models, presets, meta, presetFeature, disabled, onCreat
           <button key={s} className={`arm-option ${curSeeds.includes(s) ? "selected" : ""}`}
             onClick={() => { const n = toggle(curSeeds, s); if (n.length) setSeeds(n); }}>
             <span className="arm-text"><strong>Seed {s}</strong></span>
-            <span className="arm-check">{curSeeds.includes(s) ? "●" : "○"}</span>
+            <span className="arm-check">{curSeeds.includes(s) ? "✓" : "○"}</span>
           </button>
         ))}
       </div>
@@ -410,7 +410,7 @@ function NewExperiment({ models, presets, meta, presetFeature, disabled, onCreat
 
       <button className="primary-button launch-button" onClick={() => void launch()}
         disabled={busy || disabled || !curModel || !shownArms.length}>
-        {busy ? "Submitting..." : "Launch experiment"}<span>{busy ? "◌" : "↗"}</span>
+        {busy ? "Submitting..." : "Launch experiment"}<span>{busy ? "↻" : "↗"}</span>
       </button>
       <p className="disclaimer">Real run on the local GPU worker. Takes from minutes to hours.</p>
     </div>
@@ -549,11 +549,11 @@ function ResultsTab({ pipeline, list, onSelect }: {
       {r && first && (
         <>
           <section className="metrics-grid results-metrics">
-            <MetricCard label={`Baseline · ${first}`} value={pct(r.baseline[first].accuracy)} detail={`n = ${r.baseline[first].n}`} icon="◈" color="red" />
+            <MetricCard label={`Baseline · ${first}`} value={pct(r.baseline[first].accuracy)} detail={`n = ${r.baseline[first].n}`} icon="◉" color="red" />
             <MetricCard label="Targeted" value={pct(targeted?.benchmarks[first]?.accuracy_mean)}
               detail={tgtGain == null ? "not trained" : `${signed(tgtGain)} vs base`} icon="↗" color="green" />
             <MetricCard label="Matched control" value={pct(control?.benchmarks[first]?.accuracy_mean)}
-              detail={ctlGain == null ? "not trained" : `${signed(ctlGain)} vs base`} icon="◎" color="orange" />
+              detail={ctlGain == null ? "not trained" : `${signed(ctlGain)} vs base`} icon="✦" color="orange" />
           </section>
 
           <section className="results-layout">
