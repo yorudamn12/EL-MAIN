@@ -2856,3 +2856,82 @@ body {
 
 .model-status.ready { color: var(--olive-dark); }
 .model-status.download { color: var(--orange); }
+
+/* Results: why accuracy moved */
+
+.why-intro {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.why-intro > div {
+  padding: 14px 16px;
+  border-left: 3px solid var(--dm-ruby, #852e47);
+  border-radius: 0 10px 10px 0;
+  background: #FBF3F5;
+}
+
+.why-intro strong { font-size: 12px; }
+
+.why-intro p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.7;
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 14px;
+}
+
+.why-card {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.why-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.why-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 8px;
+}
+
+.delta-chip {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+}
+
+.delta-chip.up { color: #4a5a30; background: #E8EEDA; }
+.delta-chip.down { color: #852E47; background: #F3E2E7; }
+
+.why-summary {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.why-card ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.7;
+}
+
+.why-card li + li { margin-top: 6px; }

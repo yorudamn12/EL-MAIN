@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import "./App.css";
+import { RUN_NOTES, type ArmNote } from "./runNotes";
 import {
   api, USE_MOCK,
   type Arm, type Baseline, type Diagnosis, type Feature, type Health, type Meta, type Model,
@@ -821,9 +822,55 @@ function ResultsTab({ pipeline, list, onSelect, showNotes, toggleNotes, onNew }:
               </table>
             </div>
           </section>
+
+          {id && RUN_NOTES[id] && <WhyPanel r={r} notes={RUN_NOTES[id]} />}
         </>
       )}
     </>
+  );
+}
+
+const HELD_OUT = "probes_heldout_families";
+
+function WhyPanel({ r, notes }: { r: Results; notes: (typeof RUN_NOTES)[string] }) {
+  const noteFor = (arm: Arm, ratio: number): ArmNote | undefined =>
+    notes.arms[`${arm}:${ratio}`] ?? notes.arms[arm];
+  const delta = (a: Results["arms"][number], bench: string) => a.benchmarks[bench]?.vs_base.mean_diff;
+  const chip = (label: string, x: number | undefined) =>
+    x == null ? null : <span className={`delta-chip ${x >= 0 ? "up" : "down"}`}>{label} {signed(x)}</span>;
+  return (
+    <section className="panel why-panel">
+      <div className="eyebrow">WHY ACCURACY MOVED</div>
+      <h3>What the run recorded, and why</h3>
+      <p className="panel-description">Source: {notes.source}. The team's reading of the run, not a proof of cause.</p>
+
+      <div className="why-intro">
+        <div><strong>Why this target</strong><p>{notes.target}</p></div>
+        <div><strong>Real problems fell for every trained arm</strong><p>{notes.realProblems}</p></div>
+        <div><strong>Targeted vs matched control</strong><p>{notes.headline}</p></div>
+      </div>
+
+      <div className="why-grid">
+        {r.arms.map((a) => {
+          const n = noteFor(a.arm, a.ratio);
+          if (!n) return null;
+          return (
+            <article className="why-card" key={`${a.arm}${a.ratio}`}>
+              <div className="why-card-head">
+                <span className={`arm-pill ${ARM_PILL[a.arm]}`}>{ARM_LABEL[a.arm]}</span>
+                <small>ratio {a.ratio}:1</small>
+              </div>
+              <div className="why-chips">
+                {chip("GSM8K", delta(a, "gsm8k"))}
+                {chip("Held-out probes", delta(a, HELD_OUT))}
+              </div>
+              <p className="why-summary">{n.summary}</p>
+              <ul>{n.why.map((w) => <li key={w}>{w}</li>)}</ul>
+            </article>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
