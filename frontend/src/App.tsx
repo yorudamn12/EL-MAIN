@@ -27,6 +27,7 @@ const BENCH_LABEL: Record<string, string> = {
   probes_train_families: "Probes · train", probes_heldout_families: "Probes · held-out",
 };
 const benchLabel = (b: string) => BENCH_LABEL[b] ?? b.replace(/_/g, " ");
+const RESEARCH_MODELS = ["Qwen/Qwen3-0.6B", "Qwen/Qwen3-1.7B"];
 const pct = (x: number | null | undefined, d = 1) => (x == null ? "—" : `${(x * 100).toFixed(d)}%`);
 const signed = (x: number) => `${x >= 0 ? "+" : ""}${(x * 100).toFixed(1)} pts`;
 const errText = (e: unknown) => (e instanceof Error ? e.message : String(e));
@@ -682,6 +683,8 @@ function ResultsTab({ pipeline, list, onSelect, showNotes, toggleNotes, onNew }:
   pipeline: Pipeline | null; list: PipelineSummary[]; onSelect: (id: string) => void;
   showNotes: boolean; toggleNotes: () => void; onNew: () => void;
 }) {
+  // Results lists only finished runs of the two research models (Qwen3 0.6B and 1.7B)
+  const finished = list.filter((p) => p.status === "done" && RESEARCH_MODELS.includes(p.model));
   const evaluated = !!pipeline?.steps.some((s) => s.stage === "evaluate" && s.status === "done");
   const id = pipeline?.id;
   const res = useAsync<Results>(evaluated && id ? () => api.results(id) : null, [id, evaluated, pipeline?.status]);
@@ -704,8 +707,9 @@ function ResultsTab({ pipeline, list, onSelect, showNotes, toggleNotes, onNew }:
 
       <div className="panel">
         <label className="field-label" htmlFor="res-pick">EXPERIMENT</label>
-        <select id="res-pick" className="select-input" value={id ?? ""} onChange={(e) => onSelect(e.target.value)}>
-          {list.map((p) => <option key={p.id} value={p.id}>{p.name} · {p.status}</option>)}
+        <select id="res-pick" className="select-input" value={finished.some((p) => p.id === id) ? id : ""} onChange={(e) => onSelect(e.target.value)}>
+          {!finished.some((p) => p.id === id) && <option value="" disabled>Select a finished experiment…</option>}
+          {finished.map((p) => <option key={p.id} value={p.id}>{p.name} · {p.mode} · {p.model.split("/").pop()}</option>)}
         </select>
       </div>
 
