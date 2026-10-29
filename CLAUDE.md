@@ -13,7 +13,7 @@ but hard for a different reason. Science: `docs/RESEARCH.md`. Status of parts: `
 - Order of truth: code on the branch > `PLAN.md` > `docs/API_CONTRACT.md` (law for the frontend) > `docs/RESEARCH.md`.
   If plan and code disagree: **stop and ask**.
 - Do not invent function names, paths, dataset fields, model names, prompt texts or numbers. Open the file.
-- **Backend only.** No frontend code (Manus AI builds it later from the contract).
+- **Backend first.** The frontend lives in `frontend/` (built by the teammate on branch `dreammachine-ui-update`, merged 2026-10-27 and wired to the API by Claude at the user's request). Change it only when asked; it must keep following the contract.
 - Do not edit `docs/RESEARCH.md` or any `CONFIRMED` component without the user's explicit OK.
   Claude may set `IMPLEMENTED`; only the team sets `CONFIRMED`.
 - Label every result **CPU-verified** or **GPU-verified**. Never claim a GPU result that was not run.
@@ -50,12 +50,12 @@ Windows spills VRAM into system RAM instead of OOM — keep batches inside 8 GB)
 - One `prompt_version` per project, set at the top level of a config. Benchmarks and extractors: `docs/BENCHMARKS.md`.
 
 ## API contract
-- **Contract version: `0.2.1`** — IMPLEMENTED (B7; 0.2.1 adds per-answer lastline/format_ok/truncated and prompt versions in /presets). `dreammachine/api/app.py` (`API_VERSION`), response models in
+- **Contract version: `0.2.2`** — IMPLEMENTED (B7; 0.2.1 adds per-answer lastline/format_ok/truncated and prompt versions in /presets; 0.2.2 adds `cached` to /models). `dreammachine/api/app.py` (`API_VERSION`), response models in
   `dreammachine/api/schemas.py`, `docs/openapi.json` from `python -m dreammachine.api.export_openapi`,
   guarded by `tests/test_api_contract.py`. The old unprefixed routes are gone.
 - Base URL: `http://127.0.0.1:8000/api/v1`. Every route/shape change: update `docs/API_CONTRACT.md`, bump the
   version, add a changelog line, regenerate `docs/openapi.json`, update this list — same commit.
-- Endpoints (contract 0.2.1):
+- Endpoints (contract 0.2.2):
   ```
   GET    /api/v1/health
   GET    /api/v1/system

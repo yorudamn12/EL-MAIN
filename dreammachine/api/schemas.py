@@ -515,6 +515,7 @@ class ModelInfo(Model_):
     params_b: float | None
     gated: bool
     notes: str | None
+    cached: bool                     # 0.2.2: a snapshot is in the local Hugging Face cache (offline check)
 
 
 class BenchmarkInfo(Model_):

@@ -1,0 +1,182 @@
+/* Pipeline architecture diagram (PipelineDiagram.tsx). Delete this file with the component to remove the feature. */
+
+.pd-panel { margin-bottom: 18px; }
+
+.pd-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 4px 0 16px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.pd-legend i {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 6px;
+  border-radius: 3px;
+  border: 1px solid #CFC6BA;
+  vertical-align: -1px;
+}
+
+.pd-legend i.running { background: var(--mulberry); border-color: var(--mulberry); }
+.pd-legend i.partial { background: #F3E2E7; border-color: #D9A9B7; }
+.pd-legend i.done { background: #E9E6E1; }
+.pd-legend i.pending { background: #fff; }
+.pd-legend i.failed { background: #fff; border-color: #C23B3B; }
+
+.pd-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 8px;
+  text-align: left;
+}
+
+.pd-cell,
+.pd-loop-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pd-arrow {
+  color: #B9AD9F;
+  font-size: 16px;
+}
+
+.pd-loop {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px 12px;
+  border: 1.5px dashed #D9A9B7;
+  border-radius: 16px;
+  background: rgba(133, 46, 71, .03);
+}
+
+.pd-loop-label {
+  color: var(--mulberry);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: .06em;
+}
+
+.pd-node {
+  position: relative;
+  width: 130px;
+  padding: 11px 12px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #fff;
+  transition: background .3s ease, border-color .3s ease, opacity .3s ease, box-shadow .3s ease, transform .3s ease;
+}
+
+.pd-top {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pd-title {
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: -.2px;
+}
+
+.pd-badge {
+  align-self: flex-start;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #F1EBE2;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: .06em;
+}
+
+.pd-node p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 10.5px;
+  line-height: 1.55;
+}
+
+.pd-count {
+  margin-top: 8px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 9.5px;
+}
+
+.pd-live {
+  margin-top: 10px;
+  color: var(--mulberry);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.pd-bar {
+  height: 5px;
+  margin-top: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #F3E2E7;
+}
+
+.pd-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #852E47, #D28A9A);
+  transition: width .6s ease;
+}
+
+/* states */
+
+.pd-node.running {
+  border-color: var(--mulberry);
+  background: #FBF3F5;
+  box-shadow: 0 0 0 3px rgba(133, 46, 71, .14), 0 10px 24px rgba(133, 46, 71, .16);
+  transform: translateY(-2px);
+  animation: pd-pulse 1.8s ease-in-out infinite;
+}
+
+.pd-node.running .pd-badge { background: var(--mulberry); color: #fff; }
+
+.pd-node.partial { border-color: #D9A9B7; background: #FBF3F5; }
+.pd-node.partial .pd-badge { background: #F3E2E7; color: var(--mulberry); }
+
+.pd-node.done,
+.pd-node.reused {
+  border-color: #E3DED6;
+  background: #F2F0EC;
+  opacity: .72;
+}
+
+.pd-node.done .pd-title,
+.pd-node.reused .pd-title { color: #8C8378; }
+
+.pd-node.pending { border-style: dashed; }
+
+.pd-node.failed { border-color: #C23B3B; background: #FDF1F1; }
+.pd-node.failed .pd-badge { background: #C23B3B; color: #fff; }
+
+.pd-node.cancelled { border-color: #C9BBAA; background: #F7F3EC; }
+
+@keyframes pd-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(133, 46, 71, .14), 0 10px 24px rgba(133, 46, 71, .16); }
+  50% { box-shadow: 0 0 0 6px rgba(133, 46, 71, .07), 0 10px 24px rgba(133, 46, 71, .22); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pd-node.running { animation: none; }
+}
+
+@media (max-width: 700px) {
+  .pd-node { width: 140px; }
+}

@@ -53,7 +53,7 @@ from ..provenance import package_versions
 from ..store.db import Store
 from . import schemas as S
 
-API_VERSION = "0.2.1"          # must equal "Contract version" in docs/API_CONTRACT.md (tests/test_api_contract.py)
+API_VERSION = "0.2.2"          # must equal "Contract version" in docs/API_CONTRACT.md (tests/test_api_contract.py)
 PREFIX = "/api/v1"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CORS = ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000", "http://127.0.0.1:3000"]
@@ -423,7 +423,8 @@ def create_app(store: Store | None = None, components_path: Path | None = None,
     @api.get("/models", response_model=list[S.ModelInfo])
     def list_models():
         from ..models.catalog import load_models
-        return load_models()
+        from ..provenance import hf_revision
+        return [m | {"cached": hf_revision(m["id"]) is not None} for m in load_models()]   # 0.2.2
 
     @api.get("/benchmarks", response_model=list[S.BenchmarkInfo])
     def list_benchmarks():

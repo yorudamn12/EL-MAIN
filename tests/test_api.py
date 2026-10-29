@@ -102,7 +102,7 @@ def _err(r, status, code):
 # ------------------------------------------------------------ system and catalog
 def test_health_and_unknown_route(world):
     c = world["client"]
-    assert _ok(c.get("/api/v1/health")) == {"status": "ok", "version": "0.1.0", "api_version": "0.2.1"}
+    assert _ok(c.get("/api/v1/health")) == {"status": "ok", "version": "0.1.0", "api_version": "0.2.2"}
     _err(c.get("/api/v1/nope"), 404, "not_found")
     _err(c.get("/health"), 404, "not_found")                    # the old unprefixed routes are gone
 
@@ -127,6 +127,7 @@ def test_models_benchmarks_presets_components(world):
     c = world["client"]
     ids = [m["id"] for m in _ok(c.get("/api/v1/models"))]
     assert "Qwen/Qwen3-0.6B" in ids and "Qwen/Qwen3-1.7B" in ids
+    assert all(isinstance(m["cached"], bool) for m in _ok(c.get("/api/v1/models")))   # 0.2.2
     b = _ok(c.get("/api/v1/benchmarks"))
     assert {"name": "gsm8k", "kind": "external", "size": 1319,
             "description": "GSM8K test set (1319 grade-school word problems)."} in b
