@@ -46,6 +46,8 @@ npm install
 npm run dev          # http://localhost:5173 (allowed by the API's CORS)
 ```
 
+- One click instead: double-click `Start-DreamMachine.bat` in the repo root. It starts the API (no GPU worker) and the
+  dashboard, skipping whichever is already running, and opens http://localhost:5173. Close its two windows to stop.
 - `VITE_API_BASE_URL` (default `http://127.0.0.1:8000/api/v1`) and `VITE_USE_MOCK` are read from `.env.local` (see `.env.example`).
 - `VITE_USE_MOCK=true` answers every request from `src/mocks/mock.ts` and shows a "MOCK DATA" badge. The Netlify build uses it,
   because a hosted page cannot reach `127.0.0.1`.
