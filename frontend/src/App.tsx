@@ -29,6 +29,8 @@ const BENCH_LABEL: Record<string, string> = {
 };
 const benchLabel = (b: string) => BENCH_LABEL[b] ?? b.replace(/_/g, " ");
 const RESEARCH_MODELS = ["Qwen/Qwen3-0.6B", "Qwen/Qwen3-1.7B"];
+// the finished paper runs of the two research models: what Overview and Results show
+const isPaperRun = (p: PipelineSummary) => p.status === "done" && p.mode === "paper" && RESEARCH_MODELS.includes(p.model);
 const pct = (x: number | null | undefined, d = 1) => (x == null ? "—" : `${(x * 100).toFixed(d)}%`);
 const signed = (x: number) => `${x >= 0 ? "+" : ""}${(x * 100).toFixed(1)} pts`;
 const errText = (e: unknown) => (e instanceof Error ? e.message : String(e));
@@ -99,7 +101,7 @@ function App() {
     setNotice("Configure your next experiment below.");
   }
 
-  const doneCount = list.filter((p) => p.status === "done").length;
+  const paperRuns = list.filter(isPaperRun);
   const workerLabel = offline ? "Backend offline" : system?.worker.alive ? "Worker running" : "Worker not running";
 
   return (
@@ -255,8 +257,8 @@ function App() {
               <section className="metrics-grid">
                 <MetricCard
                   label="Experiments"
-                  value={String(list.length).padStart(2, "0")}
-                  detail={`${doneCount} finished`}
+                  value={String(paperRuns.length).padStart(2, "0")}
+                  detail="Finished paper runs"
                   icon="✦"
                   color="orange"
                 />
@@ -287,7 +289,7 @@ function App() {
                       View all ↗
                     </button>
                   </div>
-                  <ExperimentTable rows={list.slice(0, 3)} onSelect={(id) => select(id, "Results")} />
+                  <ExperimentTable rows={paperRuns.slice(0, 3)} onSelect={(id) => select(id, "Results")} />
                 </div>
 
                 <div className="panel insight-panel">
@@ -685,7 +687,7 @@ function ResultsTab({ pipeline, list, onSelect, showNotes, toggleNotes, onNew }:
   showNotes: boolean; toggleNotes: () => void; onNew: () => void;
 }) {
   // Results lists only the finished paper runs of the two research models (Qwen3 0.6B and 1.7B)
-  const finished = list.filter((p) => p.status === "done" && p.mode === "paper" && RESEARCH_MODELS.includes(p.model));
+  const finished = list.filter(isPaperRun);
   const evaluated = !!pipeline?.steps.some((s) => s.stage === "evaluate" && s.status === "done");
   const id = pipeline?.id;
   const res = useAsync<Results>(evaluated && id ? () => api.results(id) : null, [id, evaluated, pipeline?.status]);
