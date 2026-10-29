@@ -683,8 +683,8 @@ function ResultsTab({ pipeline, list, onSelect, showNotes, toggleNotes, onNew }:
   pipeline: Pipeline | null; list: PipelineSummary[]; onSelect: (id: string) => void;
   showNotes: boolean; toggleNotes: () => void; onNew: () => void;
 }) {
-  // Results lists only finished runs of the two research models (Qwen3 0.6B and 1.7B)
-  const finished = list.filter((p) => p.status === "done" && RESEARCH_MODELS.includes(p.model));
+  // Results lists only the finished paper runs of the two research models (Qwen3 0.6B and 1.7B)
+  const finished = list.filter((p) => p.status === "done" && p.mode === "paper" && RESEARCH_MODELS.includes(p.model));
   const evaluated = !!pipeline?.steps.some((s) => s.stage === "evaluate" && s.status === "done");
   const id = pipeline?.id;
   const res = useAsync<Results>(evaluated && id ? () => api.results(id) : null, [id, evaluated, pipeline?.status]);
@@ -709,7 +709,7 @@ function ResultsTab({ pipeline, list, onSelect, showNotes, toggleNotes, onNew }:
         <label className="field-label" htmlFor="res-pick">EXPERIMENT</label>
         <select id="res-pick" className="select-input" value={finished.some((p) => p.id === id) ? id : ""} onChange={(e) => onSelect(e.target.value)}>
           {!finished.some((p) => p.id === id) && <option value="" disabled>Select a finished experiment…</option>}
-          {finished.map((p) => <option key={p.id} value={p.id}>{p.name} · {p.mode} · {p.model.split("/").pop()}</option>)}
+          {finished.map((p) => <option key={p.id} value={p.id}>{p.name} · {p.model.split("/").pop()}</option>)}
         </select>
       </div>
 
