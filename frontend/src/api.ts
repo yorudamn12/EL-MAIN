@@ -1,4 +1,4 @@
-// Typed client for the DreamMachine backend (docs/API_CONTRACT.md, contract 0.2.1).
+// Typed client for the DreamMachine backend (docs/API_CONTRACT.md, contract 0.2.2).
 import { mockRequest } from "./mocks/mock";
 
 export const API_BASE: string =
@@ -28,7 +28,7 @@ export interface Pipeline extends PipelineSummary {
   warnings: string[]; error: { code: string; message: string; step_key: string } | null;
   resolved: { arms: Arm[]; ratios: number[]; seeds: number[]; benchmarks: string[]; prompt_version: string };
 }
-export interface Model { id: string; display_name: string; params_b: number | null; gated: boolean; notes: string | null }
+export interface Model { id: string; display_name: string; params_b: number | null; gated: boolean; notes: string | null; cached: boolean }
 export interface FeatureInfo { name: Feature; label: string; description: string }
 export interface Meta { features: FeatureInfo[]; arms: { name: string; label: string; description: string }[] }
 export interface Health { status: string; version: string; api_version: string }

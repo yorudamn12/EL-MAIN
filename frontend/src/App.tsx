@@ -357,7 +357,7 @@ function App() {
 
         <footer className="footer">
           <span>DreamMachine <span className="footer-separator">/</span> Research Lab</span>
-          <span>CONTRACT V{health?.api_version ?? "0.2.1"} <span className="footer-separator">·</span> {USE_MOCK ? "MOCK ENVIRONMENT" : "LIVE BACKEND"}</span>
+          <span>CONTRACT V{health?.api_version ?? "0.2.2"} <span className="footer-separator">·</span> {USE_MOCK ? "MOCK ENVIRONMENT" : "LIVE BACKEND"}</span>
         </footer>
       </main>
     </div>
@@ -384,7 +384,8 @@ function NewExperiment({ models, presets, meta, presetFeature, disabled, onCreat
     if (presetFeature) { setStrategy("feature"); setFeature(presetFeature); }
   }, [presetFeature]);
 
-  const curModel = model || models[0]?.id || "";
+  const curModel = model || (models.find((m) => m.cached) ?? models[0])?.id || "";
+  const curInfo = models.find((m) => m.id === curModel);
   const curArms = arms ?? d?.arms ?? [];
   const curRatio = ratio ?? d?.ratio ?? 3;
   const curSeeds = seeds ?? d?.seeds ?? [0];
@@ -423,8 +424,24 @@ function NewExperiment({ models, presets, meta, presetFeature, disabled, onCreat
 
       <label className="field-label" htmlFor="model">MODEL</label>
       <select id="model" className="select-input" value={curModel} onChange={(e) => setModel(e.target.value)}>
-        {models.map((m) => <option key={m.id} value={m.id}>{m.display_name}</option>)}
+        <optgroup label="In your local cache">
+          {models.filter((m) => m.cached).map((m) => <option key={m.id} value={m.id}>{m.display_name}</option>)}
+        </optgroup>
+        <optgroup label="Needs download">
+          {models.filter((m) => !m.cached).map((m) => (
+            <option key={m.id} value={m.id}>{m.display_name}{m.gated ? " (gated)" : ""}</option>
+          ))}
+        </optgroup>
       </select>
+      {curInfo && (
+        <p className={`model-status ${curInfo.cached ? "ready" : "download"}`}>
+          {curInfo.cached
+            ? "✓ Available locally — runs offline."
+            : curInfo.gated
+              ? "⬇ Not downloaded. Gated: accept the licence on Hugging Face and run huggingface-cli login first, or the job fails."
+              : `⬇ Not downloaded. The worker will fetch it from Hugging Face on first use${curInfo.params_b ? ` (~${(curInfo.params_b * 2).toFixed(1)} GB)` : ""}.`}
+        </p>
+      )}
 
       <label className="field-label" htmlFor="exp-name">NAME (OPTIONAL)</label>
       <input id="exp-name" className="select-input" value={name} maxLength={80} onChange={(e) => setName(e.target.value)} />

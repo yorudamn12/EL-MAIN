@@ -33,7 +33,7 @@ See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rule
 
 ## DreamMachine: running against the backend
 
-The UI talks to the FastAPI backend (`docs/API_CONTRACT.md`, contract 0.2.1) through `src/api.ts`.
+The UI talks to the FastAPI backend (`docs/API_CONTRACT.md`, contract 0.2.2) through `src/api.ts`.
 
 ```powershell
 # terminal 1 (repo root): API on 127.0.0.1:8000 (+ the GPU worker)

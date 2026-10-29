@@ -2845,3 +2845,14 @@ body {
   font-family: var(--mono);
   letter-spacing: .03em;
 }
+
+/* Model availability under the model picker */
+
+.model-status {
+  margin: -6px 0 16px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.model-status.ready { color: var(--olive-dark); }
+.model-status.download { color: var(--orange); }

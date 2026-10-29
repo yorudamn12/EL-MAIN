@@ -62,11 +62,12 @@ const results = {
 
 export function mockRequest(method: string, path: string, body?: unknown): unknown {
   const p = path.split("?")[0];
-  if (p === "/health") return { status: "ok", version: "mock", api_version: "0.2.1" };
+  if (p === "/health") return { status: "ok", version: "mock", api_version: "0.2.2" };
   if (p === "/system") return { gpu: { available: false, name: null }, worker: { alive: true, current_job_id: null, current_step: null } };
   if (p === "/models") return [
-    { id: "Qwen/Qwen3-0.6B", display_name: "Qwen3 0.6B", params_b: 0.6, gated: false, notes: null },
-    { id: "Qwen/Qwen3-1.7B", display_name: "Qwen3 1.7B", params_b: 1.7, gated: false, notes: null }];
+    { id: "Qwen/Qwen3-0.6B", display_name: "Qwen3 0.6B", params_b: 0.6, gated: false, notes: null, cached: true },
+    { id: "Qwen/Qwen3-1.7B", display_name: "Qwen3 1.7B", params_b: 1.7, gated: false, notes: null, cached: true },
+    { id: "Qwen/Qwen2.5-1.5B-Instruct", display_name: "Qwen2.5 1.5B Instruct", params_b: 1.5, gated: false, notes: null, cached: false }];
   if (p === "/meta") return {
     features: diagnosis.weaknesses.map((w) => ({ name: w.feature, label: w.label, description: "" })),
     arms: [] };

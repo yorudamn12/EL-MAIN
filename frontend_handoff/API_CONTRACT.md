@@ -1,6 +1,6 @@
 # DreamMachine — API Contract (backend ⇄ frontend)
 
-**Contract version: `0.2.1`** · Status: **IMPLEMENTED** (designed 2026-10-04, revised after review; implemented
+**Contract version: `0.2.2`** · Status: **IMPLEMENTED** (designed 2026-10-04, revised after review; implemented
 at backend milestone B7 on 2026-10-05; `tests/test_api_contract.py` keeps the app and this file in step).
 
 This file is the **only** thing the frontend may rely on. The frontend (to be built by Manus AI) talks to the
@@ -179,7 +179,7 @@ Example values below are **made up** to show the shape. They are not real result
 
 ### 6.1 System and catalog
 
-**`GET /health`** → `{ "status": "ok", "version": "0.1.0", "api_version": "0.2.1" }` (`version` = the Python package version; `api_version` = this contract's version).
+**`GET /health`** → `{ "status": "ok", "version": "0.1.0", "api_version": "0.2.2" }` (`version` = the Python package version; `api_version` = this contract's version).
 
 **`GET /system`** →
 ```json
@@ -207,9 +207,10 @@ If torch is not installed, `gpu.available` is `false` and the other gpu fields a
 
 **`GET /models`** → `Model[]`
 ```json
-[ { "id": "Qwen/Qwen3-0.6B", "display_name": "Qwen3 0.6B", "params_b": 0.6, "gated": false, "notes": null } ]
+[ { "id": "Qwen/Qwen3-0.6B", "display_name": "Qwen3 0.6B", "params_b": 0.6, "gated": false, "notes": null, "cached": true } ]
 ```
 Source: `configs/models.yaml`. `params_b` is approximate. Gated models need `huggingface-cli login` on the laptop.
+`cached` (0.2.2) is `true` when a snapshot of the model is in the local Hugging Face cache (checked offline, no network). `false` means the first job that uses it must download it, and gated models also need a licence and login.
 
 **`GET /benchmarks`** → `BenchmarkInfo[]`
 ```json
@@ -691,7 +692,7 @@ interface CompareResult {
 }
 
 // ---------- catalog / drill-down ----------
-interface Model { id: string; display_name: string; params_b: number | null; gated: boolean; notes: string | null; }
+interface Model { id: string; display_name: string; params_b: number | null; gated: boolean; notes: string | null; cached: boolean; }
 interface BenchmarkInfo { name: string; kind: BenchmarkKind; description: string; size: number | null; }
 interface Run {
   id: string; name: string; kind: "screen" | "diagnose" | "build-data" | "train" | "eval";
@@ -763,3 +764,4 @@ step:  pending -> running -> done | failed | cancelled
 | 0.2.0 | 2026-10-04 | After review: mock mode + "MOCK DATA" badge and where the frontend runs (§1.1); create endpoints return 202 with a `worker_not_running` warning instead of 503; job-id rules and 404 on the wrong path; UTF-8-safe log chunks; `samples` is now `Page<TrainingSample>`; new `DELETE` for explore pipelines and benchmark runs (`paper_protected`); arm dataset download; `eta_s`, `output_dir`, `output_bytes`, step `metrics`, `/system.disk`; full TypeScript types incl. `ratio` vs `ratios`. Not implemented yet. |
 | 0.2.1 | 2026-10-05 | Additive: `ResponseRecord.diagnosis` gains `lastline`, `lastline_v0`, `format_ok`, `truncated`; `GET /presets` gains `prompt_versions` and `default_prompt_version`. |
 | 0.2.1 | 2026-10-07 | Examples only, no shape change: the `GET /presets` paper example now shows the trimmed protocol (targeted ratios 3/9, 36 steps); paper runs may show `baseline`/`diagnose` as `skipped` (reused). |
+| 0.2.2 | 2026-10-29 | Additive: `GET /models` items gain `cached: boolean` (model is in the local Hugging Face cache). |
