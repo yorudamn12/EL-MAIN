@@ -2935,3 +2935,9 @@ body {
 }
 
 .why-card li + li { margin-top: 6px; }
+
+/* Diagnostic brief heading colour */
+
+.diagnosis-detail h2 {
+  color: var(--mulberry);
+}
