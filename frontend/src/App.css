@@ -78,11 +78,10 @@ select:focus-visible {
 
 .app-shell {
   display: flex;
-  width: min(1440px, 100%);
+  width: 100%;
   min-height: 100vh;
-  margin: 0 auto;
+  margin: 0;
   overflow: clip;
-  border-inline: 1px solid rgba(100, 33, 55, 0.12);
   background: var(--paper);
   box-shadow: 0 0 80px rgba(25, 36, 58, 0.045);
 }
@@ -461,6 +460,7 @@ select:focus-visible {
 
 .page-intro p {
   max-width: 690px;
+  margin-inline: auto;
   color: var(--muted);
   font-size: 13px;
   line-height: 1.8;
