@@ -102,7 +102,7 @@ def _err(r, status, code):
 # ------------------------------------------------------------ system and catalog
 def test_health_and_unknown_route(world):
     c = world["client"]
-    assert _ok(c.get("/api/v1/health")) == {"status": "ok", "version": "0.1.0", "api_version": "0.2.2"}
+    assert _ok(c.get("/api/v1/health")) == {"status": "ok", "version": "0.1.0", "api_version": "0.3.0"}
     _err(c.get("/api/v1/nope"), 404, "not_found")
     _err(c.get("/health"), 404, "not_found")                    # the old unprefixed routes are gone
 
@@ -117,7 +117,8 @@ def test_system(world):
 def test_meta(world):
     m = _ok(world["client"].get("/api/v1/meta"))
     assert len(m["features"]) == 7 and len(m["error_types"]) == 6 and len(m["stages"]) == 8
-    assert [a["name"] for a in m["arms"]] == ["base", "real_only", "untargeted", "matched_control", "targeted"]
+    assert [a["name"] for a in m["arms"]] == ["base", "real_only", "untargeted", "matched_control", "targeted",
+                                            "multi_targeted", "multi_matched_control"]
     carry = next(f for f in m["features"] if f["name"] == "n_carry")
     assert carry["label"] == "Carries and borrows" and m["families"]["warehouse"]["split"] == "heldout"
     assert {"name": "diagnose", "label": "Find weaknesses"} in m["stages"]
@@ -134,7 +135,7 @@ def test_models_benchmarks_presets_components(world):
     p = _ok(c.get("/api/v1/presets"))
     assert p["explore"]["defaults"]["arms"] == ["targeted", "matched_control"] and p["explore"]["defaults"]["ratio"] == 3
     assert p["explore"]["allowed"] == {"ratio": [1, 3, 9], "seeds": [0, 1, 2], "max_seeds": 3, "min_benchmark_limit": 10}
-    assert p["paper"]["n_steps"] == 42 and p["paper"]["settable"] == ["name", "model"]
+    assert p["paper"]["n_steps"] == 42 and p["paper"]["settable"] == ["name", "model", "protocol"]
     assert p["prompt_versions"] == ["dm_v1", "qwen_boxed", "v2_700"] and p["default_prompt_version"] == "qwen_boxed"
     comps = _ok(c.get("/api/v1/components"))
     assert any(x["id"] == "C9" and x["path"].endswith("lltm.py") for x in comps)

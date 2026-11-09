@@ -17,10 +17,12 @@ JobKind = Literal["pipeline", "benchmark_run"]
 JobStatus = Literal["queued", "running", "done", "failed", "cancelled"]
 StepStatus = Literal["pending", "running", "done", "failed", "skipped", "cancelled"]
 Stage = Literal["preflight", "baseline", "diagnose", "choose_target", "build_data", "train", "evaluate", "compare"]
-Arm = Literal["real_only", "untargeted", "matched_control", "targeted"]
+Arm = Literal["real_only", "untargeted", "matched_control", "targeted",
+              "multi_targeted", "multi_matched_control"]          # 0.3.0: multi-weakness arms
+Protocol = Literal["single_weakness", "multi_weakness"]           # 0.3.0
 Feature = Literal["steps", "log10_max", "n_mul", "n_div", "n_carry", "n_distractors", "has_merge"]
 ErrorTypeName = Literal["CORRECT", "FORMAT_ERROR", "ARITHMETIC_SLIP", "DISTRACTOR_USE", "PLAN_ERROR", "UNVERIFIABLE"]
-TargetStrategy = Literal["auto", "feature", "untargeted"]
+TargetStrategy = Literal["auto", "feature", "untargeted", "multi"]   # 0.3.0: multi
 BenchmarkKind = Literal["external", "synthetic"]
 ProgressUnit = Literal["examples", "steps", "items"]
 RunKind = Literal["screen", "diagnose", "build-data", "train", "eval"]
@@ -111,6 +113,7 @@ class CreatePaperPipeline(Model_):
     mode: Literal["paper"]
     model: str
     name: str | None = None
+    protocol: Protocol | None = None     # 0.3.0; default "single_weakness"
 
 
 class CreateBenchmarkRun(Model_):
@@ -133,6 +136,8 @@ class ResolvedConfig(Model_):
     config_hash: str
     baseline_hash: str
     diagnosis_hash: str | None
+    protocol: Protocol | None = None     # 0.3.0: paper runs only
+    reference_job: str | None = None     # 0.3.0: multi_weakness: the paper run whose arms it is compared with
 
 
 class GpuSummary(Model_):
@@ -168,10 +173,17 @@ class JobProgress(Model_):
     fraction: float
 
 
+class MultiTarget(Model_):
+    feature: Feature
+    threshold: float
+    weight: float
+
+
 class Target(Model_):
     strategy: TargetStrategy
     feature: Feature | None
     threshold: float | None
+    targets: list[MultiTarget] | None = None   # 0.3.0: strategy "multi" only
 
 
 class JobBase(Model_):
@@ -367,6 +379,8 @@ class ArmResult(Model_):
     seeds: list[int]
     benchmarks: dict[str, ArmBenchmarkResult]
     target_slice: dict[str, TargetSlice]
+    weakness_slices: dict[str, dict[str, TargetSlice]] = {}   # 0.3.0: feature -> probe benchmark -> slice
+    source_job: str | None = None                             # 0.3.0: the job that trained this arm
     eta_change: dict[str, float | None]
     error_type_shift: ErrorShares
 
@@ -396,8 +410,8 @@ class PrimaryRow(Bootstrap):
 class Primary(Model_):
     status: Literal["proposed", "confirmed"]
     question: str
-    a: Literal["targeted"]
-    b: Literal["matched_control"]
+    a: Literal["targeted", "multi_targeted"]                  # 0.3.0: multi_targeted
+    b: Literal["matched_control", "multi_matched_control"]
     benchmarks: list[str]
     results: list[PrimaryRow]
 
@@ -419,6 +433,7 @@ class PipelineResults(Model_):
     paper_eligible: bool
     model: str
     target: Target | None
+    reference_job: str | None = None     # 0.3.0
     benchmarks: list[BenchmarkRef]
     baseline: dict[str, BaselineCell]
     arms: list[ArmResult]

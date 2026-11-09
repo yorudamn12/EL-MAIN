@@ -161,6 +161,9 @@ Where to look now: Qwen3-0.6B → `runs/pipelines/04f319d1cca7/` (diagnosis made
 ## 6. Next steps
 
 **Claude:**
+- 2026-11-09: multi-weakness protocol built (PLAN.md §16, D17; contract 0.3.0): train on all significant
+  weaknesses at once (0.6B: 5, 1.7B: 4) and compare with the existing paper runs; CPU-verified (205 tests) and a CPU
+  dry run of the real data building. GPU runs not started yet.
 - Done: both paper runs finished and written up — 0.6B on 2026-10-09 (`docs/RUNNING.md` §14), 1.7B on
   2026-10-10 (§15), both in `docs/weakness.md` (diagnosis and "did training fix it?"). Nothing is left for Claude
   until the team decides how to read the result (PLAN.md question 10). A changed targeting rule would be a new

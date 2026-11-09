@@ -14,7 +14,8 @@ STAGE_LABELS = {"preflight": "Check setup", "baseline": "Benchmark the untrained
                 "build_data": "Build training data", "train": "Train", "evaluate": "Evaluate",
                 "compare": "Compare results"}
 PROGRESS_UNIT = {"baseline": "examples", "diagnose": "examples", "train": "steps", "evaluate": "examples"}
-ARM_ORDER = ("real_only", "untargeted", "matched_control", "targeted")   # as experiments/run.py::_jobs
+ARM_ORDER = ("real_only", "untargeted", "matched_control", "targeted",   # as experiments/run.py::_jobs
+             "multi_targeted", "multi_matched_control")                   # multi-weakness protocol (PLAN.md §16)
 
 
 def arm_key(arm: str, ratio: float, seed: int) -> str:

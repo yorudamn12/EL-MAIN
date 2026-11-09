@@ -6,6 +6,7 @@ here in the same commit. The full text of any old version: `git show <commit>:PL
 
 | Date | Commit | What changed in PLAN.md | Why |
 |---|---|---|---|
+| 2026-11-09 | (this commit) | New **D17** and **§16**: multi-weakness protocol (all significant weaknesses at once, from the base model, difficulty-matched control, compared with the existing single-weakness paper runs, power-off safety); open question 10 updated | The user's decision after the presentation, 2026-11-09 |
 | 2026-10-22 | (this commit) | Open question 10: the presentation uses the current results; training-pipeline changes are deferred until after the presentation and the professors' input | The user's decision, 2026-10-22 |
 | 2026-10-10 | `8db5802` | Open question 10: added the Qwen3-1.7B result (same headline: no targeting benefit on real problems) | The Qwen3-1.7B paper run finished |
 | 2026-10-09 | `4875189` | New open question 10: how to read the first paper result (0.6B: no targeting benefit on real problems; targeted below matched control on probes) | The Qwen3-0.6B paper run finished |

@@ -17,26 +17,36 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
-from ..experiments.pipeline import ARMS, Config, benchmark_options, default_benchmarks
+from ..experiments.pipeline import CORE_ARMS, Config, benchmark_options, default_benchmarks
 from ..generator.features import FEATURES
 from ..provenance import REPO_ROOT, hf_revision
 from ..store.db import Store
 from .errors import JobError
 from .steps import build_steps
 
-PRESET_PATHS = {"explore": REPO_ROOT / "configs" / "explore.yaml", "paper": REPO_ROOT / "configs" / "main.yaml"}
+PRESET_PATHS = {"explore": REPO_ROOT / "configs" / "explore.yaml", "paper": REPO_ROOT / "configs" / "main.yaml",
+                "paper_multi": REPO_ROOT / "configs" / "main_multi.yaml"}
+# Paper protocols (contract 0.3.0): the original single-weakness protocol, and the multi-weakness protocol that
+# trains only its two new arms and is compared with the newest finished single-weakness paper run (PLAN.md §16).
+PROTOCOLS = {"single_weakness": "paper", "multi_weakness": "paper_multi"}
+DEFAULT_PROTOCOL = "single_weakness"
 DEFAULT_EXPLORE_BENCHMARKS = ["gsm8k", "gsm_symbolic:main", "probes_train_families", "probes_heldout_families"]
 ALLOWED_RATIOS = (1, 3, 9)
 ALLOWED_SEEDS = (0, 1, 2)
 MIN_BENCHMARK_LIMIT = 10
 EXPLORE_KEYS = {"mode", "name", "model", "benchmarks", "benchmark_limit", "target", "arms", "ratio", "seeds",
                 "reuse_from"}
-PAPER_KEYS = {"mode", "name", "model"}
+PAPER_KEYS = {"mode", "name", "model", "protocol"}
 BENCHMARK_RUN_KEYS = {"name", "model", "benchmarks", "benchmark_limit", "include_diagnosis"}
 
 
 def load_presets() -> dict[str, Config]:
     return {mode: Config.load(path) for mode, path in PRESET_PATHS.items()}
+
+
+def preset_key(norm: dict) -> str:
+    """Which preset a normalised request uses: explore, or the paper protocol's config."""
+    return PROTOCOLS[norm.get("protocol", DEFAULT_PROTOCOL)] if norm["mode"] == "paper" else norm["mode"]
 
 
 def known_model_ids() -> list[str]:
@@ -97,9 +107,12 @@ def validate_pipeline_request(req: dict, known_models: list[str], allow_local_mo
     if mode == "paper":
         extra = sorted(set(req) - PAPER_KEYS)
         if extra:
-            raise JobError("paper_mode_locked", f"paper mode only accepts mode, name and model; got {extra}",
+            raise JobError("paper_mode_locked", f"paper mode only accepts mode, name, model and protocol; got {extra}",
                            {"fields": [{"loc": ["body", k], "msg": "not allowed in paper mode"} for k in extra]})
-        return {"mode": "paper", "model": req["model"], "name": req.get("name")}
+        protocol = req.get("protocol", DEFAULT_PROTOCOL)
+        if protocol not in PROTOCOLS:
+            raise _bad("protocol", f"protocol must be one of {list(PROTOCOLS)}")
+        return {"mode": "paper", "model": req["model"], "name": req.get("name"), "protocol": protocol}
     extra = sorted(set(req) - EXPLORE_KEYS)
     if extra:
         raise _bad(extra[0], f"unknown field(s) {extra}")
@@ -115,8 +128,8 @@ def validate_pipeline_request(req: dict, known_models: list[str], allow_local_mo
         raise _bad("target", f"target.strategy {target['strategy']!r} takes no other fields")
     arms = req.get("arms", ["targeted", "matched_control"])
     if (not isinstance(arms, list) or not 1 <= len(arms) <= 4 or len(set(arms)) != len(arms)
-            or any(a not in ARMS for a in arms)):
-        raise _bad("arms", f"arms must be 1-4 unique values from {list(ARMS)}")
+            or any(a not in CORE_ARMS for a in arms)):
+        raise _bad("arms", f"arms must be 1-4 unique values from {list(CORE_ARMS)}")
     if target["strategy"] == "untargeted" and set(arms) - {"untargeted", "real_only"}:
         raise _bad("arms", "target strategy 'untargeted' allows only the arms 'untargeted' and 'real_only' "
                            "(the matched control needs a target)")
@@ -167,12 +180,12 @@ def resolve(kind: str, norm: dict, preset: Config, job_id: str, runs_root: Path,
     cfg.name, cfg.output_dir, cfg.db = f"pl_{job_id}", str((runs_root / job_id).resolve()), db
     cfg.model, cfg.job_id, cfg.mode = norm["model"], job_id, mode
     if mode == "paper":
-        arms = list(ARMS)
+        arms = list(cfg.data.get("arms") or CORE_ARMS)
         ratios = [float(r) for r in cfg.data.get("ratios", [3])]
         main_ratio = float(cfg.data.get("main_ratio", ratios[0]))
         benchmarks = cfg.eval.get("benchmarks") or default_benchmarks(cfg)
         limit = None
-        target = {"strategy": "auto"}
+        target = {"strategy": cfg.data.get("target_strategy", "auto")}
     else:
         benchmarks = norm.get("benchmarks") or list(DEFAULT_EXPLORE_BENCHMARKS)
         limit = preset.eval.get("benchmark_limit") if norm.get("benchmark_limit") == "default" else norm.get("benchmark_limit")
@@ -192,6 +205,7 @@ def resolve(kind: str, norm: dict, preset: Config, job_id: str, runs_root: Path,
         "benchmarks": list(benchmarks), "benchmark_limit": limit, "arms": list(arms), "ratios": ratios,
         "main_ratio": main_ratio, "seeds": list(cfg.seeds), "prompt_version": cfg.prompt_version,
         "target_request": target, "include_diagnosis": norm.get("include_diagnosis", True),
+        "protocol": norm.get("protocol") if mode == "paper" else None, "reference": None,
         "config_hash": config_hash(cfg), "baseline_hash": baseline_hash(cfg, list(benchmarks), limit, revision),
         "diagnosis_hash": (diagnosis_hash(cfg, revision)
                            if kind == "pipeline" or norm.get("include_diagnosis", True) else None),
@@ -305,6 +319,36 @@ def plan_paper_reuse(store: Store, cfg: Config, resolved: dict) -> dict | None:
     return None
 
 
+# Settings that must be identical for a multi-weakness run's arms to sit in one table with an earlier
+# single-weakness run's arms (PLAN.md §16): everything that shapes training and evaluation.
+REFERENCE_KEYS = ("prompt_version", "generation", "diagnose", "train", "eval", "seeds", "real_data", "eval_data")
+REFERENCE_DATA_KEYS = ("token_budget", "pool_size", "natural_size", "p_band", "main_ratio", "solution_style",
+                       "dev_holdout")
+
+
+def plan_reference(store: Store, cfg: Config, resolved: dict) -> dict:
+    """The newest finished single-weakness paper run of the same model whose training and evaluation settings equal
+    this run's: its trained arms are the comparison arms of a multi-weakness run (they are not retrained)."""
+    for src in store.list_jobs(kind="pipeline", mode="paper"):
+        r = src["resolved"]
+        if (src["status"] != "done" or r.get("model") != cfg.model
+                or r.get("model_revision") != resolved["model_revision"]
+                or (r.get("protocol") or DEFAULT_PROTOCOL) != DEFAULT_PROTOCOL):
+            continue
+        ref, mine = Config(**r["config"]), asdict(cfg)
+        diff = [k for k in REFERENCE_KEYS if asdict(ref)[k] != mine[k]]
+        diff += [f"data.{k}" for k in REFERENCE_DATA_KEYS if ref.data.get(k) != cfg.data.get(k)]
+        if diff:
+            raise JobError("reuse_mismatch", f"the newest finished single-weakness paper run of {cfg.model} "
+                           f"({src['id']}) used different settings ({', '.join(diff)}); its trained models cannot be "
+                           "compared with this run", {"reference": src["id"], "differs": diff})
+        evals = [s["run_ids"][0] for s in store.get_steps(src["id"]) if s["stage"] == "evaluate" and s["run_ids"]]
+        return {"job_id": src["id"], "eval_run_ids": evals,
+                "git_commit": ((src.get("provenance") or {}).get("git") or {}).get("commit")}
+    raise JobError("reuse_mismatch", f"the multi-weakness protocol compares with an earlier single-weakness paper run "
+                   f"of {cfg.model}, but there is no finished one")
+
+
 # ------------------------------------------------------------------ create
 def create_job_from_request(store: Store, kind: str, request: dict, presets: dict[str, Config] | None = None,
                             known_models: list[str] | None = None, runs_root: str | Path = "runs/pipelines",
@@ -319,8 +363,11 @@ def create_job_from_request(store: Store, kind: str, request: dict, presets: dic
     else:
         raise JobError("validation_error", f"unknown job kind {kind!r}")
     job_id = uuid.uuid4().hex[:12]
-    db = str(getattr(store, "path", "")) or presets[norm["mode"]].db
-    cfg, resolved = resolve(kind, norm, presets[norm["mode"]], job_id, Path(runs_root), db)
+    preset = presets[preset_key(norm)]
+    db = str(getattr(store, "path", "")) or preset.db
+    cfg, resolved = resolve(kind, norm, preset, job_id, Path(runs_root), db)
+    if norm.get("protocol") == "multi_weakness":
+        resolved["reference"] = plan_reference(store, cfg, resolved)
     steps = build_steps(kind, resolved)
     reuse = None
     if kind == "pipeline" and norm.get("reuse_from"):

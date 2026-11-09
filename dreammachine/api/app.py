@@ -35,7 +35,7 @@ from .. import __version__
 from ..diagnosis.align import ReferenceTrace
 from ..diagnosis.lltm import fit_lltm
 from ..diagnosis.taxonomy import classify
-from ..experiments.pipeline import ARMS, Config
+from ..experiments.pipeline import CORE_ARMS, Config
 from ..generator.families import FAMILIES
 from ..generator.features import FEATURES
 from ..generator.sampler import GenerationError, GenSpec, generate_many
@@ -53,7 +53,7 @@ from ..provenance import package_versions
 from ..store.db import Store
 from . import schemas as S
 
-API_VERSION = "0.2.2"          # must equal "Contract version" in docs/API_CONTRACT.md (tests/test_api_contract.py)
+API_VERSION = "0.3.0"          # must equal "Contract version" in docs/API_CONTRACT.md (tests/test_api_contract.py)
 PREFIX = "/api/v1"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CORS = ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000", "http://127.0.0.1:3000"]
@@ -63,7 +63,8 @@ HTTP_STATUS = {"not_found": 404, "conflict": 409, "not_ready": 409, "paper_prote
 WORKER_STALE_S = 30
 DIAG_EXTRA = ("lastline", "lastline_v0", "format_ok", "truncated")   # contract 0.2.1
 LOG_CHUNK = 64 * 1024
-ARM_KEY = re.compile(r"^(real_only|untargeted|matched_control|targeted)_r\d+(\.\d+)?_s\d+$")
+ARM_KEY = re.compile(r"^(real_only|untargeted|matched_control|targeted|multi_targeted|multi_matched_control)"
+                     r"_r\d+(\.\d+)?_s\d+$")
 log = logging.getLogger("dreammachine.api")
 
 FEATURE_LABELS = {
@@ -90,6 +91,10 @@ ARM_LABELS = {
     "untargeted": ("Untargeted", "Synthetic problems drawn at random, not aimed at any weakness."),
     "matched_control": ("Matched control", "Equally hard problems, hard for a different reason."),
     "targeted": ("Targeted", "Synthetic problems aimed at the model's biggest weakness."),
+    "multi_targeted": ("Multi-weakness targeted", "Synthetic problems aimed at all of the model's significant "
+                       "weaknesses at once, each in proportion to how much it hurts."),
+    "multi_matched_control": ("Multi-weakness control", "Equally hard problems, picked without regard to which "
+                              "weakness makes them hard."),
 }
 
 
@@ -299,7 +304,9 @@ def create_app(store: Store | None = None, components_path: Path | None = None,
                          "benchmark_limit": r.get("benchmark_limit"), "arms": r.get("arms", []),
                          "ratios": r.get("ratios", []), "seeds": r.get("seeds", []),
                          "prompt_version": r.get("prompt_version"), "config_hash": job["config_hash"],
-                         "baseline_hash": job["baseline_hash"], "diagnosis_hash": job["diagnosis_hash"]},
+                         "baseline_hash": job["baseline_hash"], "diagnosis_hash": job["diagnosis_hash"],
+                         "protocol": r.get("protocol"),
+                         "reference_job": (r.get("reference") or {}).get("job_id")},
             "progress": {"done_steps": n_done, "total_steps": len(steps),
                          "fraction": n_done / len(steps) if steps else 0.0},
             "eta_s": eta(job, steps), "output_dir": job["output_dir"] or "",
@@ -436,7 +443,7 @@ def create_app(store: Store | None = None, components_path: Path | None = None,
         ex, pp = get_presets()["explore"], get_presets()["paper"]
         ratios = [float(r) for r in pp.data.get("ratios", [3])]
         main_ratio = float(pp.data.get("main_ratio", ratios[0]))
-        n_keys = len(arm_keys(list(ARMS), ratios, main_ratio, list(pp.seeds), paper=True))
+        n_keys = len(arm_keys(list(CORE_ARMS), ratios, main_ratio, list(pp.seeds), paper=True))
         return {"explore": {"defaults": {"benchmarks": DEFAULT_EXPLORE_BENCHMARKS,
                                          "benchmark_limit": ex.eval.get("benchmark_limit"),
                                          "target": {"strategy": "auto"}, "arms": ["targeted", "matched_control"],
@@ -445,9 +452,9 @@ def create_app(store: Store | None = None, components_path: Path | None = None,
                                         "max_seeds": len(ALLOWED_SEEDS), "min_benchmark_limit": MIN_BENCHMARK_LIMIT}},
                 "paper": {"description": "Fixed protocol: 4 arms incl. matched control, 3 seeds, ratios "
                                          f"{'/'.join(f'{r:g}' for r in ratios)} for targeted, equal token budget.",
-                          "fixed": {"arms": list(ARMS), "seeds": list(pp.seeds), "main_ratio": main_ratio,
+                          "fixed": {"arms": list(CORE_ARMS), "seeds": list(pp.seeds), "main_ratio": main_ratio,
                                     "targeted_ratios": ratios},
-                          "settable": ["name", "model"], "n_steps": 5 + 2 * n_keys + 1},
+                          "settable": ["name", "model", "protocol"], "n_steps": 5 + 2 * n_keys + 1},
                 "prompt_versions": sorted(PROMPTS), "default_prompt_version": DEFAULT_PROMPT}
 
     @api.get("/components", response_model=list[S.Component])
