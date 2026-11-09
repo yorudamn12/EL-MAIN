@@ -307,10 +307,12 @@ python -m dreammachine.jobs run --preset explore --model Qwen/Qwen3-0.6B --limit
 python -m dreammachine.jobs run --kind benchmark_run --model Qwen/Qwen3-1.7B --limit 300
 python -m dreammachine.jobs run --preset explore --model Qwen/Qwen3-1.7B --target feature:n_carry --reuse-from <job id>
 python -m dreammachine.jobs run --preset paper --model Qwen/Qwen3-0.6B            # the full protocol: days
+python -m dreammachine.jobs enqueue --preset paper --protocol multi_weakness --model Qwen/Qwen3-0.6B   # all weaknesses at once
 
 # Or queue jobs and let a worker run them in the background
 python -m dreammachine.jobs enqueue --preset explore --model Qwen/Qwen3-0.6B --limit 50
 python -m dreammachine.jobs.worker          # keep this window open; Ctrl+C stops it
+python -m dreammachine.jobs.worker --auto-resume   # after a crash or power cut, restart interrupted jobs at once
 
 python -m dreammachine.jobs list            # all jobs, newest first
 python -m dreammachine.jobs show <job id>   # steps and status of one job
@@ -332,6 +334,7 @@ Options of `run` / `enqueue`:
 | `--arms ...`, `--ratio N`, `--seeds ...` | Which training sets, the mix ratio, the random seeds. |
 | `--reuse-from <job id>` | Skip the baseline of an earlier matching run. |
 | `--no-diagnosis` | Benchmark run without the diagnosis step. |
+| `--protocol single_weakness\|multi_weakness` | Paper runs only. `multi_weakness` trains on all significant weaknesses at once and is compared with the earlier single-weakness paper run of the same model (`PLAN.md` §16). |
 
 ### 8.2 Benchmark a model directly
 ```powershell
