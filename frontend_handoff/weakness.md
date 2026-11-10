@@ -122,3 +122,20 @@ In plain words:
   different from the matched control there.
 
 Full numbers: `docs/RUNNING.md` §15.
+
+### Training on all weaknesses at once (multi-weakness runs, 2026-11-09/10; `docs/RUNNING.md` §16, §18)
+Held-out probe accuracy above each weakness's threshold, before → after (mean of 3 seeds):
+
+| Model | Training data | steps | division | multiplication | distractors | big numbers |
+|---|---|---|---|---|---|---|
+| 0.6B | aimed at long problems only | 0.18 → 0.54 | 0.07 → 0.35 | 0.29 → 0.54 | 0.30 → 0.55 | 0.39 → 0.58 |
+| 0.6B | **aimed at all 5 weaknesses** | 0.18 → 0.70 | 0.07 → 0.72 | 0.29 → 0.74 | 0.30 → 0.73 | 0.39 → 0.77 |
+| 0.6B | just as hard, other reason (control) | 0.18 → 0.66 | 0.07 → 0.65 | 0.29 → 0.68 | 0.30 → 0.68 | 0.39 → 0.74 |
+| 1.7B | aimed at long problems only | 0.41 → 0.86 | 0.18 → 0.76 | 0.44 → 0.88 | 0.52 → 0.87 | — |
+| 1.7B | **aimed at all 4 weaknesses** | 0.41 → 0.86 | 0.18 → 0.81 | 0.44 → 0.89 | 0.52 → 0.88 | — |
+| 1.7B | just as hard, other reason (control) | 0.41 → 0.88 | 0.18 → 0.81 | 0.44 → 0.88 | 0.52 → 0.89 | — |
+
+In plain words: aiming at every weakness fixes them all for 0.6B (the single-weakness data left division at 35%) and
+beats the control a little on new problem stories; for 1.7B everything is near the top and there is no difference.
+On real test problems (GSM8K) nothing changes: every trained model is ~15-23 points worse, the solution-style cost.
+

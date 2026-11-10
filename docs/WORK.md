@@ -131,6 +131,15 @@ Doc edits during a run are committed at once (a run checks for a clean repo when
 - The diagnosis found the same main weakness (many steps), but milder; training on any generated data made long
   problems easy (41% → 86-89%), so the arms are almost equal on the probes.
 
+### 5.3c Multi-weakness runs (numbers in `docs/RUNNING.md` §16 and §18)
+- Both models were trained on all their significant weaknesses at once (0.6B: 5, 1.7B: 4), against a control that is
+  exactly as hard (2026-11-09/10; jobs `76f2c9af5ea9`, `4e6b61903c00`; both paper-eligible).
+- **Real test problems: again no difference** from the control (GSM8K −0.023 for 0.6B, +0.007 for 1.7B; both CIs
+  include 0). Every trained model still loses ~15-23 points on GSM8K (the solution-style cost, RUNNING.md §17).
+- **Generated problems:** for 0.6B, aiming at all weaknesses fixes the single-weakness flaw (+0.17 over single
+  targeting on new problem families) and is slightly better than the control (+0.05). For 1.7B there is no difference:
+  its probes are near the top and the control carries almost the same weaknesses.
+
 ### 5.4 How the diagnosis (and everything else) is saved on this laptop
 Yes — when a model is weak at, for example, multi-step problems, that is written down, in three places:
 
@@ -161,6 +170,8 @@ Where to look now: Qwen3-0.6B → `runs/pipelines/04f319d1cca7/` (diagnosis made
 ## 6. Next steps
 
 **Claude:**
+- 2026-11-10: both multi-weakness paper runs done and written up (RUNNING.md §16, §18, §17 for the GSM8K
+  drop); paper draft in `paper/`.
 - 2026-11-09: multi-weakness protocol built (PLAN.md §16, D17; contract 0.3.0): train on all significant
   weaknesses at once (0.6B: 5, 1.7B: 4) and compare with the existing paper runs; CPU-verified (205 tests) and a CPU
   dry run of the real data building. GPU runs not started yet.

@@ -31,6 +31,19 @@ in this folder; this file says *what changed and what to do about it*.
 
 ---
 
+### 2026-11-10 — Second multi-weakness results (Qwen3-1.7B) — contract 0.3.0 (unchanged)   [non-breaking]
+**Why:** the 1.7B multi-weakness paper run `4e6b61903c00` finished (paper-eligible); a second 6-arm results page.
+**What changed (backend):**
+- Data only: `GET /pipelines?mode=paper` lists `4e6b61903c00` (`resolved.protocol: "multi_weakness"`,
+  `resolved.reference_job: "409305f3e2f2"`). 4 targets (`steps`, `n_div`, `n_mul`, `n_distractors`), so
+  `weakness_slices` has 4 features here (5 for 0.6B) — do not hard-code the feature list.
+- Its step 16 shows one failed attempt in the log (CUDA out-of-memory) before succeeding; final status `done`.
+- `primary`: GSM8K +0.007 [−0.020, +0.033], not significant.
+**What the frontend must do:** results screen: check it renders 4 target weights and 4 weakness-slice columns for this
+run; nothing else.
+**How to check it:** `GET /api/v1/pipelines/4e6b61903c00/results`; numbers in `docs/RUNNING.md` §18.
+**Files to refresh:** none (contract unchanged).
+
 ### 2026-11-10 — First multi-weakness results (Qwen3-0.6B) — contract 0.3.0 (unchanged)   [non-breaking]
 **Why:** the 0.6B multi-weakness paper run `76f2c9af5ea9` finished; it is the first results page with 6 arms.
 **What changed (backend):**

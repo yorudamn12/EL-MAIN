@@ -586,3 +586,40 @@ and after.
 4. This matches §10-13: not hyper-parameters, not the synthetic data (real_only loses as much); only training on the
    model's own solutions shrinks the loss, at the cost of the targeted gain. All arms share the cost, so arm-vs-arm
    comparisons stay fair.
+
+## 18. Multi-weakness paper run, Qwen3-1.7B — GPU-verified, PAPER, paper-eligible, 2026-11-10
+Job `4e6b61903c00` (commit `21439f9`, clean tree), same protocol as §16; reference run `409305f3e2f2` (§15). Targets:
+`steps` 0.49, `n_div` 0.29, `n_mul` 0.14, `n_distractors` 0.09. Full tables: `runs/pipelines/4e6b61903c00/report.md`.
+**Timing:** training ~1.5 h, evaluation ~15 min per arm; whole run ~10.5 h. The last evaluation failed once at 18:28
+with a CUDA out-of-memory error while loading the adapter, 36 s after the previous training ended (the GPU was free
+again a minute later); resumed with the same settings, all finished steps kept.
+**Match quality (both multi runs):** mean |Δlogit| ≤ 0.0002, KS ≤ 0.002 for every seed. **Composition:** on 1.7B the
+control is almost identical to multi_targeted in which weaknesses its items carry (share of items above threshold:
+`steps` 0.73 vs 0.74, `n_div` 0.57 vs 0.53, `n_mul` 0.65 vs 0.59, `n_distractors` 0.74 vs 0.72); on 0.6B they differ
+mainly in `steps` (0.53 vs 0.39). Equal predicted difficulty forces similar composition, as expected (PLAN.md §16).
+
+| Arm (mean of 3 seeds) | GSM8K | GSM-Symbolic | probes train fam. | probes held-out fam. |
+|---|---|---|---|---|
+| untrained | 0.815 | 0.773 | 0.625 | 0.583 |
+| targeted 3:1 (§15) | 0.663 (−0.15) | 0.593 (−0.17) | 0.963 (+0.32) | 0.872 (+0.30) |
+| matched_control 3:1 (§15) | 0.652 (−0.16) | 0.578 (−0.18) | 0.946 (+0.30) | 0.919 (+0.35) |
+| untargeted 3:1 (§15) | 0.660 (−0.15) | 0.600 (−0.16) | 0.973 (+0.33) | 0.926 (+0.36) |
+| **multi_targeted 3:1** | 0.666 (−0.15) | 0.600 (−0.16) | 0.980 (+0.34) | 0.884 (+0.31) |
+| **multi_matched_control 3:1** | 0.659 (−0.15) | 0.592 (−0.17) | 0.963 (+0.32) | 0.906 (+0.34) |
+
+**Primary (multi_targeted − multi_matched_control):** GSM8K +0.007 [−0.020, +0.033], p 0.65; GSM-Symbolic +0.008
+[−0.027, +0.043], p 0.66; train-family probes +0.017 [+0.000, +0.037], p 0.06; held-out probes −0.022 [−0.052,
++0.007], p 0.14 — **no difference anywhere.** multi_targeted − targeted: all n.s. (held-out +0.012). multi_targeted −
+untargeted: held-out −0.042 [−0.072, −0.015] (the only significant difference).
+
+Held-out probes above each threshold (before → after): multi_targeted `steps` 0.41 → 0.86, `n_div` 0.18 → 0.81,
+`n_mul` 0.44 → 0.89, `n_distractors` 0.52 → 0.88; multi control 0.88 / 0.81 / 0.88 / 0.89; single targeted 0.86 /
+0.76 / 0.88 / 0.87; untargeted 0.89 / 0.89 / 0.93 / 0.92.
+
+**Findings**
+1. Same as every other comparison: no targeting benefit on real problems (all trained arms −0.15 to −0.16 on GSM8K).
+2. Unlike 0.6B (§16), multi-targeting gives no edge on held-out probes: the 1.7B probes are near the ceiling
+   (0.88-0.98) and the multi control's composition is almost the same as multi_targeted's.
+3. Multi-targeting raised `n_div` (0.76 → 0.81 vs single targeted) but untargeted data still does best (0.89).
+4. Answer-level GSM8K check (§17 method): both multi arms on both models write 4-line answers (≈210 chars vs 728/808);
+   lost answers are 56-57% PLAN_ERROR and 23-28% ARITHMETIC_SLIP — the same style cost.
