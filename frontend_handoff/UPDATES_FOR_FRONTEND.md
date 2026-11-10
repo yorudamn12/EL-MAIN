@@ -31,6 +31,22 @@ in this folder; this file says *what changed and what to do about it*.
 
 ---
 
+### 2026-11-10 — First multi-weakness results (Qwen3-0.6B) — contract 0.3.0 (unchanged)   [non-breaking]
+**Why:** the 0.6B multi-weakness paper run `76f2c9af5ea9` finished; it is the first results page with 6 arms.
+**What changed (backend):**
+- Data only: `GET /pipelines?mode=paper` now lists `76f2c9af5ea9` (status `done`, `paper_eligible: true`,
+  `resolved.protocol: "multi_weakness"`, `resolved.reference_job: "80b37628b193"`). No route, field or enum changed.
+- Its `/results` has 6 arms: 4 with `source_job: "80b37628b193"`, 2 (`multi_*`) with `source_job: "76f2c9af5ea9"`;
+  `target.strategy: "multi"` with 5 `targets`; `weakness_slices` filled for every arm; `primary.a/b` =
+  `multi_targeted` / `multi_matched_control` (GSM8K −0.023 [−0.051, +0.006], not significant).
+- The report has a per-weakness table and a warning naming the reference run's commit.
+**What the frontend must do:**
+- Results screen: check it renders 6 arms, shows "trained in run 80b37628b193" for the 4 reused arms, the 5-target
+  header (feature + weight), and a per-weakness slice table from `weakness_slices`.
+- Nothing else; the 1.7B run (`4e6b61903c00`) will add a second such page (~2026-11-11).
+**How to check it:** `GET /api/v1/pipelines/76f2c9af5ea9/results` against the screen; numbers in `docs/RUNNING.md` §16.
+**Files to refresh:** none (contract unchanged).
+
 ### 2026-11-09 — Multi-weakness paper protocol — contract 0.2.2 → 0.3.0   [non-breaking for requests; results may show 6 arms]
 **Why:** the single-weakness paper runs found no targeting benefit, so the user decided (2026-11-09) to train each model on
 **all** its significant weaknesses at once (0.6B: 5, 1.7B: 4), from the base model, against an equally hard control.
