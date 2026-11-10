@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Targeting or Difficulty? (draft)</title>
+<style>
+  @page { size: A4; margin: 22mm 20mm 22mm 20mm; }
+  body { font-family: "Cambria", "Times New Roman", serif; font-size: 10.8pt; line-height: 1.42; color: #111; margin: 0; }
+  h1 { font-size: 17pt; text-align: center; margin: 0 0 6pt; line-height: 1.25; }
+  .meta { text-align: center; margin-bottom: 14pt; font-size: 10.5pt; }
+  .todo { color: #c00000; font-weight: 600; }
+  .abstract { margin: 0 8% 16pt; font-size: 10pt; }
+  .abstract h3 { text-align: center; font-size: 10.5pt; margin: 0 0 4pt; }
+  h2 { font-size: 12.5pt; margin: 16pt 0 5pt; }
+  h3.sub { font-size: 11pt; margin: 12pt 0 4pt; }
+  p { margin: 0 0 7pt; text-align: justify; hyphens: auto; }
+  .para { font-weight: 700; }
+  ol, ul { margin: 0 0 7pt 18pt; padding: 0; }
+  li { margin-bottom: 3pt; text-align: justify; }
+  .tt { font-family: Consolas, "Courier New", monospace; font-size: 9.6pt; }
+  .eq { text-align: center; margin: 7pt 0; font-style: italic; }
+  .eq .n { float: right; font-style: normal; }
+  table { border-collapse: collapse; margin: 6pt auto 4pt; font-size: 9.2pt; }
+  th, td { padding: 2.2pt 6pt; text-align: center; }
+  td.l, th.l { text-align: left; }
+  thead tr:first-child th { border-top: 1.4pt solid #000; }
+  thead tr:last-child th { border-bottom: 0.8pt solid #000; }
+  tbody tr:last-child td { border-bottom: 1.4pt solid #000; }
+  tr.sep td { border-top: 0.6pt solid #000; }
+  .cap { font-size: 9.2pt; margin: 10pt 4% 2pt; text-align: justify; }
+  .fig { break-inside: avoid; margin-bottom: 10pt; }
+  .refs p { font-size: 9.4pt; text-align: left; margin-bottom: 4pt; padding-left: 22pt; text-indent: -22pt; }
+  .sc { font-variant: small-caps; }
+</style>
+</head>
+<body>
+
+<h1>Targeting or Difficulty? A Controlled Test of Weakness-Targeted<br>Synthetic Fine-Tuning for Small Language Models</h1>
+<div class="meta"><span class="todo">[TODO: author names and affiliations]</span><br>Draft, 10 November 2026</div>
+
+<div class="abstract">
+<h3>Abstract</h3>
+<p>Recent methods diagnose where a language model fails and then fine-tune it on data built around those failures.
+Such data is, almost by definition, harder for the model than the data it is compared with, so an observed gain may
+come from difficulty rather than from aiming at the right skill. We separate the two. A program generates arithmetic
+word problems from computation graphs, so every problem's skill profile (number of steps, operation counts,
+magnitude, distractors) is known exactly instead of being tagged by another model. A Linear Logistic Test Model
+fitted to the model's answers on a fully crossed probe set ranks these factors by their effect on accuracy. We then
+train four arms at an equal token budget: real problems only, untargeted generated problems, problems aimed at the
+strongest weakness, and a control whose problems are matched one-to-one on predicted difficulty but are hard for a
+different reason. On Qwen3-0.6B and Qwen3-1.7B, fine-tuned with QLoRA on a single 8&nbsp;GB laptop GPU (three seeds
+each), both models show the same weakness (long multi-step problems), and aiming at it shrinks that factor's
+estimated effect more than any other arm. Yet the targeted arm is no better than the matched control on GSM8K or
+GSM-Symbolic (differences between &minus;0.012 and +0.015, all intervals spanning zero), and on held-out generated
+problems it is <em>worse</em> (&minus;0.158 for 0.6B, &minus;0.047 for 1.7B). Every fine-tuned arm, including the
+one trained only on real GSM8K problems, loses 14&ndash;24 points on GSM8K. A paired answer-level analysis traces this
+loss to the terse style of the training solutions: the models stop restating the given facts and make more planning
+errors.</p>
+</div>
+
+<h2>1&nbsp;&nbsp;Introduction</h2>
+<p>Small open models (below about two billion parameters) can be adapted on consumer hardware, which makes them an
+attractive target for cheap, focused improvement. A common recipe has two stages: first find out what the model is
+bad at, then synthesise training examples that exercise exactly those skills [1&ndash;4]. Reported gains are usually
+measured against randomly drawn or untargeted data.</p>
+<p>That comparison has a built-in confound. Data selected because the model fails on it is harder for the model than
+random data. Training on harder examples can help for reasons that have nothing to do with which skill they exercise,
+for example because they carry more learning signal per token. Some methods already restrict training problems to a
+band of pass rates [3], which narrows the gap, but to our knowledge no study has held difficulty fixed while varying
+only <em>why</em> the problems are hard. Without that, a targeting method cannot show that its targeting is what
+helps.</p>
+<p>This paper runs that test for multi-step arithmetic word problems. Our design has three parts.</p>
+<ol>
+  <li><b>Exact skill profiles.</b> Every training and probe problem is produced from a computation graph by a program,
+  so its features are computed rather than annotated by a language model.</li>
+  <li><b>A statistical diagnosis.</b> A Linear Logistic Test Model (LLTM) [5] fitted on a fully crossed probe set
+  gives each factor's effect on the log-odds of a correct answer, with bootstrap intervals.</li>
+  <li><b>A difficulty-matched control.</b> For every targeted problem we pick an off-target problem with the same
+  predicted difficulty under the fitted model, so the two arms differ only in which factor makes problems hard.</li>
+</ol>
+<p><span class="para">Findings.</span> On two model sizes the answer is the same: targeting does what it says on the
+narrow measure (the targeted factor's effect shrinks most), but it does not translate into better accuracy on real
+benchmarks, and on held-out generated problems the off-target control does better. We also document a large accuracy
+cost shared by every fine-tuned arm and give an answer-level account of where it comes from. All experiments run on
+one RTX&nbsp;4060 laptop GPU with 8&nbsp;GB of memory.</p>
+
+<h2>2&nbsp;&nbsp;Related Work</h2>
+<p><span class="para">Weakness-driven data synthesis.</span> CRAFT clusters rubric criteria into a capability tree,
+scores a model per node and generates fine-tuning data for the weakest nodes using a teacher model [1]. Luo et al. [2]
+diagnose skills with a cognitive diagnosis model over a skill matrix tagged by a language model, generate candidates
+and keep those within an uncertainty band, in an iterative self-training loop. SwS identifies problems a model fails
+during reinforcement learning and synthesises new problems from their concepts, keeping only those the model solves
+part of the time [3]. Self-Error-Instruct groups a model's own error types and synthesises examples per type [4].
+These methods differ in how they diagnose and generate, but they evaluate targeting mainly against untargeted or
+random data. Our contribution is the difficulty-matched comparison, made possible by skill profiles that are exact by
+construction.</p>
+<p><span class="para">Programmatic arithmetic data.</span> Gangwar et al. [6] show that programmatically generated
+arithmetic data can improve the mathematical reasoning of smaller models, either as an intermediate fine-tuning stage
+or mixed into instruction data. Our generator is in this spirit, but we use it to diagnose and to control the data,
+not only to supply more of it. GSM-Symbolic [7] builds templated variants of GSM8K [8] to measure robustness; we use
+it only as an evaluation set.</p>
+<p><span class="para">Item response models.</span> The LLTM [5] explains item difficulty as a weighted sum of item
+properties; it belongs to the family of explanatory item response models [9]. Because our probe items are generated
+from a crossed design, the factor weights can be read as the effect of changing one property while the others are
+held fixed.</p>
+<p><span class="para">Forgetting during fine-tuning.</span> Narrow supervised fine-tuning can erode abilities a model
+had before [10]. Low-rank adapters [11, 12] reduce but do not remove this [13]. Online reinforcement learning appears
+to forget less than supervised learning on external text [14], and mixing in the model's own generations counters
+forgetting largely by matching its style [15]. Rejection sampling of a model's own solutions [16, 17] is another way
+to keep training text close to the model's distribution; Tong et al. [17] note that it under-represents hard
+problems unless more attempts are spent on them. The observation that supervised fine-tuning mostly shapes the
+format and style of answers [18] is directly relevant to the accuracy cost we report in Section&nbsp;5.3.</p>
+
+<h2>3&nbsp;&nbsp;Method</h2>
+<h3 class="sub">3.1&nbsp;&nbsp;Problems with exact skill profiles</h3>
+<p>Each problem is a directed acyclic graph whose leaves are the numbers stated in the text and whose internal nodes
+are the operations +, &minus;, &times;, &divide;, evaluated in exact rational arithmetic. A surface family (one of ten
+story types, eight used for training and two held out) turns the graph into English sentences. From the graph we
+compute a feature vector <i>q<sub>i</sub></i> with the following entries: <span class="tt">steps</span> (number of
+operation nodes), <span class="tt">log10_max</span> (log<sub>10</sub> of the largest intermediate value),
+<span class="tt">n_mul</span> and <span class="tt">n_div</span> (operation counts), <span class="tt">n_carry</span>
+(column carries and borrows), <span class="tt">n_distractors</span> (numeric sentences not used in the graph) and
+<span class="tt">has_merge</span> (whether two separate chains are combined). These features are exact for every
+generated problem.</p>
+
+<h3 class="sub">3.2&nbsp;&nbsp;Diagnosis with a Linear Logistic Test Model</h3>
+<p>The probe set crosses steps &isin; {2,&hellip;,7}, digits per number &isin; {1,&hellip;,4}, distractors &isin;
+{0,1,2} and three operation profiles (additive, mixed, multiplicative), giving 216 cells. We draw four problems per
+cell (864 problems) and sample three answers per problem at temperature 0.7. With <i>s<sub>i</sub></i> correct answers
+out of <i>n<sub>i</sub></i>, the model is</p>
+<div class="eq">logit P(correct<sub>i</sub>) = &theta; &minus; &Sigma;<sub>k</sub> q<sub>ik</sub> &eta;<sub>k</sub><span class="n">(1)</span></div>
+<p>where &theta; is the model's ability and &eta;<sub>k</sub> is the cost in log-odds of one unit of factor <i>k</i>.
+We fit (&theta;, &eta;) by maximum likelihood with a small ridge penalty on &eta; and obtain 95% intervals from 500
+bootstrap resamples of the items [19]. Because factors have different ranges, we rank them by a range-normalised
+effect</p>
+<div class="eq">E<sub>k</sub> = &eta;<sub>k</sub> (Q<sub>k</sub><sup>90</sup> &minus; Q<sub>k</sub><sup>10</sup>)<span class="n">(2)</span></div>
+<p>where <i>Q<sub>k</sub><sup>p</sup></i> is the <i>p</i>-th percentile of factor <i>k</i> over a pool of 5,000
+problems drawn from a GSM8K-like natural distribution. The target factor is the one with the largest
+<i>E<sub>k</sub></i> among those whose interval excludes zero, and the target threshold is the factor's natural
+median.</p>
+
+<h3 class="sub">3.3&nbsp;&nbsp;Four training arms at an equal budget</h3>
+<p>All arms receive 600,000 whitespace tokens of training text. Generated problems are mixed with real GSM8K training
+problems at a ratio of 3:1 (synthetic:real); the targeted arm is also run at 9:1.</p>
+<ul>
+  <li><b>real_only</b>: GSM8K training problems only.</li>
+  <li><b>untargeted</b>: generated problems from the natural distribution.</li>
+  <li><b>targeted</b>: generated problems above the target threshold whose predicted probability of a correct answer,
+  <i>p&#770;<sub>i</sub></i>, lies in [0.3, 0.7], drawn with weight <i>p&#770;<sub>i</sub></i>(1 &minus;
+  <i>p&#770;<sub>i</sub></i>), the information a single Bernoulli answer carries about ability.</li>
+  <li><b>matched_control</b>: generated problems at or below the target threshold. Each targeted problem is paired
+  greedily, without replacement, with the unused off-target problem whose predicted logit is closest.</li>
+</ul>
+<p>All candidates come from one generated pool of 40,000 problems. Match quality is reported as the mean absolute logit
+difference and the two-sample Kolmogorov&ndash;Smirnov statistic between the arms' predicted accuracies. When an arm
+would fall short of the token budget (the control's problems are shorter), the number of selected problems is sized
+by the shorter side and the pool is enlarged deterministically.</p>
+
+<h3 class="sub">3.4&nbsp;&nbsp;Error classification without annotation</h3>
+<p>Every wrong answer is assigned one label, in this order: <span class="sc">format_error</span> (no extractable
+answer), <span class="sc">arithmetic_slip</span> (a written equation is false), <span class="sc">unverifiable</span>
+(no equations to check), <span class="sc">distractor_use</span> (an operand equals an irrelevant number) and otherwise
+<span class="sc">plan_error</span>. Reference steps come from the graph for generated problems and from the calculator
+annotations for GSM8K. A human check of these labels (Cohen's &kappa; on 150 stratified answers) is prepared but not
+yet done <span class="todo">[TODO: run the human annotation and report &kappa;]</span>. GSM-Symbolic has no step
+annotations, so we report only its accuracy, not its error types.</p>
+
+<h2>4&nbsp;&nbsp;Experimental Setup</h2>
+<p><span class="para">Models and prompt.</span> Qwen3-0.6B and Qwen3-1.7B [20], thinking mode off, with the
+step-by-step math instruction recommended on the Qwen3 model card and a boxed final answer. On a 200-problem
+development slice of GSM8K-train this prompt was the most accurate of the three we tried for both models.</p>
+<p><span class="para">Training.</span> QLoRA [12]: 4-bit NF4 base, rank 16, &alpha; = 32, dropout 0.05, learning
+rate 2&times;10<sup>&minus;4</sup>, two epochs, effective batch 16, maximum length 512 tokens. Training solutions are
+short: GSM8K reference solutions and, for generated problems, one line per computation step. Each arm is trained from
+the base model with three seeds (0, 1, 2). One RTX&nbsp;4060 laptop GPU (8&nbsp;GB); a training run took about
+1.5&nbsp;h and an evaluation 15&ndash;26&nbsp;min.</p>
+<p><span class="para">Evaluation.</span> Greedy decoding, 512 new tokens, bf16 weights. After training, each model
+answers the first 300 GSM8K test problems, 200 GSM-Symbolic problems spread over its 100 templates, and 135 generated
+probe problems from each of the training and held-out families. The untrained model answers a superset of these, so
+every comparison is paired on the same problems. Differences are means over the three seeds with 95% intervals from a
+paired bootstrap over problems.</p>
+<p><span class="para">Protocol.</span> The configuration was fixed before the runs, each run started from a clean code
+version, and the reported numbers come from those runs only. A separate development study (Section&nbsp;5.3) used
+GSM8K training problems held out from training and is reported as exploratory.</p>
+
+<h2>5&nbsp;&nbsp;Results</h2>
+<h3 class="sub">5.1&nbsp;&nbsp;Diagnosis: both models fail on long problems</h3>
+<p>Table&nbsp;1 lists the significant factors. For both models the largest range-normalised effect is the number of
+steps, so the target is problems with more than four steps. The 0.6B model answers 36% of the 864 probe problems
+correctly and the 1.7B model 64%. Accuracy falls with each added step: from 73% at two steps to 14% at seven for
+0.6B, and from 89% to 37% for 1.7B. Division is the second factor for both. Carries are not significant for either
+model once the other factors are included, and the magnitude factor is significant only for 0.6B. McFadden's
+pseudo-R<sup>2</sup> [21] is 0.28 (0.6B) and 0.25 (1.7B).</p>
+
+<div class="fig">
+<p class="cap"><b>Table 1.</b> LLTM diagnosis on 864 crossed probe problems &times; 3 answers. &eta; with 95% bootstrap
+interval; <i>E</i> = range-normalised effect. Only factors whose interval excludes zero are listed.</p>
+<table>
+<thead>
+<tr><th class="l"></th><th colspan="2">Qwen3-0.6B</th><th colspan="2">Qwen3-1.7B</th></tr>
+<tr><th class="l">Factor</th><th>&eta; [95% CI]</th><th><i>E</i></th><th>&eta; [95% CI]</th><th><i>E</i></th></tr>
+</thead>
+<tbody>
+<tr><td class="l tt">steps</td><td>0.60 [0.49, 0.71]</td><td>2.99</td><td>0.37 [0.26, 0.48]</td><td>1.87</td></tr>
+<tr><td class="l tt">n_div</td><td>1.20 [0.97, 1.47]</td><td>1.20</td><td>1.10 [0.89, 1.34]</td><td>1.10</td></tr>
+<tr><td class="l tt">log10_max</td><td>0.29 [0.13, 0.45]</td><td>0.76</td><td colspan="2">not significant</td></tr>
+<tr><td class="l tt">n_mul</td><td>0.36 [0.15, 0.60]</td><td>0.72</td><td>0.27 [0.08, 0.48]</td><td>0.53</td></tr>
+<tr><td class="l tt">n_distractors</td><td>0.34 [0.18, 0.52]</td><td>0.34</td><td>0.33 [0.15, 0.50]</td><td>0.33</td></tr>
+</tbody>
+</table>
+</div>
+
+<p><span class="para">Match quality.</span> For 0.6B, all 9,977 requested targeted problems were matched (mean
+|&Delta;logit| = 0.006, KS = 0.034). For 1.7B the off-target pool was thinner in the difficulty band, and the match
+was looser (mean |&Delta;logit| = 0.32, KS = 0.27); we return to this in Section&nbsp;7.</p>
+
+<h3 class="sub">5.2&nbsp;&nbsp;Targeting versus difficulty</h3>
+<p>Table&nbsp;2 gives accuracy before and after training. Table&nbsp;3 gives the primary comparison, fixed before the
+runs: targeted minus matched control at 3:1.</p>
+
+<div class="fig">
+<p class="cap"><b>Table 2.</b> Accuracy (mean of 3 seeds). In brackets: change versus the untrained model on the same
+problems. Every GSM8K and GSM-Symbolic change has its 95% interval below zero. &ldquo;Probes&rdquo; are generated
+problems from the training families (train) or the two held-out families (held-out); &ldquo;&gt;4&rdquo; is the
+held-out slice with more than four steps.</p>
+<table>
+<thead>
+<tr><th class="l">Model</th><th class="l">Arm</th><th>GSM8K</th><th>GSM-Sym.</th><th>Probes train</th><th>Probes held-out</th><th>Held-out &gt;4</th></tr>
+</thead>
+<tbody>
+<tr><td class="l" rowspan="6">0.6B</td><td class="l">untrained</td><td>0.638</td><td>0.570</td><td>0.384</td><td>0.324</td><td>0.18</td></tr>
+<tr><td class="l">real_only</td><td>0.458 (&minus;0.20)</td><td>0.415 (&minus;0.16)</td><td>0.237 (&minus;0.13)</td><td>0.247 (&minus;0.10)</td><td>0.09</td></tr>
+<tr><td class="l">untargeted 3:1</td><td>0.447 (&minus;0.21)</td><td>0.418 (&minus;0.16)</td><td>0.941 (+0.58)</td><td>0.760 (+0.41)</td><td>0.71</td></tr>
+<tr><td class="l">matched ctrl 3:1</td><td>0.448 (&minus;0.21)</td><td>0.408 (&minus;0.17)</td><td>0.881 (+0.52)</td><td>0.760 (+0.41)</td><td>0.65</td></tr>
+<tr><td class="l">targeted 3:1</td><td>0.436 (&minus;0.22)</td><td>0.407 (&minus;0.17)</td><td>0.795 (+0.43)</td><td>0.602 (+0.25)</td><td>0.54</td></tr>
+<tr><td class="l">targeted 9:1</td><td>0.422 (&minus;0.24)</td><td>0.382 (&minus;0.19)</td><td>0.869 (+0.51)</td><td>0.704 (+0.36)</td><td>0.66</td></tr>
+<tr class="sep"><td class="l" rowspan="6">1.7B</td><td class="l">untrained</td><td>0.815</td><td>0.773</td><td>0.625</td><td>0.583</td><td>0.41</td></tr>
+<tr><td class="l">real_only</td><td>0.666 (&minus;0.15)</td><td>0.625 (&minus;0.14)</td><td>0.514 (&minus;0.13)</td><td>0.499 (&minus;0.07)</td><td>0.34</td></tr>
+<tr><td class="l">untargeted 3:1</td><td>0.660 (&minus;0.15)</td><td>0.600 (&minus;0.16)</td><td>0.973 (+0.33)</td><td>0.926 (+0.36)</td><td>0.89</td></tr>
+<tr><td class="l">matched ctrl 3:1</td><td>0.652 (&minus;0.16)</td><td>0.578 (&minus;0.18)</td><td>0.946 (+0.30)</td><td>0.919 (+0.35)</td><td>0.87</td></tr>
+<tr><td class="l">targeted 3:1</td><td>0.663 (&minus;0.15)</td><td>0.593 (&minus;0.17)</td><td>0.963 (+0.32)</td><td>0.872 (+0.30)</td><td>0.86</td></tr>
+<tr><td class="l">targeted 9:1</td><td>0.656 (&minus;0.16)</td><td>0.568 (&minus;0.19)</td><td>0.963 (+0.32)</td><td>0.894 (+0.32)</td><td>0.87</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="fig">
+<p class="cap"><b>Table 3.</b> Targeted minus matched control at 3:1: paired difference in accuracy with 95% bootstrap
+interval and <i>p</i>-value.</p>
+<table>
+<thead><tr><th class="l">Benchmark</th><th>Qwen3-0.6B</th><th>Qwen3-1.7B</th></tr></thead>
+<tbody>
+<tr><td class="l">GSM8K</td><td>&minus;0.012 [&minus;0.039, +0.014], <i>p</i> = 0.39</td><td>+0.011 [&minus;0.017, +0.039], <i>p</i> = 0.42</td></tr>
+<tr><td class="l">GSM-Symbolic</td><td>&minus;0.002 [&minus;0.037, +0.032], <i>p</i> = 0.93</td><td>+0.015 [&minus;0.020, +0.050], <i>p</i> = 0.41</td></tr>
+<tr><td class="l">Probes, train</td><td>&minus;0.086 [&minus;0.143, &minus;0.030], <i>p</i> = 0.003</td><td>+0.017 [&minus;0.010, +0.049], <i>p</i> = 0.24</td></tr>
+<tr><td class="l">Probes, held-out</td><td>&minus;0.158 [&minus;0.225, &minus;0.089], <i>p</i> &lt; 0.001</td><td>&minus;0.047 [&minus;0.094, &minus;0.000], <i>p</i> = 0.04</td></tr>
+</tbody>
+</table>
+</div>
+
+<p><span class="para">No benefit on real problems.</span> On GSM8K and GSM-Symbolic the targeted and matched-control
+arms are indistinguishable for both models; so are targeted and untargeted (0.6B: &minus;0.011 and &minus;0.012;
+1.7B: +0.003 and &minus;0.007; all intervals include zero).</p>
+<p><span class="para">The control wins on held-out generated problems.</span> On problems from the two held-out
+families the targeted arm is below the control for both models, and for 0.6B it is below the control even on the
+slice it was aimed at (problems with more than four steps: 0.54 versus 0.65). More synthetic data helps the targeted
+arm on probes (9:1 above 3:1 on every probe measure) but does not close the gap to untargeted data.</p>
+<p><span class="para">Targeting does reduce the targeted effect.</span> Refitting the LLTM after training shows that
+the targeted arm lowered the cost of an extra step far more than the other arms: for 0.6B, &Delta;&eta;<sub>steps</sub>
+= &minus;0.98 (targeted 3:1) and &minus;0.72 (9:1), against +0.05 (untargeted) and +0.23 (matched control). The other
+arms instead reduced the costs of multiplication and division (&Delta;&eta; between &minus;0.90 and &minus;1.76,
+against &minus;0.01 and &minus;0.14 for targeted 3:1). Long problems also contain multiplications and divisions, so
+the broader training data produced higher accuracy on them even though it made &ldquo;more steps&rdquo; no less
+costly. For 1.7B the refit is poorly identified, because the trained models answer 87&ndash;97% of probes correctly,
+and we do not interpret it.</p>
+
+<h3 class="sub">5.3&nbsp;&nbsp;Why every fine-tuned arm loses accuracy on GSM8K</h3>
+<p>All arms lose 14&ndash;24 points on GSM8K and GSM-Symbolic, including real_only, whose training data contains no
+generated problems at all. Before the main runs, a development study on 0.6B (200 held-out GSM8K training problems,
+one seed, exploratory) showed that the loss does not depend on the training settings we varied: a four-times lower
+learning rate, a single epoch, or a larger share of real problems all left it between &minus;0.20 and &minus;0.24.
+Rewriting every training solution into a longer fixed template made it worse (&minus;0.28), because the model began
+to repeat the template until it hit the token limit. Only replacing the training text with the base model's own
+verified solutions reduced it, to &minus;0.115 when 65% of the tokens were model-written and &minus;0.08 at 85%, but
+this also removed most of the gain on generated probes (+0.26 fell to +0.10 and +0.08).</p>
+<p>To locate the loss, we compared each fine-tuned model's answers with the untrained model's answers to the same 300
+GSM8K problems (Table&nbsp;4). Answer extraction is not the cause: almost no answer of either model lacks an
+extractable final number. The fine-tuned models write much shorter answers, about four lines instead of
+25&ndash;30, in the format of the training solutions. The untrained model typically begins by listing every given
+quantity and then solves one step per heading; the fine-tuned models skip that list. On problems that changed from
+correct to wrong, the largest share of new errors are planning errors (a quantity left out, or a relation such as
+&ldquo;ten times more than&rdquo; misread), followed by arithmetic slips in short inline sums. For 0.6B the rate of
+false equations rises (from about 6 to 6&ndash;14 per 100 equations); for 1.7B it barely changes, so its loss is
+almost entirely in planning.</p>
+
+<div class="fig">
+<p class="cap"><b>Table 4.</b> Paired answer-level comparison on the same 300 GSM8K test problems: untrained model
+versus each of the 15 fine-tuned models (5 arm settings &times; 3 seeds). &ldquo;Lost&rdquo; = answers correct before
+and wrong after training. Slip rates are approximate, because equations written in LaTeX by the untrained model are
+parsed less reliably.</p>
+<table>
+<thead>
+<tr><th class="l"></th><th colspan="2">Qwen3-0.6B</th><th colspan="2">Qwen3-1.7B</th></tr>
+<tr><th class="l"></th><th>untrained</th><th>fine-tuned</th><th>untrained</th><th>fine-tuned</th></tr>
+</thead>
+<tbody>
+<tr><td class="l">Accuracy</td><td>0.660</td><td>0.39&ndash;0.49</td><td>0.813</td><td>0.65&ndash;0.70</td></tr>
+<tr><td class="l">Median answer length (chars)</td><td>728</td><td>&asymp;215</td><td>808</td><td>&asymp;210</td></tr>
+<tr><td class="l">Median non-empty lines</td><td>25</td><td>4</td><td>30</td><td>4</td></tr>
+<tr><td class="l">False equations per 100</td><td>5.8</td><td>6&ndash;14</td><td>5.0</td><td>4&ndash;9</td></tr>
+<tr><td class="l">Lost / gained answers (pooled)</td><td colspan="2">1,222 / 241</td><td colspan="2">915 / 222</td></tr>
+<tr><td class="l">Lost answers: plan error</td><td colspan="2">50%</td><td colspan="2">55%</td></tr>
+<tr><td class="l">Lost answers: arithmetic slip</td><td colspan="2">32%</td><td colspan="2">24%</td></tr>
+<tr><td class="l">Lost answers: distractor use</td><td colspan="2">9%</td><td colspan="2">12%</td></tr>
+<tr><td class="l">Lost answers: unverifiable</td><td colspan="2">9%</td><td colspan="2">9%</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Our reading is that supervised fine-tuning on short reference solutions mainly teaches the output format [18], and
+in doing so overrides the longer reasoning format the model acquired in its own post-training. That format, in
+particular the habit of restating the given facts first, is part of what made the untrained model accurate. This is
+consistent with reports that self-generated text counters forgetting by matching the model's style [15]. Because all
+arms pay the same cost, the comparison between arms remains fair, but the cost limits the practical value of this
+training recipe.</p>
+
+<h2>6&nbsp;&nbsp;Discussion</h2>
+<p><span class="para">What the null result means.</span> In our setting the benefit of weakness-targeted data on real
+benchmarks is indistinguishable from the benefit of equally hard data that does not target the weakness, and from
+untargeted generated data. Studies that compare targeted data only with random data cannot tell these apart. The
+narrow diagnostic measure (the targeted factor's LLTM weight) moved as intended, which shows that the intervention
+worked on its own terms; it simply did not matter more than the broader skills the other arms improved.</p>
+<p><span class="para">Why aiming at one factor can hurt.</span> Real and generated long problems rarely fail for one
+reason. By concentrating on the number of steps, the targeted arm saw fewer multiplications and divisions than the
+control, and these remained costly. A single-factor target therefore trades one weakness for others. A natural next
+step is to spread the budget over all significant factors in proportion to their effect; we are running this
+extension and will report it separately.</p>
+<p><span class="para">Practical lesson.</span> On consumer hardware, a 0.6B or 1.7B model can be diagnosed, fine-tuned
+and re-evaluated with five arm settings and three seeds in one to two days, but supervised training on short solution
+text costs far more general accuracy than targeting can win back. Methods that keep the model's own reasoning style,
+such as rejection-sampled self-solutions with more attempts on hard problems [17] or on-policy reinforcement learning
+with the generator as an exact reward [3, 14], are the more promising direction.</p>
+
+<h2>7&nbsp;&nbsp;Limitations</h2>
+<ul>
+  <li><b>Match quality for 1.7B.</b> The 1.7B control was matched less closely (KS 0.27) than the 0.6B control
+  (KS 0.034). The 1.7B comparison should therefore be read as weaker evidence. <span class="todo">[TODO: decide
+  whether to rerun the 1.7B single-weakness control with the enlarged pool used in later runs]</span></li>
+  <li><b>Ceiling effects.</b> The fine-tuned 1.7B models answer 87&ndash;97% of generated probes correctly, which
+  limits how well the arms can be separated on probes and makes the post-training LLTM refit unreliable.</li>
+  <li><b>Evaluation size.</b> 300 GSM8K and 200 GSM-Symbolic problems per model give paired intervals of about
+  &plusmn;3 points; an effect of one or two points would not be detected.</li>
+  <li><b>Error labels.</b> The automatic error classifier has not yet been validated against human labels
+  <span class="todo">[TODO: report &kappa;]</span>, and GSM-Symbolic error types are not reported.</li>
+  <li><b>Scope.</b> One task family (arithmetic word problems), one model family (Qwen3), one training recipe (QLoRA
+  supervised fine-tuning on short solutions), three seeds.</li>
+  <li><b>Synthetic text.</b> Generated problems read less naturally than human-written ones, and the probes share the
+  generator with the training data, so part of the probe gains may be format learning; the held-out families reduce
+  but do not remove this.</li>
+</ul>
+
+<h2>8&nbsp;&nbsp;Conclusion</h2>
+<p>We built a controlled test of whether weakness-targeted synthetic data helps because it is targeted or because it
+is hard. With exact skill profiles, a fitted LLTM and a one-to-one difficulty-matched control, two small Qwen3 models
+show the same picture: targeting reduces the targeted factor's cost but brings no gain on GSM8K or GSM-Symbolic over
+equally hard off-target data, and it does worse on held-out generated problems. Separately, every supervised arm
+loses substantial real-benchmark accuracy because it imitates terse solution text. Both results argue that claims for
+targeted synthesis should be tested against a difficulty-matched control and alongside a check of general
+accuracy.</p>
+<p><span class="para">Reproducibility.</span> Code, configurations, run records and per-answer outputs are in the
+project repository <span class="todo">[TODO: public URL]</span>. Paper runs: <span class="tt">80b37628b193</span>
+(0.6B) and <span class="tt">409305f3e2f2</span> (1.7B).</p>
+
+<h2>References</h2>
+<div class="refs">
+<p>[1] V. Gupta, Z. Wang, R.-G. Dumitru, M. Rezaei, A. Sabharwal, and Y. He. CRAFT: Clustering rubrics to diagnose weak LLM capabilities and generate targeted fine-tuning data. arXiv:2607.16122, 2026.</p>
+<p>[2] X. Luo, Y. Huang, K. Guo, P. He, C. Zou, T. Hua, and X. Zhang. Learning from synthetic data without model collapse in iterative instruction tuning. arXiv:2607.17043, 2026.</p>
+<p>[3] X. Liang, Z.-Z. Li, Y. Gong, Y. Wang, H. Zhang, Y. Shen, Y. N. Wu, and W. Chen. SwS: Self-aware weakness-driven problem synthesis in reinforcement learning for LLM reasoning. arXiv:2506.08989, 2025.</p>
+<p>[4] E. Yu, J. Li, M. Liao, Q. Zhu, B. Xue, M. Xu, B. Wang, L. Hong, F. Mi, and L. Shang. Self-Error-Instruct: Generalizing from errors for LLMs mathematical reasoning. In <i>Proceedings of ACL 2025 (Volume 1: Long Papers)</i>, pages 8504&ndash;8519, 2025.</p>
+<p>[5] G. H. Fischer. The linear logistic test model as an instrument in educational research. <i>Acta Psychologica</i>, 37(6):359&ndash;374, 1973.</p>
+<p>[6] N. Gangwar, S. P. Bhat, and N. Kani. Integrating arithmetic learning improves mathematical reasoning in smaller models. arXiv:2502.12855, 2025.</p>
+<p>[7] I. Mirzadeh, K. Alizadeh, H. Shahrokhi, O. Tuzel, S. Bengio, and M. Farajtabar. GSM-Symbolic: Understanding the limitations of mathematical reasoning in large language models. arXiv:2410.05229, 2024.</p>
+<p>[8] K. Cobbe, V. Kosaraju, M. Bavarian, M. Chen, H. Jun, L. Kaiser, M. Plappert, J. Tworek, J. Hilton, R. Nakano, C. Hesse, and J. Schulman. Training verifiers to solve math word problems. arXiv:2110.14168, 2021.</p>
+<p>[9] P. De Boeck and M. Wilson, editors. <i>Explanatory Item Response Models: A Generalized Linear and Nonlinear Approach</i>. Springer, 2004.</p>
+<p>[10] J. Kirkpatrick et al. Overcoming catastrophic forgetting in neural networks. <i>Proceedings of the National Academy of Sciences</i>, 114(13):3521&ndash;3526, 2017.</p>
+<p>[11] E. J. Hu, Y. Shen, P. Wallis, Z. Allen-Zhu, Y. Li, S. Wang, L. Wang, and W. Chen. LoRA: Low-rank adaptation of large language models. arXiv:2106.09685, 2021.</p>
+<p>[12] T. Dettmers, A. Pagnoni, A. Holtzman, and L. Zettlemoyer. QLoRA: Efficient finetuning of quantized LLMs. arXiv:2305.14314, 2023.</p>
+<p>[13] D. Biderman et al. LoRA learns less and forgets less. arXiv:2405.09673, 2024.</p>
+<p>[14] I. Shenfeld, J. Pari, and P. Agrawal. RL's razor: Why online reinforcement learning forgets less. arXiv:2509.04259, 2025.</p>
+<p>[15] Y. Sun, M. Chen, T. Zhao, P. Miao, Z. Zhang, H. Shen, R. Zhu, and J. Yin. Talking to yourself: Defying forgetting in large language models. arXiv:2602.20162, 2026.</p>
+<p>[16] E. Zelikman, Y. Wu, J. Mu, and N. D. Goodman. STaR: Bootstrapping reasoning with reasoning. arXiv:2203.14465, 2022.</p>
+<p>[17] Y. Tong, X. Zhang, R. Wang, R. Wu, and J. He. DART-Math: Difficulty-aware rejection tuning for mathematical problem-solving. arXiv:2407.13690, 2024.</p>
+<p>[18] C. Zhou et al. LIMA: Less is more for alignment. arXiv:2305.11206, 2023.</p>
+<p>[19] B. Efron and R. J. Tibshirani. <i>An Introduction to the Bootstrap</i>. Chapman &amp; Hall, 1993.</p>
+<p>[20] Qwen Team. Qwen3 technical report. arXiv:2505.09388, 2025.</p>
+<p>[21] D. McFadden. Conditional logit analysis of qualitative choice behavior. In P. Zarembka, editor, <i>Frontiers in Econometrics</i>, pages 105&ndash;142. Academic Press, 1974.</p>
+</div>
+
+</body>
+</html>
