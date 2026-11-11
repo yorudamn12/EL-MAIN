@@ -31,6 +31,18 @@ in this folder; this file says *what changed and what to do about it*.
 
 ---
 
+### 2026-11-11 — Answer reading and equation parser fixed — contract 0.3.0 (unchanged)   [non-breaking]
+**Why:** a check of the error labels found two problems. A Markdown heading like `#### 7. **Spends $2437**` was read
+as the final answer, and some true equations were marked false (bold text; chains like `a - b - c = a - d = e`).
+**What changed (backend):** behaviour only. `POST /tools/classify` and answers scored in *new* runs can give a
+different `predicted` / `error_type` than before for such answers. Stored runs (all 4 paper runs) keep their logged
+values. No route, field or enum changed.
+**What the frontend must do:** nothing. Do not compare `error_type` counts between runs made before and after 2026-11-11
+without a note.
+**How to check it:** `POST /api/v1/tools/classify` with response `"#### 7. Step\n3 + 4 = 7\n\\boxed{12}"` → `predicted`
+is `12`.
+**Files to refresh:** none.
+
 ### 2026-11-10 — Second multi-weakness results (Qwen3-1.7B) — contract 0.3.0 (unchanged)   [non-breaking]
 **Why:** the 1.7B multi-weakness paper run `4e6b61903c00` finished (paper-eligible); a second 6-arm results page.
 **What changed (backend):**

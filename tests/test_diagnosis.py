@@ -166,3 +166,21 @@ def test_stratified_sample_balances_rare_types():
     recs = [("common", i) for i in range(100)] + [("rare", i) for i in range(5)]
     s = stratified_sample(recs, key=lambda r: r[0], n=10, seed=0)
     assert sum(r[0] == "rare" for r in s) == 5 and len(s) == 10
+
+
+# --- fixes from the 2026-11-11 error-label check (docs/RUNNING.md section 19) ---
+def test_markdown_heading_is_not_the_answer():
+    text = "#### 7. **Spends $2437 on a toy**\n3762 - 2437 = 1325\n\n\boxed{1325}"
+    assert extract_answer(text) == 1325
+    assert extract_answer("so the total is 5.\n#### 72.") == 72
+
+
+def test_chained_equality_is_checked_against_the_expression():
+    eqs = parse_equations("17265 - 6469 - 3447 = 17265 - 9916 = 7349")
+    assert [e.correct for e in eqs] == [True, True]
+    assert [e.correct for e in parse_equations("2 + 3 = 6 - 2 = 4")] == [False, True]
+
+
+def test_bold_equations_are_parsed():
+    eqs = parse_equations("Now she has: **$6 - $2 = $4**, then 3 + 8 = **11 cookies**")
+    assert [(e.lhs, e.correct) for e in eqs] == [("6 - 2", True), ("3 + 8", True)]

@@ -659,3 +659,13 @@ Rescoring every stored answer with `oxed{}` first (scratch script, read-only) g
 The paper keeps the logged numbers and reports this (paper §5.5). The fix (put `oxed` before `####` for `qwen_boxed`,
 plus parse `×`, bold text and chained equalities) is a code change to a scorer, so it waits for the team's OK.
 
+**Fixed 2026-11-11 (the user's OK):**
+- `extract_answer`: `#### n` must now end its line.
+- `parse_equations`: bold `**` markers are removed, and a chain `a - b - c = a - d = e` is accepted when the left side
+  equals the whole middle expression; the running-total style `25 * 9 = 225 + 5 = 230` still works.
+
+Tests are in `tests/test_diagnosis.py`. Re-classifying the 300 answers with the fixed code gives κ = 0.39 (0.41 on the
+284 truly wrong answers; 0.6B 0.52, 1.7B 0.27); the result is the column `classifier_label_fixed` in
+`paper/annotation/error_label_check.csv`. What is left: cut-off answers (LLM FORMAT_ERROR 63 vs classifier 17) and
+slips (70 vs 36). The paper runs keep their logged numbers; future runs score with the fixed code.
+

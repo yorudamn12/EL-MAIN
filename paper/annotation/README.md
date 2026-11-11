@@ -8,6 +8,7 @@ diagnosis sheet and rows 150–299 from the 1.7B sheet.
 | `uid` | `<model>-<row>`; the row is the row number in `paper_runs/<job>/annotate_errors.csv`, which also has the question and the full response |
 | `job`, `example_id`, `sample`, `gold` | as in the source sheet |
 | `classifier_label` | the label from `dreammachine/diagnosis/taxonomy.py::classify` |
+| `classifier_label_fixed` | the label after the 2026-11-11 parser and extractor fixes (`CORRECT` = the answer was actually right) |
 | `llm_label`, `llm_note` | the independent label and a short reason |
 | `boxed_equals_gold` | 1 if the final `\boxed{}` value equals the gold answer, i.e. the answer is actually correct (answer-reading fault, see `docs/RUNNING.md` §19) |
 

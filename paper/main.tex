@@ -1,4 +1,4 @@
-% DreamMachine -- journal draft v0.3 (2026-11-11). Single-weakness and multi-weakness studies.
+% DreamMachine -- journal draft v0.4 for review (2026-11-11). Single-weakness and multi-weakness studies.
 % Every number comes from the repository: docs/RUNNING.md sections 10-18 and the results.json files of the four paper
 % runs (80b37628b193, 409305f3e2f2, 76f2c9af5ea9, 4e6b61903c00). Items marked [TODO] need the authors.
 \documentclass[11pt]{article}
@@ -18,7 +18,7 @@
 Synthetic Fine-Tuning for Small Language Models}
 \author{Attel Bhavani Prasad \and Atharv Dass \and Ajay Bhat \and Preet Hiteshkumar Patel\\[4pt]
 \small \todo{affiliation(s) and corresponding author's e-mail}}
-\date{Draft v0.3, 11 November 2026}
+\date{Draft v0.4 for review, 11 November 2026}
 
 \begin{document}
 \maketitle
@@ -482,6 +482,13 @@ Treating \textsc{unverifiable} as a plan error raises $\kappa$ to 0.42. Overall 
 \textsc{plan\_error} to about twice as many answers as the classifier (149 versus 73 of 284) and
 \textsc{arithmetic\_slip} to about half as many (36 versus 74).
 
+After the check we corrected the parser for the first two causes (bold text, and chains whose middle part is an
+expression) and the extraction fault described next. On the same 300 answers the corrected classifier reaches
+$\kappa = 0.39$ (0.41 on the 284 answers that are really wrong; 0.52 for 0.6B, 0.27 for 1.7B). Most of the remaining
+disagreement comes from cut-off answers, which the annotator labels as format errors far more often than the classifier
+does (63 versus 17), and from slips, which the classifier still finds about twice as often (70 versus 36). All results
+in this paper were produced with the original classifier. The corrected version is in the repository for future runs.
+
 The check also exposed an answer-extraction fault. Sixteen of the 300 sampled answers (15 from 1.7B) were in fact
 correct: their final \verb|\boxed{}| value equals the gold answer, but the extractor gives priority to the GSM8K marker
 ``\texttt{\#\#\#\#}'' and so read a Markdown step heading such as ``\texttt{\#\#\#\# 7.}'' as the answer. Rescoring
@@ -537,7 +544,8 @@ asked again without the shared cost.
   \item \textbf{Statistical power.} With 300 GSM8K and 200 GSM-Symbolic problems per model, paired intervals are about
   $\pm3$ points; effects of one to two points would not be detected. The long-problem analysis uses only 50 problems
   and is descriptive.
-  \item \textbf{Error labels} agree only fairly with an independent LLM annotator ($\kappa = 0.33$;
+  \item \textbf{Error labels} agree only fairly with an independent LLM annotator ($\kappa = 0.33$, or 0.39 after the parser
+  corrections;
   Section~\ref{sec:labelcheck}), and no human annotation was done. Error-type shares are therefore descriptive, and
   GSM-Symbolic error types are not reported. A small extraction fault inflates the untrained 1.7B model's error count
   by about one percentage point; it does not affect any fine-tuned model.

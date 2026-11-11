@@ -29,7 +29,7 @@
 </style></head><body>
 <h1>Targeting or Difficulty? Controlled Tests of Weakness-Targeted<br>
 Synthetic Fine-Tuning for Small Language Models</h1><div class="meta">Attel Bhavani Prasad, Atharv Dass, Ajay Bhat, Preet Hiteshkumar Patel<br>
- <span class="todo">[TODO: affiliation(s) and corresponding author's e-mail]</span><br>Draft v0.3, 11 November 2026</div>
+ <span class="todo">[TODO: affiliation(s) and corresponding author's e-mail]</span><br>Draft v0.4 for review, 11 November 2026</div>
 <div class="abstract"><h3>Abstract</h3><p>Methods that diagnose a language model's weaknesses and then fine-tune it on data built around them usually compare
 the targeted data with random or untargeted data. Targeted data is harder for the model by construction, so such
 comparisons cannot say whether a gain comes from aiming at the right skill or simply from training on harder
@@ -350,6 +350,12 @@ truth.</p>
   number, whereas the annotator labels it a format error.</li></ul><p>Treating <span class="sc">unverifiable</span> as a plan error raises &kappa; to 0.42. Overall the annotator assigned
 <span class="sc">plan_error</span> to about twice as many answers as the classifier (149 versus 73 of 284) and
 <span class="sc">arithmetic_slip</span> to about half as many (36 versus 74).</p>
+<p>After the check we corrected the parser for the first two causes (bold text, and chains whose middle part is an
+expression) and the extraction fault described next. On the same 300 answers the corrected classifier reaches
+&kappa; = 0.39 (0.41 on the 284 answers that are really wrong; 0.52 for 0.6B, 0.27 for 1.7B). Most of the remaining
+disagreement comes from cut-off answers, which the annotator labels as format errors far more often than the classifier
+does (63 versus 17), and from slips, which the classifier still finds about twice as often (70 versus 36). All results
+in this paper were produced with the original classifier. The corrected version is in the repository for future runs.</p>
 <p>The check also exposed an answer-extraction fault. Sixteen of the 300 sampled answers (15 from 1.7B) were in fact
 correct: their final <span class="tt">&#92;boxed{}</span> value equals the gold answer, but the extractor gives priority to the GSM8K marker
 &ldquo;<span class="tt">####</span>&rdquo; and so read a Markdown step heading such as &ldquo;<span class="tt">#### 7.</span>&rdquo; as the answer. Rescoring
@@ -385,7 +391,8 @@ asked again without the shared cost.</p>
   conclusion.</li><li><b>Ceiling effects.</b> Fine-tuned 1.7B models answer 87&ndash;97% of generated probes, which limits how well arms
   can be separated on probes and makes post-training LLTM refits unreliable for that model.</li><li><b>Statistical power.</b> With 300 GSM8K and 200 GSM-Symbolic problems per model, paired intervals are about
   &plusmn;3 points; effects of one to two points would not be detected. The long-problem analysis uses only 50 problems
-  and is descriptive.</li><li><b>Error labels</b> agree only fairly with an independent LLM annotator (&kappa; = 0.33;
+  and is descriptive.</li><li><b>Error labels</b> agree only fairly with an independent LLM annotator (&kappa; = 0.33, or 0.39 after the parser
+  corrections;
   Section&nbsp;5.5), and no human annotation was done. Error-type shares are therefore descriptive, and
   GSM-Symbolic error types are not reported. A small extraction fault inflates the untrained 1.7B model's error count
   by about one percentage point; it does not affect any fine-tuned model.</li><li><b>Scope.</b> One task family, one model family, one training recipe (QLoRA supervised fine-tuning on terse
