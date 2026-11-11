@@ -1,0 +1,31 @@
+{
+  "git": {
+    "commit": "d49128d406ede5f3236d1cc4af98696f7da46b9b",
+    "dirty": false
+  },
+  "python": "3.11.9",
+  "packages": {
+    "torch": "2.11.0+cu128",
+    "transformers": "5.18.0",
+    "peft": "0.21.2",
+    "bitsandbytes": "0.50.2",
+    "datasets": "5.0.1",
+    "accelerate": "1.15.0"
+  },
+  "platform": "Windows-10-10.0.26200-SP0",
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+  "mode": "paper",
+  "model": "Qwen/Qwen3-1.7B",
+  "model_revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+  "prompt_version": "qwen_boxed",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "precision": {
+    "train_load_in_4bit": true,
+    "eval_load_in_4bit": false,
+    "bitsandbytes_cuda": true
+  }
+}

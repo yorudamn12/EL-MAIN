@@ -117,6 +117,10 @@ def math(s):
 
 
 def inline(s):
+    s = re.sub(r"\\verb\|([^|]*)\|", lambda m: '<span class="tt">' + m.group(1).replace("\\", "&#92;") + "</span>", s)
+    s = re.sub(r"\\url\{([^}]*)\}", r'<a href="\1">\1</a>', s)
+    s = s.replace("\\\\[4pt]", "<br>").replace(" \\and ", ", ").replace("\\#", "#")
+    s = re.sub(r"\\ref\{([^}]*)\}", lambda m: labels.get(m.group(1), "??"), s)
     s = re.sub(r"\\cite[pt]?\{([^}]*)\}", cite, s)
     s = re.sub(r"\\todo\{([^}]*)\}", r'<span class="todo">[TODO: \1]</span>', s)
     s = re.sub(r"\$([^$]+)\$", lambda m: math(m.group(1)), s)

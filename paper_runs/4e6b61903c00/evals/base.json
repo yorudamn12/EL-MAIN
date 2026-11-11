@@ -1,0 +1,23 @@
+{
+  "run_id": "fc809c56f514",
+  "arm": "base",
+  "ratio": null,
+  "seed": null,
+  "gsm8k": 0.8151515151515152,
+  "gsm8k:truncated_share": 0.045454545454545456,
+  "gsm_symbolic:main": 0.7733333333333333,
+  "gsm_symbolic:main:truncated_share": 0.06333333333333334,
+  "probes_train_families": 0.625,
+  "probes_train_families:truncated_share": 0.09722222222222222,
+  "probes_heldout_families": 0.5833333333333334,
+  "probes_heldout_families:truncated_share": 0.09259259259259259,
+  "eta": {
+    "steps": 0.4879078871348535,
+    "log10_max": 0.10186637538470301,
+    "n_mul": 0.30147941014274404,
+    "n_div": 0.7159139674810746,
+    "n_carry": 0.0026891248700574334,
+    "n_distractors": -0.12624487055777003,
+    "has_merge": null
+  }
+}

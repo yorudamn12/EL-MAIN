@@ -1,0 +1,6662 @@
+example_id,sample,question,gold,response,classifier_label,annotator_1,annotator_2
+77afa2df796a,1,Omar bakes 570 cookies. The oven is set to 385 degrees. Omar scales up the batch so the number of cookies becomes 4 times as large. Omar scales up the batch so the number of cookies becomes 4 times as large. Hana bakes 535 muffins. Omar scales up the batch so the number of cookies becomes 10 times as large. How many cookies does Omar end up with?,91200,"We are given the following:
+
+- **Omar bakes 570 cookies**, and the oven is set to **385 degrees**.
+- Omar **scales up the batch** so the number of cookies becomes **4 times as large**.
+- Then he **scales up the batch again** so the number of cookies becomes **4 times as large**.
+- Hana bakes **535 muffins**, and Omar **scales up the batch** so the number of cookies becomes **10 times as large**.
+
+We are to find out **how many cookies** Omar ends up with.
+
+---
+
+### Step 1: Scale the batch up
+
+- First, Omar scales the batch up 4 times:
+  - Original: 570 cookies
+  - After first scale: $ 570 \times 4 = 2280 $ cookies
+
+- Then, he scales it up **another 4 times**:
+  - $ 2280 \times 4 = 9120 $ cookies
+
+---
+
+### Step 2: Scale the batch up for Hana
+
+- Hana bakes 535 muffins. Omar scales the batch so the number of cookies becomes **10 times as large**.
+
+- So, the number of cookies Omar ends up with is:
+  - $ 535 \times 10 = 5350 $ cookies
+
+---
+
+### Final Answer:
+
+$$
+\boxed{5350}
+$$
+
+Omar ends up with **5350 cookies**.",ARITHMETIC_SLIP,,
+ac3c6456c96f,0,Elena has 5 seed packets. Elena receives a shipment of 6 seed packets. Elena's stock of seed packets then becomes 9 times as large. Elena plants 7 seed packets. Elena's stock of seed packets then becomes 6 times as large. Elena sells 2 seed packets. Dev has 3 flower pots. Dev has 4 flower pots. Elena orders 7 more seed packets. Elena orders 8 more seed packets. How many seed packets does Elena end up with?,565,"Let's break down the problem step by step.
+
+---
+
+### **Initial Setup:**
+
+- Elena has **5 seed packets**.
+- She receives **6 more seed packets** from a shipment.
+- Total seed packets **after receiving** = $ 5 + 6 = 11 $.
+
+Now, **Elena plants 7 seed packets**.
+
+- So, after planting, total seed packets = $ 11 - 7 = 4 $.
+
+---
+
+### **Then she sells 2 seed packets**.
+
+- So, after selling, total seed packets = $ 4 - 2 = 2 $.
+
+---
+
+### **Dev has:**
+
+- **3 flower pots**
+
+- **4 flower pots**
+
+- So, **Dev has 7 flower pots**.
+
+---
+
+### **Elena orders 7 more seed packets**.
+
+- So, total seed packets = $ 2 + 7 = 9 $.
+
+---
+
+### **Final Answer:**
+
+$$
+\boxed{9}
+$$
+
+Elena ends up with **9 seed packets**.",DISTRACTOR_USE,,
+c31bb90d579c,2,Leo has 9630 books on a shelf. Leo's book collection then grows to 9 times its size. Leo divides the books equally among 2 shelves and keeps only one shelf of them. Leo buys 9588 new books. The library is 4881 years old. Leo lends out 9811 books and does not get them back. Leo's book collection then grows to 6 times its size. How many books does Leo have now?,258672,"We are given a series of events involving Leo and his book collection:
+
+---
+
+### Step 1: Initial Information
+
+- Leo starts with **9630 books**.
+- His book collection **then grows to 9 times its size**.
+  - So, the new total books is $ 9 \times 9630 = 86,670 $.
+
+---
+
+### Step 2: Leo divides the books equally among 2 shelves and keeps only **one shelf**.
+
+- He divides 86,670 books into **2 shelves**.
+- Then, he keeps **only one shelf** of them.
+
+So, he keeps $ \frac{86,670}{2} = 43,335 $ books.
+
+- Therefore, after this step, he has **43,335 books**.
+
+---
+
+### Step 3: Leo buys 9588 new books.
+
+- He now has $ 43,335 + 9588 = 52,923 $ books.
+
+---
+
+### Step 4: Leo lends out 9811 books and does **not get them back**.
+
+- So, he **loses** 9811 books.
+
+- Therefore, his book collection now is $ 52,923 - 9811 = 43,112 $.
+
+---
+
+### Step 5: Final Check – Leo's book collection grows to **6 times** its size.
+
+We are told that the final collection is 6 times its size. Let’s verify:
+
+- 6 times the final number of books = $ 6 \times 43,112 = 258,672 $.
+
+Let’s check the previous steps to see if that matches:
+
+- Original: 9630 → 9× = 86,670
+- Then divided into 2 shelves, kept 1 → 43,335
+- Then added 9,588 → 52,923
+- Then lost 9,811 → 43,112
+
+So, the total is **43,112**.
+
+This is **6 times** the previous size.
+
+So, the final answer is:
+
+$$
+\boxed{43112}
+$$",FORMAT_ERROR,,
+a604e08c2da2,2,Dev bakes 597 cookies. Dev bakes another 269 cookies. Dev receives 103 cookies from a friend. The oven is set to 336 degrees. Dev receives 667 cookies from a friend. Dev bakes another 845 cookies. The oven is set to 627 degrees. Dev bakes another 125 cookies. Dev sells 799 cookies. How many cookies does Dev have now?,1807,"We are given the following information:
+
+1. **Dev bakes 597 cookies.**
+2. **Dev bakes another 269 cookies.**
+3. **Dev receives 103 cookies from a friend.**
+4. **Dev receives 667 cookies from a friend.**
+5. **Dev bakes another 845 cookies.**
+6. **Dev receives 125 cookies from a friend.**
+7. **Dev sells 799 cookies.**
+
+We are to find how many **cookies Dev has now**.
+
+---
+
+### Step-by-step breakdown:
+
+1. Start with **597 cookies** (from baking).
+2. Add **269** more:  
+   $ 597 + 269 = 866 $
+
+3. Add **103** cookies from a friend:  
+   $ 866 + 103 = 969 $
+
+4. Add **667** cookies from a friend:  
+   $ 969 + 667 = 1636 $
+
+5. Add **845** more:  
+   $ 1636 + 845 = 2481 $
+
+6. Subtract **799** cookies (sells):  
+   $ 2481 - 799 = 1682 $
+
+---
+
+### Final Answer:
+
+$$
+\boxed{1682}
+$$
+
+Dev has **1682 cookies** now.",PLAN_ERROR,,
+b908e5875ac1,0,Priya has 3 cookies in the bakery. Sam bakes 9 muffins. Priya scales up the batch so the number of cookies becomes 5 times as large. Priya sells 3 cookies. Priya sells 8 cookies. The oven is set to 6 degrees. Priya scales up the batch so the number of cookies becomes 5 times as large. Priya packs the cookies equally into 2 boxes and keeps just one box. Priya scales up the batch so the number of cookies becomes 7 times as large. How many cookies does Priya end up with?,70,"We are given a series of events involving Priya and a scaling-up of her cookie batches. We need to find out how many **cookies** she ends up with at the end.
+
+---
+
+### Step-by-step breakdown:
+
+1. **Initial state:**
+   - Priya has 3 cookies.
+   - Sam bakes 9 muffins (no effect on cookies, just muffins).
+   - She scales up the batch so the number of cookies becomes 5 times as large.
+
+   So, after scaling:
+   - 3 cookies × 5 = **15 cookies**
+
+2. **Selling cookies:**
+   - Priya sells 3 cookies.
+   - Priya sells 8 more.
+
+   Total cookies sold = 3 + 8 = **11 cookies**
+
+3. **Packing and keeping cookies:**
+   - She packs the cookies equally into 2 boxes.
+   - Keeps **just one box**.
+
+   So, she keeps 15 - 1 = **14 cookies**
+
+4. **Scaling again:**
+   - She scales up the batch so the number of cookies becomes 7 times as large.
+
+   So, 15 cookies × 7 = **105 cookies**
+
+---
+
+### Final Answer:
+$$
+\boxed{105}
+$$
+
+Priya ends up with **105 cookies**.",UNVERIFIABLE,,
+d8b6854b6e91,2,Ravi bakes 8434 cookies. Ravi receives 7081 cookies from a friend. Ravi bakes another 1540 cookies. Ravi bakes another 6941 cookies. Ravi eats 8981 of the cookies. Ravi bakes another 5595 cookies. Hana bakes 3464 muffins. How many cookies does Ravi have now?,20610,"We are given the following information:
+
+- **Ravi bakes 8434 cookies.**
+- **Ravi receives 7081 cookies from a friend.**
+- **Ravi bakes another 1540 cookies.**
+- **Ravi bakes another 6941 cookies.**
+- **Ravi eats 8981 of the cookies.**
+- **Hana bakes 3464 muffins.**
+
+We need to **find out how many cookies Ravi has now**.
+
+---
+
+### Step-by-step calculation:
+
+1. **Start with Ravi's initial baked cookies:**
+   $$
+   8434
+   $$
+
+2. **Add the cookies he received from a friend:**
+   $$
+   8434 + 7081 = 15515
+   $$
+
+3. **Add the cookies he bakes:**
+   $$
+   15515 + 1540 = 17055
+   $$
+
+4. **Add the cookies he bakes again:**
+   $$
+   17055 + 6941 = 24, 996
+   $$
+
+5. **Subtract the cookies Ravi eats:**
+   $$
+   24996 - 8981 = 15, 015
+   $$
+
+6. **Hana bakes 3464 muffins, which are not cookies.**
+
+---
+
+### Final Answer:
+
+$$
+\boxed{15015}
+$$
+
+Ravi now has **15,015 cookies**.",ARITHMETIC_SLIP,,
+cf111dd1b66d,2,Elena has 3 stickers. Elena trades for 3 more stickers. Elena gives away 3 stickers. Elena buys a pack of 3 stickers. Elena trades for 8 more stickers. Elena loses 5 stickers. Elena loses 6 stickers. The album has 4 pages. How many stickers does Elena have now?,3,"Let's break down the problem step by step:
+
+### Initial state:
+- Elena starts with **3 stickers**.
+
+### Step 1: Elena trades for 3 more stickers.
+- She gives **3 stickers**, receives **6 stickers**.
+- Total stickers: $3 + 6 = 9$.
+
+### Step 2: Elena loses 5 stickers.
+- She now has $9 - 5 = 4$ stickers.
+
+### Step 3: Elena buys a pack of 3 stickers.
+- She now has $4 + 3 = 7$ stickers.
+
+### Step 4: Elena trades for 8 more stickers.
+- She gives **7 stickers**, receives **15 stickers**.
+- Total stickers: $7 + 15 = 22$.
+
+### Step 5: Elena loses 6 stickers.
+- She now has $22 - 6 = 16$ stickers.
+
+### Final Answer:
+$$
+\boxed{16}
+$$",DISTRACTOR_USE,,
+2491caac224f,2,Hana owns 3605 marbles. Hana sorts the marbles equally into 5 bags and keeps one bag. Hana's marble count then becomes 4 times as large. The jar is 2638 centimetres tall. How many marbles does Hana end up with?,2884,"We are given the following:
+
+- Hana owns **3605 marbles**.
+- She sorts them **equally into 5 bags** and keeps **only one bag**.
+- The **marble count then becomes 4 times as large**.
+- The **jar is 2638 cm tall**.
+
+We need to find the **number of marbles Hana ends up with**.
+
+---
+
+### Step 1: Determine how many marbles are in each bag
+
+Hana sorts the marbles equally into 5 bags. So, the number of marbles in **one bag** is:
+
+$$
+\frac{3605}{5} = 721
+$$
+
+So, **1 bag has 721 marbles**, and **4 bags have 721 marbles each**, making the total number of marbles in 4 bags:
+
+$$
+4 \times 721 = 2884
+$$
+
+Hana keeps **only one bag**, so she ends up with:
+
+$$
+721
+$$
+
+---
+
+### Step 2: Check if the jar's height and marble count are consistent
+
+- The marble count becomes **4 times as large**, which is consistent with the 721 marbles in the one bag.
+- The height of the jar is **2638 cm**, but this is **not** relevant to the problem.
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{721}
+$$ marbles.",FORMAT_ERROR,,
+c9017d13d8b9,0,Zara has $2 in a piggy bank. Zara receives $3 as a gift. Zara receives $4 as a gift. Zara earns $2 doing chores. Zara receives $9 as a gift. Zara earns $8 doing chores. Zara earns $7 doing chores. Zara earns $6 doing chores. How many dollars does Zara end up with?,41,"Let's break down the total amount Zara has by calculating the sum of the money she receives and earns:
+
+- **Gifts received:**  
+  $3 + 4 + 9 = 16$
+
+- **Chores earned:**  
+  $2 + 8 + 7 + 6 = 23$
+
+**Total amount Zara ends up with:**  
+$$ 16 + 23 = \boxed{39} $$
+
+**Answer:** $\boxed{39}$ dollars.",PLAN_ERROR,,
+7c523ff04a85,0,Aditi saves $6. Aditi pays $2 for lunch. Aditi earns $5 doing chores. Lucia has $3 in a wallet. Aditi's savings then grow to 2 times the amount. Aditi earns $5 doing chores. Aditi pays $8 for lunch. Aditi's savings then grow to 5 times the amount. How much money does Aditi have now?,75,"We are given the following information:
+
+- **Aditi saves $6.**  
+- **Aditi pays $2 for lunch.**  
+- **Aditi earns $5 doing chores.**  
+- **Lucia has $3 in a wallet.**  
+- **Aditi's savings then grow to 2 times the amount.**  
+- **Aditi earns $5 doing chores again.**  
+- **Aditi pays $8 for lunch.**  
+- **Aditi's savings then grow to 5 times the amount.**  
+- We are asked: **How much money does Aditi have now?**
+
+---
+
+### Step 1: Initial Savings
+
+Aditi starts with **$6** in savings.
+
+---
+
+### Step 2: First Lunch Payment
+
+- **Aditi pays $2 for lunch.**  
+- So, Aditi’s savings decrease by $2.
+
+Now she has:  
+**$6 - $2 = $4**
+
+---
+
+### Step 3: First Chores Earnings
+
+- **Aditi earns $5 doing chores.**  
+- So, her savings increase by $5.
+
+Now she has:  
+**$4 + $5 = $9**
+
+---
+
+### Step 4: Second Lunch Payment
+
+- **Aditi pays $8 for lunch.**  
+- So, her savings decrease by $8.
+
+Now she has:  
+**$9 - $8 = $1**
+
+---
+
+### Step 5: Second Chores Earnings
+
+- **Aditi earns $5 doing chores.**  
+- So, her savings increase by $5.
+
+Now she has:  
+**$1 + $5 = $6**
+
+---
+
+### Final Answer:
+
+**Aditi has $6 in savings.**
+
+$$
+\boxed{6}
+$$",UNVERIFIABLE,,
+683b7ecadba2,2,Ishaan has 592 marbles in a jar. Ishaan wins 615 marbles in a game. Ishaan gives 473 marbles to a cousin. Ishaan wins 994 marbles in a game. Ishaan wins 865 marbles in a game. Ishaan gives 672 marbles to a cousin. Ishaan finds 521 more marbles. How many marbles does Ishaan end up with?,2442,"We are given the total number of marbles Ishaan initially has:
+
+- **Initial marbles**: 592  
+- **Marbles won in games**: 615 + 994 + 865 = **2474**  
+- **Marbles given to cousin**: 473 + 672 = **1145**  
+- **Marbles found**: 521  
+
+Now, we calculate the total number of marbles Ishaan ends up with:
+
+$$
+\text{Total marbles} = \text{Initial marbles} + \text{Marbles won} - \text{Marbles given to cousin} + \text{Marbles found}
+$$
+
+$$
+\text{Total marbles} = 592 + 2474 - 1145 + 521
+$$
+
+$$
+\text{Total marbles} = 3066 - 1145 + 521 = 1942
+$$
+
+### ✅ Final Answer:
+
+$$
+\boxed{1942}
+$$
+
+Ishaan ends up with **1942 marbles**.",ARITHMETIC_SLIP,,
+d0eba3858d6e,1,"Hana starts the day with 9 apples. The fruit stand opened 6 days ago. Hana splits the apples equally into 3 baskets and keeps only one basket. A supplier delivers 7 apples to Hana. After a big harvest, Hana's number of apples becomes 5 times as large. Hana splits the apples equally into 5 baskets and keeps only one basket. After a big harvest, Hana's number of apples becomes 7 times as large. Hana sells 4 apples. After a big harvest, Hana's number of apples becomes 5 times as large. How many apples does Hana end up with?",330,"We are given several events and changes in Hana's number of apples. Let's break it down step by step.
+
+---
+
+### Step 1: Start with the initial number of apples
+
+- Hana starts the day with **9 apples**.
+
+---
+
+### Step 2: 6 days ago, the fruit stand opened 6 days ago.
+
+- So, 6 days ago, Hana had **9 apples**.
+
+- The fruit stand opened 6 days ago, which means **Hana now has 9 + 6 = 15 apples**.
+
+---
+
+### Step 3: Hana splits the apples equally into 3 baskets and keeps only one.
+
+- She splits 9 apples into **3 baskets** and keeps **1** basket.
+
+- So, she keeps 9 apples and gives 6 to baskets.
+
+- After this, she has **9 apples**.
+
+---
+
+### Step 4: A supplier delivers 7 apples.
+
+- So, she adds **7 apples** to her apples.
+
+- Now, she has **9 + 7 = 16 apples**.
+
+---
+
+### Step 5: After a big harvest, Hana's number of apples becomes **5 times as large**.
+
+- So, 16 apples → 5 × 16 = **80 apples**
+
+---
+
+### Step 6: Hana splits the apples equally into 5 baskets and keeps only one.
+
+- She splits 80 apples into **5 baskets**, so she keeps **1 basket**.
+
+- So, she keeps 80 apples and gives 49 to baskets.
+
+- After this, she has **80 apples**.
+
+---
+
+### Step 7: After a big harvest, Hana's number of apples becomes **7 times as large**.
+
+- So, 80 apples → 7 × 80 = **560 apples**
+
+---
+
+### Step 8: Hana sells 4 apples.
+
+- So, she removes 4 apples.
+
+- Now, she has **560 - 4 = 556 apples**
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{556}
+$$
+
+Hana ends up with **556 apples**.",DISTRACTOR_USE,,
+0ad661cca3d7,1,Sam has $414 in a piggy bank. Sam earns $918 doing chores. Sam spends $161 on a toy. Sam's savings then grow to 4 times the amount. How many dollars does Sam end up with?,4684,"We are given:
+
+- Sam has **$414** in a piggy bank.
+- Sam earns **$918** doing chores.
+- Sam **spends** **$161** on a toy.
+- Sam's **savings** grow **to 4 times** the amount.
+
+We need to find out **how much Sam ends up with**.
+
+---
+
+### Step 1: Calculate total money Sam has after earning and spending
+
+Sam starts with **$414** in the piggy bank.
+
+He earns **$918**, so:
+
+$$
+\text{Total money} = 414 + 918 = 1332
+$$
+
+Then he spends **$161**:
+
+$$
+1332 - 161 = 1171
+$$
+
+---
+
+### Step 2: Determine how much his savings grow
+
+The problem says ""Sam's savings then grow to 4 times the amount.""
+
+So, the **new savings amount** is:
+
+$$
+4 \times 1171 = 4684
+$$
+
+---
+
+### Step 3: Add the new savings to the original amount
+
+Sam ends up with **4684** (his savings) plus the **$414** he had initially.
+
+$$
+\text{Final amount} = 4684 + 414 = \boxed{5100}
+$$
+
+---
+
+### ✅ Final Answer: $\boxed{5100}$ dollars.",FORMAT_ERROR,,
+763ac8cccfec,2,Hana has 4 marbles in a jar. Hana's marble count then becomes 9 times as large. Hana sorts the marbles equally into 2 bags and keeps one bag. Lucia has 8 toy cars. Hana sorts the marbles equally into 3 bags and keeps one bag. How many marbles does Hana end up with?,6,"We are given the following information:
+
+- Hana has **4 marbles** in a jar.
+- Hana's **marble count then becomes 9 times** as large.
+- Hana **splits the marbles equally into 2 bags and keeps one bag**.
+- Lucia has **8 toy cars**.
+- Hana **splits the marbles equally into 3 bags and keeps one bag**.
+- The question is: **How many marbles does Hana end up with?**
+
+---
+
+### Step 1: Find the new number of marbles
+
+Hana starts with 4 marbles.
+
+She **becomes 9 times** as large as before.
+
+So:
+
+$$
+4 \times 9 = 36 \text{ marbles}
+$$
+
+---
+
+### Step 2: Sort the marbles into 2 bags and keep 1
+
+Hana sorts the marbles **equally into 2 bags**, and keeps **1 bag**.
+
+So, she keeps **half** of the marbles.
+
+$$
+\frac{36}{2} = 18 \text{ marbles}
+$$
+
+---
+
+### Step 3: Final answer
+
+$$
+\boxed{18}
+$$
+
+Hana ends up with **18 marbles**.",PLAN_ERROR,,
+74e189823e1a,2,Leo owns 6 marbles. Leo sorts the marbles equally into 2 bags and keeps one bag. Leo's marble count then becomes 4 times as large. Leo sorts the marbles equally into 12 bags and keeps one bag. Leo's marble count then becomes 4 times as large. Leo sorts the marbles equally into 2 bags and keeps one bag. Leo finds 5 more marbles. How many marbles does Leo have now?,7,"We are given the following information about Leo's marble count and how he sorts the marbles:
+
+1. **Initial marbles:** 6  
+2. **First sorting:** Leo sorts 6 marbles equally into **2 bags**, keeping **1 bag**.  
+   - So, 6 marbles → 2 bags → 3 marbles per bag.  
+   - Total marbles left: **3** (since 6 marbles are kept, not sorted).  
+3. **Second sorting:** Leo sorts the marbles equally into **12 bags** and keeps one bag.  
+   - So, 3 marbles per bag → 12 bags → 3 marbles per bag.  
+   - Total marbles left: **3**.  
+4. **Third step:** Leo finds 5 more marbles.  
+   - So, total marbles now = 3 (from previous) + 5 = **8** marbles.
+
+### Final Answer:
+$$
+\boxed{8}
+$$",UNVERIFIABLE,,
+b1209a80f1a7,0,Elena has $1221 in a piggy bank. Elena receives $9636 as a gift. Elena spends $6469 on a toy. Elena pays $3447 for lunch. Elena earns $2827 doing chores. Elena earns $4802 doing chores. Elena earns $5870 doing chores. How many dollars does Elena end up with?,14440,"To find out how much Elena ends up with, we need to perform the following steps:
+
+### Step 1: Add all the amounts Elena receives and spends or earns.
+
+- **Elena receives**: $9636  
+- **Elena spends**: $6469  
+- **Elena pays for lunch**: $3447  
+- **Elena earns from chores**: $2827 (first chore) + $4802 (second chore) = $7629
+
+So, total money she has:
+
+$$
+9636 + 7629 = 17265
+$$
+
+Then subtract the money she spent and paid for lunch:
+
+$$
+17265 - 6469 - 3447 = 17265 - 9916 = 7349
+$$
+
+### Final Answer:
+
+$$
+\boxed{7349}
+$$
+
+Elena ends up with **$7349**.",ARITHMETIC_SLIP,,
+aa068c6e8b6b,0,Noor saves $491. Noor pays $217 for lunch. Noor splits the money equally into 2 envelopes and keeps one envelope. Hana has $611 in a wallet. Noor's savings then grow to 5 times the amount. Noor earns $255 doing chores. How much money does Noor have now?,940,"We are given the following details about Noor:
+
+1. **Noor saves $491**.
+2. **Noor pays $217 for lunch**.
+3. **Noor splits the money equally into 2 envelopes** and keeps one.
+4. **Hana has $611 in a wallet**.
+5. **Noor's savings then grow to 5 times the amount**.
+6. **Noor earns $255 doing chores**.
+
+Let's break this down step by step.
+
+---
+
+### Step 1: Calculate the total money Noor has after splitting
+
+- Noor saves $491.
+- He pays $217 for lunch.
+- He splits the money equally into 2 envelopes and keeps **1 envelope**.
+
+So, the amount he saves in each envelope is:
+
+$$
+\frac{491 + 217}{2} = \frac{708}{2} = 354
+$$
+
+He keeps 1 envelope with $354.
+
+So, **his total savings now** are:
+
+$$
+354 + 611 = 965
+$$
+
+---
+
+### Step 2: Check if the savings grow to 5 times
+
+The problem says ""Noor's savings then grow to 5 times the amount.""
+
+So, if his current savings are $965, then:
+
+$$
+5 \times 965 = 4825
+$$
+
+But this is a bit confusing. Let's check the wording again:
+
+> ""Noor's savings then grow to 5 times the amount.""
+
+This likely means that after some transactions, his total money **increases to 5 times** the amount of his savings before.
+
+So, if his savings were $965, then:
+
+$$
+5 \times 965 = 4825
+$$
+
+So, his total money becomes $4825.
+
+---
+
+### Step 3: Add the money he earns from chores
+
+He earns $255 doing chores.
+
+So, his total money is:
+
+$$
+4825 + 255 = 5080
+$$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{5080}
+$$
+
+Noor has **$5080** now.",DISTRACTOR_USE,,
+0c910b2e093b,2,Elena owns 5152 marbles. Elena sorts the marbles equally into 8 bags and keeps one bag. Elena's marble count then becomes 8 times as large. How many marbles does Elena have now?,5152,"We are given:
+
+- Elena owns **5152 marbles**.
+- She sorts the marbles **equally into 8 bags**, and keeps **1 bag**.
+
+This means:
+
+- She divides the 5152 marbles into **7 bags**, each with:
+  $$
+  \frac{5152}{7} = 736 \text{ marbles}
+  $$
+- She keeps **1 bag**, so the count of marbles in the **remaining 7 bags** becomes:
+  $$
+  7 \times 736 = 5152
+  $$
+
+Now, the question says:
+
+> Elena's marble count then becomes **8 times as large**.
+
+So, the **new count** is:
+$$
+8 \times 5152 = \boxed{41216}
+$$
+
+**Answer:** $\boxed{41216}$ marbles.",FORMAT_ERROR,,
+10c6ba227ad6,2,Tariq owns 672 marbles. Tariq sorts the marbles equally into 4 bags and keeps one bag. Tariq loses 130 marbles in a game. Tariq wins 962 marbles in a game. Tariq's marble count then becomes 5 times as large. Tariq's marble count then becomes 9 times as large. How many marbles does Tariq have now?,45000,"We are given the following information about Tariq's marble count:
+
+- **Initial count**: 672 marbles.
+- Tariq sorts the marbles equally into **4 bags** and keeps **1 bag**.
+- Tariq **loses 130 marbles** in a game.
+- Tariq **wins 962 marbles** in a game.
+- After the two operations, his marble count becomes **5 times as large**.
+- Then, it becomes **9 times as large**.
+
+---
+
+### Step 1: Start with 672 marbles.
+
+Tariq keeps **1 bag** of marbles, so the rest of the marbles go into the other 3 bags.
+
+- **Marbles in 1 bag**: $ \frac{672}{4} = 168 $
+- **Marbles in 3 bags**: $ 672 - 168 = 504 $
+
+---
+
+### Step 2: Tariq loses 130 marbles.
+
+- New total marbles: $ 504 - 130 = 374 $
+
+---
+
+### Step 3: Tariq wins 962 marbles.
+
+- New total marbles: $ 374 + 962 = 1336 $
+
+---
+
+### Step 4: Tariq's marble count becomes 5 times as large.
+
+- So, his new count is: $ 5 \times 1336 = 6680 $
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{6680}
+$$ marbles.",PLAN_ERROR,,
+a13b9a82e02d,2,Hana has $8 in a piggy bank. Hana splits the money equally into 2 envelopes and keeps one envelope. Hana receives $7 as a gift. Hana splits the money equally into 11 envelopes and keeps one envelope. How much money does Hana have now?,1,"Hana starts with **$8** in a piggy bank.
+
+### Step 1: Split money equally into 2 envelopes and keep 1
+
+- Total money = $8
+- Each envelope gets $4
+- Hana keeps **1 envelope** → so she keeps $4
+
+### Step 2: Hana receives $7 as a gift
+
+- Now she has $4 (from the initial split) + $7 (gift) = **$11**
+
+### Step 3: Hana splits the money equally into 11 envelopes and keeps one
+
+- Total money = $11
+- Each envelope gets $1
+- She keeps **1 envelope** → so she keeps $1
+
+### Final Answer:
+$$
+\boxed{11}
+$$
+
+Hana now has **$11**.",UNVERIFIABLE,,
+f23405d9c8d5,1,Lucia has 917 apples at a fruit stand. Lucia gives 557 apples to a neighbour. Lucia sells 188 apples. A supplier delivers 469 apples to Lucia. How many apples does Lucia end up with?,641,"We are given the following:
+
+- **Initial apples**: 917  
+- **Apples given to a neighbor**: 557  
+- **Apples sold**: 188  
+- **Supplier delivers**: 469
+
+---
+
+### Step 1: Start with the initial apples.
+
+$$
+917
+$$
+
+---
+
+### Step 2: Subtract apples given to a neighbor.
+
+$$
+917 - 557 = 350
+$$
+
+---
+
+### Step 3: Subtract apples sold.
+
+$$
+350 - 188 = 162
+$$
+
+---
+
+### Step 4: Add apples delivered by the supplier.
+
+$$
+162 + 469 = 631
+$$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{631}
+$$
+
+Lucia ends up with **631 apples**.",ARITHMETIC_SLIP,,
+f1c61ffea8b6,2,"Mei has 17 eggs in the barn. Mei uses 15 eggs for breakfast. By the end of the season, Mei's number of eggs becomes 4 times as large. By the end of the season, Mei's number of eggs becomes 4 times as large. Mei places the eggs equally into 2 cartons and keeps one carton. Mei places the eggs equally into 2 cartons and keeps one carton. The hens lay another 44 eggs for Mei. The farm is 46 acres. By the end of the season, Mei's number of eggs becomes 12 times as large. How many eggs does Mei end up with?",624,"We are given the following information:
+
+1. **Initial number of eggs in the barn:** 17 eggs  
+2. **Eggs used for breakfast:** 15 eggs  
+3. **Eggs placed in cartons and kept:** Let’s call this number $ x $.  
+   So, the total number of eggs after breakfast is:  
+   $ 17 - 15 = 2 $ eggs.  
+   These are placed into 2 cartons and one carton is kept.  
+   So, **2 eggs are placed into 2 cartons**, meaning that **1 egg is placed into each carton**, and **1 carton is kept**.  
+   So, **1 egg remains in the carton** after the process.
+
+4. **Hens lay another 44 eggs:**  
+   So, the total number of eggs at the end of the season is:  
+   $ 2 + 44 = 46 $ eggs.
+
+5. **Farm is 46 acres** (not relevant for calculating the final number of eggs).
+
+6. **By the end of the season, Mei's number of eggs becomes 12 times as large.**  
+   So, the number of eggs is:  
+   $ 12 \times 46 = 552 $ eggs.
+
+---
+
+**Final Answer:** $\boxed{552}$ eggs.",DISTRACTOR_USE,,
+957d319bb6d3,0,Kiran owns 80 marbles. Kiran finds 95 more marbles. Kiran's marble count then becomes 2 times as large. Kiran sorts the marbles equally into 2 bags and keeps one bag. Kiran finds 97 more marbles. How many marbles does Kiran end up with?,272,"Let's break down the problem step by step.
+
+---
+
+### **Initial State:**
+- Kiran owns **80 marbles**.
+- He finds **95 more marbles**.
+- His total marble count becomes:  
+  $$
+  80 + 95 = 175
+  $$
+- He keeps **one bag** and keeps the rest in another bag.
+
+---
+
+### **After Finding 97 More Marbles:**
+- Kiran finds **97 more marbles**, so his total becomes:  
+  $$
+  175 + 97 = 272
+  $$
+- He **sorts the marbles equally into 2 bags**.
+  - So, each bag will have:  
+    $$
+    \frac{272}{2} = 136
+    $$
+- He keeps **one bag** with 136 marbles.
+
+---
+
+### **Final Answer:**
+$$
+\boxed{136}
+$$",FORMAT_ERROR,,
+6dfff91ea831,0,Asha starts the day with 5692 apples. A supplier delivers 9286 apples to Asha. Asha buys 7768 more apples from a farmer. Asha buys 7882 more apples from a farmer. Asha sells 6928 apples. The fruit stand opened 2750 days ago. Asha buys 5954 more apples from a farmer. Asha sells 9560 apples. Asha sells 7099 apples. How many apples does Asha end up with?,12995,"We are given the following information about Asha's daily transactions:
+
+1. **Asha starts the day with 5692 apples.**  
+2. **A supplier delivers 9286 apples.**  
+   → So, she starts with:  
+   $ 5692 - 9286 = -3594 $ apples.
+
+3. **Asha buys 7768 more apples from a farmer.**  
+   → Now she has:  
+   $ -3594 + 7768 = 4174 $ apples.
+
+4. **Asha buys 7882 more apples from a farmer.**  
+   → Now she has:  
+   $ 4174 + 7882 = 12056 $ apples.
+
+5. **Asha sells 6928 apples.**  
+   → Now she has:  
+   $ 12056 - 6928 = 5128 $ apples.
+
+6. **Afruit stand opened 2750 days ago.**  
+   → So, this is **not relevant to the current day's transactions**.
+
+7. **Asha buys 5954 more apples from a farmer.**  
+   → Now she has:  
+   $ 5128 + 5954 = 11082 $ apples.
+
+8. **Asha sells 9560 apples.**  
+   → Now she has:  
+   $ 11082 - 9560 = 1522 $ apples.
+
+9. **Asha sells 7099 apples.**  
+   → Now she has:  
+   $ 1522 - 7099 = -5577 $ apples.
+
+### Final Answer:
+
+$$
+\boxed{-5577}
+$$
+
+Asha ends up with **-5577 apples**, or **-5,577 apples**.",PLAN_ERROR,,
+7d6ffbea4ccf,2,"Leo has 12 stickers. Leo shares the stickers equally among 12 friends, keeping one friend's share. The album has 49 pages. Mei has 99 postcards. Leo buys a pack of 15 stickers. How many stickers does Leo have now?",16,"We are given the following information:
+
+- **Leo has 12 stickers**.
+- **Leo shares the stickers equally among 12 friends**, and keeps **one** friend's share.
+- The **album has 49 pages**.
+- **Mei has 99 postcards**.
+- Leo **buys a pack of 15 stickers**.
+
+We are asked: **How many stickers does Leo have now?**
+
+---
+
+### Step-by-step reasoning:
+
+1. **Initially, Leo has 12 stickers**.
+
+2. **Leo shares the stickers equally among 12 friends**.  
+   That means each of the 12 friends gets $ \frac{12}{12} = 1 $ sticker.
+
+3. **Leo keeps one friend's share**.  
+   So, only 12 - 1 = **11 friends** get their share.
+
+   Therefore, Leo keeps **11 stickers**.
+
+4. **Leo buys a pack of 15 stickers**.
+
+   So, he adds 15 more stickers to his collection.
+
+---
+
+### Final Answer:
+
+Leo now has:
+
+$$
+12 \text{ stickers} + 15 \text{ stickers} = \boxed{27}
+$$
+
+**Answer: $\boxed{27}$** stickers.",UNVERIFIABLE,,
+710ab5135967,0,Sam starts the day with 509 apples. A supplier delivers 794 apples to Sam. Ishaan has 980 oranges. Sam sells 837 apples. A supplier delivers 365 apples to Sam. The fruit stand opened 543 days ago. How many apples does Sam have now?,831,"We are given the following:
+
+- Sam starts the day with **509 apples**.
+- A **supplier delivers 794 apples**.
+- **Ishaan has 980 oranges**.
+- Sam **sells 837 apples**.
+- A **supplier delivers 365 apples**.
+- The **fruit stand opened 543 days ago**.
+
+We are to find how many **apples** Sam has now.
+
+---
+
+### Step-by-step Breakdown:
+
+1. **Start with Sam's apples:**
+   - Sam starts with **509 apples**.
+
+2. **Add the apples delivered by the supplier:**
+   - A supplier delivers **794 apples**.
+   - So far: $ 509 + 794 = 1203 $ apples.
+
+3. **Subtract the apples Sam sold:**
+   - Sam sells **837 apples**.
+   - So far: $ 1203 - 837 = 366 $ apples.
+
+4. **Add the apples delivered by the supplier again:**
+   - A supplier delivers **365 apples**.
+   - So far: $ 366 + 365 = 731 $ apples.
+
+5. **Add the apples from 543 days ago (fruit stand opened):**
+   - Since the fruit stand opened 543 days ago, and we are currently counting the apples, we assume the fruit stand has **no apples** now.
+
+---
+
+### Final Answer:
+$$
+\boxed{731}
+$$
+
+Sam has **731 apples** now.",ARITHMETIC_SLIP,,
+082a92aa8996,0,Ravi's album holds 201 stickers. Ravi gives away 132 stickers. Ravi buys a pack of 662 stickers. The album has 758 pages. Ravi gives away 673 stickers. Ravi buys a pack of 170 stickers. Ravi loses 167 stickers. Ravi buys a pack of 612 stickers. How many stickers does Ravi end up with?,673,"We are given the following information about Ravi's actions and the total number of stickers in the album:
+
+- Ravi's album has **758 pages**.
+- Ravi gives away **132 stickers**.
+- Ravi buys a pack of **662 stickers**.
+- Ravi gives away **673 stickers**.
+- Ravi buys a pack of **170 stickers**.
+- Ravi loses **167 stickers**.
+
+### Step-by-step calculation:
+
+1. **Start with the initial number of stickers in the album**:  
+   $ 758 $
+
+2. **Subtract the number of stickers given away**:  
+   $ 758 - 132 = 626 $
+
+3. **Add the number of stickers bought**:  
+   $ 626 + 662 = 1288 $
+
+4. **Subtract the number of stickers lost**:  
+   $ 1288 - 167 = 1121 $
+
+### Final Answer:  
+$$
+\boxed{1121}
+$$
+
+Ravi ends up with **1121 stickers**.",DISTRACTOR_USE,,
+5bd3a61a4582,1,Priya owns 712 marbles. Noor has 144 toy cars. Priya finds 718 more marbles. Priya's marble count then becomes 10 times as large. Noor has 163 toy cars. How many marbles does Priya have now?,14300,"We are given the following information:
+
+- Priya initially has **712 marbles**.
+- Noor has **144 toy cars**.
+- Priya finds **718 more marbles**, making her total **marble count 10 times larger**.
+- The question is: **How many marbles does Priya have now?**
+
+---
+
+### Step 1: Start with Priya's initial count
+
+Priya has **712 marbles**.
+
+---
+
+### Step 2: Add the marbles she finds
+
+She finds **718 more marbles**, so:
+
+$$
+712 + 718 = 1430
+$$
+
+---
+
+### Step 3: Check if the new count is **10 times as large**
+
+We are told that **Priya's marble count becomes 10 times as large**.
+
+So, we verify:
+
+$$
+10 \times 1430 = 14300
+$$
+
+This matches our result.
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{1430}
+$$
+
+Priya now has **1430 marbles**.",FORMAT_ERROR,,
+b400633dd466,2,Ishaan owns 687 books. Ishaan buys 188 new books. Ishaan buys 850 new books. The library is 315 years old. Ishaan's book collection then grows to 6 times its size. Ishaan divides the books equally among 10 shelves and keeps only one shelf of them. Ishaan divides the books equally among 9 shelves and keeps only one shelf of them. Ishaan is given 174 books as a gift. Ishaan buys 516 new books. How many books does Ishaan have now?,805,"Let's work through the problem step by step.
+
+---
+
+### **Initial Information:**
+
+- Ishaan owns **687 books**.
+- He buys **188 new books**.
+- He buys **850 new books**.
+
+So, total books after buying both:
+
+$$
+687 + 188 + 850 = 1725
+$$
+
+---
+
+### **Then, the library is 315 years old.**
+
+Ishaan’s **book collection grows to 6 times its size**.
+
+$$
+1725 \times 6 = 10350
+$$
+
+So, **Ishaan now has 10,350 books**.
+
+---
+
+### **Dividing the books equally among 10 shelves, keeping only 1 shelf:**
+
+He divides the books equally among **10 shelves**. So, each shelf gets:
+
+$$
+\frac{10350}{10} = 1035 \text{ books per shelf}
+$$
+
+He keeps **only one shelf** of them. So, he keeps:
+
+$$
+1035 \text{ books}
+$$
+
+---
+
+### **Dividing the books equally among 9 shelves, keeping only 1 shelf:**
+
+He divides the books equally among **9 shelves**. So, each shelf gets:
+
+$$
+\frac{10350}{9} = 1150 \text{ books per shelf}
+$$
+
+He keeps **only one shelf** of them. So, he keeps:
+
+$$
+1150 \text{ books}
+$$
+
+---
+
+### **Ishaan is given 174 books as a gift.**
+
+So, he now has:
+
+$$
+10350 + 174 = 10524 \text{ books}
+$$
+
+---
+
+### **He buys 516 new books.**
+
+Now, total books:
+
+$$
+10524 + 516 = 11040
+$$
+
+---
+
+### **Final Answer:**
+
+$$
+\boxed{11040}
+$$
+
+So, Ishaan now has **11,040 books**.",PLAN_ERROR,,
+7d6ffbea4ccf,1,"Leo has 12 stickers. Leo shares the stickers equally among 12 friends, keeping one friend's share. The album has 49 pages. Mei has 99 postcards. Leo buys a pack of 15 stickers. How many stickers does Leo have now?",16,"We are given the following information:
+
+- Leo starts with **12 stickers**.
+- He shares the stickers **equally among 12 friends**, keeping **one friend's share**.
+- The **album** has **49 pages**.
+- Mei has **99 postcards**.
+- Leo **buys a pack of 15 stickers**.
+
+---
+
+### Step 1: Determine how many stickers Leo has after the purchase
+
+- Leo initially has **12 stickers**.
+- He buys a pack of **15 stickers**.
+- So, he now has:
+
+$$
+12 + 15 = \boxed{27}
+$$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{27}
+$$
+
+Leo now has **27 stickers**.",UNVERIFIABLE,,
+97e49804e685,1,Sam has 637 seed packets. Sam plants 456 seed packets. Felix has 665 flower pots. Sam orders 998 more seed packets. Sam receives a shipment of 261 seed packets. Sam receives a shipment of 844 seed packets. Sam receives a shipment of 458 seed packets. Sam receives a shipment of 592 seed packets. Sam sells 675 seed packets. The store is open 125 hours a week. How many seed packets does Sam have now?,2659,"We are given the following details:
+
+- Sam starts with **637 seed packets**.
+- Sam plants **456 seed packets**.
+- Sam orders **998 seed packets**.
+- Sam receives a shipment of **261 seed packets**.
+- Sam receives a shipment of **844 seed packets**.
+- Sam receives a shipment of **458 seed packets**.
+- Sam receives a shipment of **592 seed packets**.
+- Sam sells **675 seed packets**.
+
+We are to find how many seed packets Sam has **now**.
+
+---
+
+### Step-by-step:
+
+1. **Start with Sam's initial seed packets:**
+   $$
+   637
+   $$
+
+2. **Add the seed packets planted:**
+   $$
+   637 + 456 = 1093
+   $$
+
+3. **Add the seed packets ordered:**
+   $$
+   1093 + 998 = 2091
+   $$
+
+4. **Add the seed packets received:**
+   $$
+   2091 + 261 = 2352
+   $$
+
+5. **Add the seed packets received again:**
+   $$
+   2352 + 844 = 3196
+   $$
+
+6. **Add the seed packets received again:**
+   $$
+   3196 + 458 = 3654
+   $$
+
+7. **Subtract the seed packets sold:**
+   $$
+   3654 - 675 = 3654 - 600 - 75 = 3054 - 75 = 2979
+   $$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{2979}
+$$
+
+Sam now has **2979 seed packets**.",ARITHMETIC_SLIP,,
+a297fa124f9f,0,Tariq has 1893 cookies in the bakery. Tariq receives 7172 cookies from a friend. Tariq scales up the batch so the number of cookies becomes 5 times as large. Asha bakes 7434 muffins. Tariq sells 9701 cookies. How many cookies does Tariq end up with?,35624,"We are given the following data:
+
+- Tariq starts with **1893 cookies**.
+- Tariq receives **7172 cookies** from a friend.
+- Tariq scales up the batch so the number of cookies becomes **5 times** as large.
+- Asha bakes **7434 muffins**.
+- Tariq sells **9701 cookies**.
+
+---
+
+### Step 1: Total number of cookies Tariq ends up with
+
+Start with the initial cookies:
+
+$$
+1893 + 7172 = 9065
+$$
+
+Then, Tariq scales up the batch so the number becomes **5 times**:
+
+$$
+9065 \times 5 = 45325
+$$
+
+---
+
+### Step 2: Subtract the cookies that Asha baked
+
+$$
+45325 - 7434 = 37891
+$$
+
+---
+
+### Step 3: Subtract the cookies that Tariq sold
+
+$$
+37891 - 9701 = 28190
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{28190}
+$$
+
+Tariq ends up with **28,190 cookies**.",DISTRACTOR_USE,,
+e82ba9737408,1,Ishaan starts the day with 1659 apples. A supplier delivers 6585 apples to Ishaan. Ishaan gives 4981 apples to a neighbour. Leo has 4869 oranges. The fruit stand opened 1021 days ago. How many apples does Ishaan end up with?,3263,"We are given the following information:
+
+- Ishaan starts the day with **1659 apples**.
+- A supplier delivers **6585 apples**.
+- Ishaan gives **4981 apples** to a neighbour.
+- Leo has **4869 oranges**.
+- The fruit stand opened **1021 days ago**.
+
+---
+
+### Step-by-step process:
+
+1. **Start with the initial number of apples:**
+   $$
+   1659 \text{ apples}
+   $$
+
+2. **Add the apples delivered by the supplier:**
+   $$
+   1659 + 6585 = 8244 \text{ apples}
+   $$
+
+3. **Subtract the apples given to the neighbor:**
+   $$
+   8244 - 4981 = 3263 \text{ apples}
+   $$
+
+4. **Add the number of apples Leo has (oranges) to the result:**
+   $$
+   3263 \text{ apples (from Ishaan)} + 4869 \text{ oranges (Leo)} = 8132 \text{ apples}
+   $$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{8132}
+$$
+
+Ishaan ends up with **8132 apples**.",FORMAT_ERROR,,
+e7984727b718,2,"Aditi has 3492 stickers. Aditi shares the stickers equally among 9 friends, keeping one friend's share. Aditi's sticker count then becomes 8 times as large. Aditi loses 1956 stickers. Aditi shares the stickers equally among 4 friends, keeping one friend's share. Aditi shares the stickers equally among 7 friends, keeping one friend's share. Aditi's sticker count then becomes 6 times as large. How many stickers does Aditi end up with?",246,"We are given that Aditi starts with **3492 stickers**, and then performs a series of operations:
+
+---
+
+### **First Operation:**
+
+- Shares **3492 stickers** equally among **9 friends**, keeping **1 friend's share**.
+
+- So, each of the 8 friends gets:
+
+$$
+\frac{3492}{8} = 436.5 \text{ stickers}
+$$
+
+- Since she keeps one friend's share, **she ends up with**:
+
+$$
+3492 - 436.5 = 3055.5 \text{ stickers}
+$$
+
+But since the problem says she **loses 1956 stickers**, we go to the next step.
+
+---
+
+### **Second Operation:**
+
+- Shares **3055.5 stickers** equally among **4 friends**, keeping **1 friend's share**.
+
+- So, each of the 3 friends gets:
+
+$$
+\frac{3055.5}{3} = 1018.5 \text{ stickers}
+$$
+
+- She ends up with:
+
+$$
+3055.5 - 1018.5 = 2037 \text{ stickers}
+$$
+
+---
+
+### **Third Operation:**
+
+- Shares **2037 stickers** equally among **7 friends**, keeping **1 friend's share**.
+
+- So, each of the 6 friends gets:
+
+$$
+\frac{2037}{6} = 339.5 \text{ stickers}
+$$
+
+- She ends up with:
+
+$$
+2037 - 339.5 = 1697.5 \text{ stickers}
+$$
+
+---
+
+### **Final Answer:**
+
+$$
+\boxed{1697.5}
+$$
+
+**Note:** The problem likely expects an integer, so 1697.5 is the exact value, but if only whole stickers are allowed, the final amount would be **1697**.",PLAN_ERROR,,
+c7a20df24d7b,1,"Aditi's album holds 55 stickers. Aditi trades for 35 more stickers. Aditi shares the stickers equally among 2 friends, keeping one friend's share. Aditi gives away 32 stickers. Aditi loses 12 stickers. How many stickers does Aditi end up with?",1,"We are given:
+
+- Aditi's **initial number of stickers** = **55**
+- She **trades for 35 more stickers** → Total stickers = **55 + 35 = 90**
+- She **shares the stickers equally among 2 friends** → Each friend gets **90 ÷ 2 = 45 stickers**
+- She **keeps one friend's share** → So, the other 1 friend gets **45 stickers**
+- She **gives away 32 stickers** → Remaining stickers = **45 - 32 = 13**
+
+**Final Answer: 13 stickers**. 
+
+$$
+\boxed{13}
+$$",UNVERIFIABLE,,
+bab5cf31eb3d,1,Ishaan collects 12 eggs. The hens lay another 41 eggs for Ishaan. Ishaan sells 32 eggs at the market. The hens lay another 51 eggs for Ishaan. The hens lay another 95 eggs for Ishaan. How many eggs does Ishaan end up with?,167,"Let's break down the problem step by step.
+
+### Initial amount:
+- Ishaan starts with **12 eggs**.
+
+### Eggs laid by hens:
+- Hens lay **41 eggs** for Ishaan.
+- Hens lay **51 eggs** again for Ishaan.
+- Hens lay **95 eggs** again for Ishaan.
+
+So, the total number of eggs Ishaan collects is:
+$$
+12 + 41 + 51 + 95 = 200 \text{ eggs}
+$$
+
+### Eggs sold:
+- Ishaan sells **32 eggs** at the market.
+
+### Final amount:
+$$
+200 - 32 = 168 \text{ eggs}
+$$
+
+### Final Answer:
+$$
+\boxed{168}
+$$",ARITHMETIC_SLIP,,
+55837bbe42aa,1,Ishaan owns 8 marbles. Ishaan sorts the marbles equally into 2 bags and keeps one bag. Ishaan gives 3 marbles to a cousin. Ishaan finds 7 more marbles. Ishaan wins 8 marbles in a game. The jar is 5 centimetres tall. Ishaan's marble count then becomes 9 times as large. How many marbles does Ishaan end up with?,144,"Let's break down the problem step by step.
+
+### Initial information:
+
+- Ishaan owns **8 marbles**.
+- She sorts the marbles **equally into 2 bags**.
+- She keeps **1 bag**.
+- She **gives 3 marbles** to a cousin.
+- She **finds 7 more marbles**.
+- She **wins 8 marbles** in a game.
+- The **jar is 5 cm tall**.
+- Ishaan's **marble count becomes 9 times as large**.
+
+---
+
+### Step-by-step calculation:
+
+1. **Initial marble count**: 8 marbles.
+
+2. **Gives 3 marbles to a cousin**:  
+   $ 8 - 3 = 5 $ marbles left.
+
+3. **Finds 7 more marbles**:  
+   $ 5 + 7 = 12 $ marbles.
+
+4. **Wins 8 marbles**:  
+   $ 12 + 8 = 20 $ marbles.
+
+5. **Marble count becomes 9 times as large**:  
+   $ 20 \times 9 = 180 $ marbles.
+
+---
+
+### Final Answer:
+
+$$
+\boxed{180}
+$$ marbles.",DISTRACTOR_USE,,
+ce440db9a1fb,1,"Zara starts the day with 4 apples. Zara buys 7 more apples from a farmer. The fruit stand opened 3 days ago. Kiran has 2 oranges. Zara buys 4 more apples from a farmer. Zara sells 5 apples. A supplier delivers 6 apples to Zara. After a big harvest, Zara's number of apples becomes 9 times as large. Zara splits the apples equally into 9 baskets and keeps only one basket. How many apples does Zara have now?",16,"We are given a series of events involving Zara and apples. Let's break this down step by step and find the final number of apples Zara has.
+
+---
+
+### **Step 1: Start with 4 apples**
+
+- Zara starts the day with **4 apples**.
+
+---
+
+### **Step 2: Zara buys 7 more apples from a farmer**
+
+- Zara buys **7 more apples** →  
+  **Total apples now = 4 + 7 = 11**
+
+---
+
+### **Step 3: The fruit stand opened 3 days ago**
+
+- This means that **3 days ago**, the fruit stand had **all the apples Zara has** →  
+  So, Zara had 11 apples, and the fruit stand had 11 apples.
+
+- But **3 days ago**, the fruit stand opened, so **Zara had 11 apples**, and the fruit stand had **all of them**.
+
+---
+
+### **Step 4: Zara buys 4 more apples from a farmer**
+
+- Zara buys **4 more apples** →  
+  **Total apples now = 11 + 4 = 15**
+
+---
+
+### **Step 5: Zara sells 5 apples**
+
+- Zara sells **5 apples** →  
+  **Total apples now = 15 - 5 = 10**
+
+---
+
+### **Step 6: A supplier delivers 6 apples to Zara**
+
+- A supplier delivers **6 apples** →  
+  **Total apples now = 10 + 6 = 16**
+
+---
+
+### **Step 7: After a big harvest, Zara's number of apples becomes 9 times as large**
+
+- This means that **Zara's apples are now 9 times as many as before**.  
+  Let’s assume **Zara had $ x $ apples**, then after the harvest, she has $ 9x $ apples.
+
+---
+
+### **Step 8: Zara splits the apples equally into 9 baskets and keeps only one basket**
+
+- She splits the **9 times as many apples** into **9 baskets** and keeps **only one** basket →  
+  So, she keeps **1 apple** in the basket.
+
+- Therefore, after splitting and keeping one basket, she has **1 apple**.
+
+---
+
+### **Final Answer**
+
+$$
+\boxed{1}
+$$ apples.",FORMAT_ERROR,,
+daf954956022,0,Jonah has 4872 seed packets. The store is open 7763 hours a week. Jonah's stock of seed packets then becomes 7 times as large. Jonah's stock of seed packets then becomes 4 times as large. Jonah's stock of seed packets then becomes 3 times as large. Jonah sells 6121 seed packets. Jonah receives a shipment of 2068 seed packets. Lucia has 8835 flower pots. How many seed packets does Jonah end up with?,405195,"We are given the following information:
+
+- **Jonah has 4872 seed packets**.
+- The **store is open for 7763 hours a week**.
+- Jonah **increases his seed packet stock by 7**, then by 4, then by 3 times.
+- Jonah **sells 6121 seed packets**.
+- Lucia has **8835 flower pots**.
+- We are to find how many **seed packets Jonah ends up with**.
+
+---
+
+### Step 1: Determine Jonah's seed packet stock after each increase
+
+- Start with 4872 seed packets.
+
+- After 7 times:
+  $$
+  4872 \times 7 = 34104
+  $$
+
+- After 4 times:
+  $$
+  34104 \times 4 = 136416
+  $$
+
+- After 3 times:
+  $$
+  136416 \times 3 = 409248
+  $$
+
+---
+
+### Step 2: Subtract the number of seed packets Jonah sells
+
+Jonah sells 6121 seed packets. So, subtract from his final stock:
+
+$$
+409248 - 6121 = 403,127
+$$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{403127}
+$$
+
+Jonah ends up with **403,127 seed packets**.",PLAN_ERROR,,
+30340e861c65,1,Mei has 710 stickers. Mei buys a pack of 205 stickers. The album has 312 pages. Mei trades for 124 more stickers. The album has 488 pages. How many stickers does Mei have now?,1039,"Let's break the problem down step by step:
+
+1. **Mei starts with 710 stickers.**
+2. **She buys a pack of 205 stickers.**
+   - So, **710 + 205 = 915 stickers**.
+3. **She trades 124 more stickers.**
+   - So, **915 - 124 = 791 stickers**.
+
+**Final Answer:**  
+$$
+\boxed{791}
+$$
+
+Mei now has **791 stickers**.",UNVERIFIABLE,,
+21b148df1a7b,0,Kiran saves $975. Kiran receives $831 as a gift. Kiran earns $487 doing chores. Kiran pays $614 for lunch. Kiran spends $866 on a toy. Kiran spends $736 on a toy. Asha has $539 in a wallet. Kiran receives $585 as a gift. The piggy bank weighs 108 grams. How much money does Kiran have now?,662,"We will calculate how much money Kiran has **now**, by adding up all the money he has received and spent.
+
+---
+
+### Step 1: Start with the initial amount
+
+- Kiran saves $975.
+
+### Step 2: Add the gift Kiran received
+
+- He receives $831 as a gift.
+
+### Step 3: Add the money he earns from chores
+
+- He earns $487 doing chores.
+
+### Step 4: Add the money he pays for lunch
+
+- He pays $614 for lunch.
+
+### Step 5: Add the money he spends on toys
+
+- He spends $866 on a toy.
+- He spends another $736 on a toy.
+
+So, total spent on toys:  
+$866 + $736 = $1,602
+
+### Step 6: Add the total amount Kiran has
+
+$$
+\text{Total money Kiran has} = \text{Saves} + \text{Gifts} + \text{Earnings} + \text{Pays} + \text{Spends on toys}
+$$
+
+$$
+\text{Total money} = 975 + 831 + 487 + 614 + 1602
+$$
+
+Let's calculate:
+
+- 975 + 831 = 1806  
+- 1806 + 487 = 2293  
+- 2293 + 614 = 2907  
+- 2907 + 1602 = **4509**
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{4509}
+$$
+
+Kiran now has **$4,509**.",ARITHMETIC_SLIP,,
+4199cf4c6454,2,Mei starts the day with 3699 apples. A supplier delivers 3380 apples to Mei. Mei gives 4897 apples to a neighbour. Mei gives 1027 apples to a neighbour. The fruit stand opened 2349 days ago. How many apples does Mei have now?,1155,"We are given the following:
+
+- Mei starts the day with **3699 apples**.
+- A supplier delivers **3380 apples**.
+- Mei gives **4897 apples** to a neighbor.
+- Mei gives **1027 apples** to another neighbor.
+- The fruit stand **opened 2349 days ago**.
+
+We will compute the final number of apples Mei has now.
+
+---
+
+### Step 1: Add the apples delivered
+
+- Initial apples: **3699**
+- Apples delivered: **+3380**
+
+$$
+3699 + 3380 = 7079 \text{ apples}
+$$
+
+---
+
+### Step 2: Subtract the apples given to neighbors
+
+- Apples given to neighbor 1: **+4897**
+- Apples given to neighbor 2: **+1027**
+
+$$
+7079 - 4897 = 2182
+$$
+$$
+2182 - 1027 = 1155 \text{ apples}
+$$
+
+---
+
+### Step 3: Add apples from 2349 days ago
+
+- The fruit stand opened **2349 days ago**, and Mei had those apples. So:
+
+$$
+1155 + 2349 = 3504 \text{ apples}
+$$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{3504}
+$$
+
+Mei now has **3504 apples**.",DISTRACTOR_USE,,
+25a9339e5f20,2,Sam has 469 seed packets. Sam receives a shipment of 444 seed packets. Sam orders 889 more seed packets. Sam's stock of seed packets then becomes 7 times as large. How many seed packets does Sam end up with?,12614,"We are told that Sam starts with **469 seed packets**. He receives a shipment of **444 seed packets**, and then orders **889 seed packets**. The final quantity of seed packets Sam has becomes **7 times as large**.
+
+---
+
+### Step 1: Add the seed packets received and ordered
+
+$$
+\text{Total packets} = 469 + 444 + 889
+$$
+
+$$
+469 + 444 = 913 \\
+913 + 889 = 1802
+$$
+
+So, Sam ends up with **1802 seed packets**.
+
+---
+
+### Step 2: Check if this is 7 times as large
+
+We are told that Sam's stock becomes **7 times as large**, and the final amount is **1802**. Let's verify:
+
+$$
+7 \times 1802 = 12614
+$$
+
+This is not equal to 1802, so there must be a misunderstanding in the problem statement.
+
+But if we are told that Sam's stock becomes **7 times as large**, and the final amount is **1802**, then the problem is **not** consistent.
+
+However, if we are to go by the given information:
+
+- Sam starts with 469.
+- Receives 444.
+- Orders 889.
+- Final stock = 7 × initial stock.
+
+Let’s calculate the initial stock as **7 × 1802**:
+
+$$
+7 \times 1802 = 12614
+$$
+
+So, the answer would be:
+
+$$
+\boxed{1802}
+$$
+
+But since the problem states that Sam's stock becomes **7 times as large**, and the final amount is **1802**, there must be a miscalculation. However, if we take the given numbers as accurate, then:
+
+**Sam ends up with 1802 seed packets.**",FORMAT_ERROR,,
+10d3e62382d0,1,Elena has 423 apples at a fruit stand. Elena gives 226 apples to a neighbour. Elena buys 941 more apples from a farmer. A supplier delivers 536 apples to Elena. Elena buys 612 more apples from a farmer. A supplier delivers 289 apples to Elena. Elena buys 650 more apples from a farmer. Elena gives 112 apples to a neighbour. How many apples does Elena end up with?,3113,"We are given the following sequence of events involving Elena's apples:
+
+1. **Start**: Elena has **423 apples**.
+2. **Elena gives 226 apples** to a neighbor →  
+   $ 423 - 226 = 197 $ apples remaining.
+3. **Elena buys 941 apples** from a farmer →  
+   $ 197 + 941 = 1138 $ apples.
+4. **A supplier delivers 536 apples** →  
+   $ 1138 - 536 = 602 $ apples.
+5. **Elena buys 612 more apples** from a farmer →  
+   $ 602 + 612 = 1214 $ apples.
+6. **A supplier delivers 289 apples** →  
+   $ 1214 - 289 = 925 $ apples.
+7. **Elena gives 112 apples** to a neighbor →  
+   $ 925 - 112 = 813 $ apples.
+
+### Final Answer:
+
+$$
+\boxed{813}
+$$
+
+Elena ends up with **813 apples**.",PLAN_ERROR,,
+89db88997b42,2,Aditi has $43 in a piggy bank. Aditi pays $38 for lunch. Aditi receives $92 as a gift. Aditi receives $54 as a gift. Aditi's savings then grow to 10 times the amount. The piggy bank weighs 80 grams. Aditi splits the money equally into 10 envelopes and keeps one envelope. Priya has $41 in a wallet. Aditi pays $62 for lunch. Aditi's savings then grow to 6 times the amount. How many dollars does Aditi end up with?,534,"We are given the following information:
+
+- **Aditi's initial savings**: $43  
+- **Aditi pays $38 for lunch**: So, savings decrease by $38  
+- **Aditi receives $92 as a gift**: So, savings increase by $92  
+- **Aditi receives $54 as a gift**: So, savings increase by $54  
+- **Aditi splits the money equally into 10 envelopes and keeps one**  
+- **Priya has $41 in a wallet**  
+- **Aditi pays $62 for lunch**  
+- **Aditi's savings then grow to 10 times the amount**
+
+We are to find **how many dollars Aditi ends up with**.
+
+---
+
+### Step 1: Start with initial savings
+
+Aditi's initial savings are $43.
+
+---
+
+### Step 2: Adjust savings based on transactions
+
+1. **Pays $38 for lunch**:  
+   Savings = $43 - $38 = **$5**
+
+2. **Receives $92 as a gift**:  
+   Savings = $5 + $92 = **$97**
+
+3. **Receives $54 as a gift**:  
+   Savings = $97 + $54 = **$151**
+
+---
+
+### Step 3: Split money equally into 10 envelopes and keep one
+
+- Total money = $151  
+- Each envelope = $151 ÷ 10 = **$15.10**  
+- Aditi keeps **1 envelope** = **$15.10**
+
+---
+
+### Step 4: Add Priya's money
+
+- Priya has $41 in a wallet  
+- Aditi does not receive anything from Priya
+
+---
+
+### Final Answer:
+
+$$
+\boxed{15.10}
+$$
+
+Aditi ends up with **$15.10**.",UNVERIFIABLE,,
+c7413c1d9b63,0,Lucia has 7386 marbles in a jar. Lucia loses 4515 marbles in a game. Lucia wins 1359 marbles in a game. The jar is 9550 centimetres tall. Lucia's marble count then becomes 10 times as large. Lucia sorts the marbles equally into 5 bags and keeps one bag. Mei has 5945 toy cars. Lucia's marble count then becomes 2 times as large. How many marbles does Lucia end up with?,16920,"We are given the following information:
+
+- **Initial marbles in the jar**: 7386  
+- **Marbles lost in a game**: 4515  
+- **Marbles won in a game**: 1359  
+- **Total marbles after losing and winning**:  
+  $$
+  7386 - 4515 + 1359 = 7386 + 1359 - 4515 = 8745 - 4515 = 4230
+  $$
+- **Marbles after sorting into 5 bags**: 4230 marbles, which is **10 times** as large as before.  
+  $$
+  4230 \div 10 = 423
+  $$
+- **Marbles kept in one bag**: 423  
+- **Marbles that are sorted into 5 bags**: 4230 (as above)  
+- **Mei has 5945 toy cars**, which is **2 times** as large as Lucia's marble count.  
+  $$
+  5945 \div 2 = 2972.5
+  $$
+
+**Final answer**: $\boxed{2972.5}$ marbles.",ARITHMETIC_SLIP,,
+7c1281594d50,2,Aditi has 2 cookies in the bakery. Aditi bakes another 4 cookies. The oven is set to 8 degrees. Aditi receives 7 cookies from a friend. Aditi receives 9 cookies from a friend. Aditi eats 9 of the cookies. Asha bakes 3 muffins. Aditi eats 6 of the cookies. Aditi sells 2 cookies. How many cookies does Aditi have now?,5,"We are given the following information:
+
+- **Initial cookies:** 2
+- **Baked cookies:** 4
+- **Friend cookies (received):** 7 + 9 = 16
+- **Eaten cookies:** 9
+- **Bakes muffins:** 3
+- **Eaten muffins:** 6
+- **Sells cookies:** 2
+
+### Step-by-step calculation:
+
+1. **Start with initial cookies:**
+   $$
+   2
+   $$
+
+2. **Add the cookies baked by Aditi:**
+   $$
+   2 + 4 = 6
+   $$
+
+3. **Add the cookies received from friends:**
+   $$
+   6 + 16 = 22
+   $$
+
+4. **Subtract the cookies eaten:**
+   $$
+   22 - 9 = 13
+   $$
+
+5. **Subtract the cookies eaten from muffins:**
+   $$
+   3 - 6 = -3
+   $$
+
+   (Note: We subtract the cookies eaten from the muffins baked, which means we end up with a negative number of muffins. This means Aditi has fewer cookies than she started with.)
+
+6. **Subtract the cookies sold:**
+   $$
+   13 - 2 = 11
+   $$
+
+### Final Answer:
+$$
+\boxed{11}
+$$",DISTRACTOR_USE,,
+fb37c9f4cb0e,0,Lucia owns 2777 marbles. Lucia gives 2183 marbles to a cousin. Lucia finds 6910 more marbles. Lucia finds 2872 more marbles. Ishaan has 4204 toy cars. Lucia wins 3407 marbles in a game. Lucia loses 3245 marbles in a game. Lucia gives 8468 marbles to a cousin. Lucia gives 1457 marbles to a cousin. How many marbles does Lucia end up with?,613,"We are given the following information about how many marbles Lucia has:
+
+- **Starts with:** 2777 marbles  
+- **Gives 2183 marbles to a cousin**  
+- **Finds 6910 more marbles**  
+- **Finds 2872 more marbles**  
+- **Wins 3407 marbles**  
+- **Loses 3245 marbles**  
+- **Gives 8468 marbles to a cousin**  
+- **Gives 1457 marbles to a cousin**
+
+We are to find how many marbles **Lucia ends up with**.
+
+---
+
+### Step-by-step calculation:
+
+Start with the initial number of marbles:
+$$
+2777 \text{ marbles}
+$$
+
+#### 1. **Gives 2183 marbles to a cousin**
+$$
+2777 - 2183 = 594 \text{ marbles left}
+$$
+
+#### 2. **Finds 6910 more marbles**
+$$
+594 + 6910 = 7504 \text{ marbles}
+$$
+
+#### 3. **Finds 2872 more marbles**
+$$
+7504 + 2872 = 10376 \text{ marbles}
+$$
+
+#### 4. **Wins 3407 marbles**
+$$
+10376 + 3407 = 13783 \text{ marbles}
+$$
+
+#### 5. **Loses 3245 marbles**
+$$
+13783 - 3245 = 10538 \text{ marbles}
+$$
+
+#### 6. **Gives 8468 marbles to a cousin**
+$$
+10538 - 8468 = 2070 \text{ marbles}
+$$
+
+#### 7. **Gives 1457 marbles to a cousin**
+$$
+2070 - 1457 = 613 \text{ marbles}
+$$
+
+---
+
+### Final Answer:
+$$
+\boxed{613}
+$$ marbles.",FORMAT_ERROR,,
+cdb5a1fc69ce,1,Lucia saves $82. Lucia earns $61 doing chores. Lucia's savings then grow to 6 times the amount. Lucia splits the money equally into 11 envelopes and keeps one envelope. Lucia pays $64 for lunch. Lucia splits the money equally into 2 envelopes and keeps one envelope. The piggy bank weighs 66 grams. The piggy bank weighs 25 grams. Lucia earns $49 doing chores. How much money does Lucia have now?,56,"We are given the following information about Lucia:
+
+- **Lucia saves $82.**
+- **Lucia earns $61 doing chores.**
+- **Lucia's savings then grow to 6 times the amount.**
+- **Lucia splits the money equally into 11 envelopes and keeps one.**
+- **Lucia pays $64 for lunch.**
+- **Lucia splits the money equally into 2 envelopes and keeps one.**
+- **The piggy bank weighs 66 grams.**
+- **The piggy bank weighs 25 grams.**
+- **Lucia earns $49 doing chores.**
+
+---
+
+Let’s break this down step by step.
+
+### Step 1: Initial Savings
+Lucia saves **$82**.
+
+### Step 2: Savings Grow to 6 Times the Amount
+So, her savings after chores become:
+
+$$
+6 \times 82 = 492 \, \text{dollars}
+$$
+
+### Step 3: Split the Money into 11 Envelopes and Keep One
+She splits the 492 dollars into **11 envelopes** and keeps **one**.
+
+So, she keeps:
+
+$$
+\frac{492}{11} = 44.73 \, \text{dollars per envelope}
+$$
+
+### Step 4: Lucia Pays $64 for Lunch
+Now she pays **$64** for lunch, so she gives away **$64**.
+
+So, her total money is:
+
+$$
+44.73 - 64 = -19.27 \, \text{dollars}
+$$
+
+---
+
+### Step 5: Piggy Bank Weights
+
+- The **piggy bank weighs 66 grams**.
+- The **piggy bank weighs 25 grams**.
+
+This seems to be a trick question. It may be a misprint or a distraction. Since we are only asked about **how much money does Lucia have now**, and the answer is based on the previous calculations, we can ignore the piggy bank weight.
+
+---
+
+### Final Answer:
+
+$$
+\boxed{-19.27}
+$$
+
+But since money can't be negative, the correct answer is **$0**. However, if we interpret the piggy bank weight as a red herring, the final answer is:
+
+$$
+\boxed{0}
+$$",PLAN_ERROR,,
+34e3e6634fa2,0,Ishaan collects 10 eggs. The hens lay another 44 eggs for Ishaan. The hens lay another 98 eggs for Ishaan. Ishaan uses 47 eggs for breakfast. The hens lay another 15 eggs for Ishaan. The hens lay another 44 eggs for Ishaan. The hens lay another 62 eggs for Ishaan. The hens lay another 48 eggs for Ishaan. How many eggs does Ishaan end up with?,274,"We are given a sequence of events involving Ishaan collecting and using eggs, and we need to find how many eggs he ends up with at the end.
+
+Let's break it down step by step:
+
+1. **Start with Ishaan collecting 10 eggs.**
+   - Total eggs collected so far: **10**
+
+2. **Hens lay another 44 eggs for Ishaan.**
+   - Total eggs now: **10 + 44 = 54**
+
+3. **Hens lay another 98 eggs for Ishaan.**
+   - Total eggs now: **54 + 98 = 152**
+
+4. **Ishaan uses 47 eggs for breakfast.**
+   - Total eggs now: **152 - 47 = 105**
+
+5. **Hens lay another 15 eggs for Ishaan.**
+   - Total eggs now: **105 + 15 = 120**
+
+6. **Hens lay another 44 eggs for Ishaan.**
+   - Total eggs now: **120 + 44 = 164**
+
+7. **Hens lay another 62 eggs for Ishaan.**
+   - Total eggs now: **164 + 62 = 226**
+
+### Final Answer:
+$$
+\boxed{226}
+$$
+
+Ishaan ends up with **226 eggs**.",UNVERIFIABLE,,
+b7f82448a11f,2,Sam has 6804 cookies in the bakery. The oven is set to 7690 degrees. Sam scales up the batch so the number of cookies becomes 6 times as large. Sam scales up the batch so the number of cookies becomes 11 times as large. Sam packs the cookies equally into 12 boxes and keeps just one box. Sam packs the cookies equally into 6 boxes and keeps just one box. How many cookies does Sam have now?,6237,"We are given the following:
+
+- Sam starts with **6804 cookies**.
+- The oven is set to **7690 degrees**.
+- He scales the batch **6 times** and **11 times**.
+- He then packs the cookies into **12 boxes** and keeps **1 box**.
+- He also packs the cookies into **6 boxes** and keeps **1 box**.
+
+---
+
+### Step 1: Scale up the batch
+
+- Initially, he scales **6 times**:
+  $$
+  6804 \times 6 = 40824 \text{ cookies}
+  $$
+
+- Then he scales **11 times**:
+  $$
+  40824 \times 11 = 448,  \text{ let's compute: } 40824 \times 11 = 448,  \text{ so } 448, 240 \text{ cookies}
+  $$
+
+---
+
+### Step 2: Pack the cookies into 12 boxes and keep 1 box
+
+- He packs equally into 12 boxes:
+  $$
+  \frac{448,240}{12} = 37,353.33\ldots
+  $$
+
+But since he **keeps only 1 box**, this means:
+
+$$
+\text{He keeps 1 cookie}, \quad \text{and packs the rest into boxes}
+$$
+
+So:
+
+$$
+\text{He keeps 1 cookie} \Rightarrow \text{Total cookies now} = 1 + 448,239 = \boxed{448,240}
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{448240}
+$$
+
+So Sam now has **448,240 cookies**.",ARITHMETIC_SLIP,,
+54c19e7420f4,0,"Ravi starts the day with 4242 apples. Ravi gives 1126 apples to a neighbour. The fruit stand opened 2045 days ago. After a big harvest, Ravi's number of apples becomes 3 times as large. Ravi splits the apples equally into 12 baskets and keeps only one basket. A supplier delivers 1181 apples to Ravi. Ravi buys 9644 more apples from a farmer. Ravi splits the apples equally into 3 baskets and keeps only one basket. How many apples does Ravi end up with?",3868,"We are given a series of events involving Ravi and apples. To find the final number of apples Ravi has, we need to work backwards from the final number and then reverse the operations step by step.
+
+---
+
+### Step 1: Start with Ravi's initial apples
+
+- Ravi starts the day with **4242 apples**.
+
+---
+
+### Step 2: He gives 1126 apples to a neighbor
+
+So:  
+$$ 4242 - 1126 = 3116 $$
+
+---
+
+### Step 3: The fruit stand opened 2045 days ago
+
+This means the fruit stand is now 2045 days older than Ravi.
+
+So:  
+$$ 3116 + 2045 = 5161 $$
+
+But this is the number of apples the fruit stand has. However, we are told that **after a big harvest**, Ravi's number of apples becomes 3 times as large.
+
+So:  
+$$ 3 \times 5161 = 15483 $$
+
+---
+
+### Step 4: A supplier delivers 1181 apples
+
+So:  
+$$ 15483 - 1181 = 14302 $$
+
+---
+
+### Step 5: Ravi buys 9644 more apples from a farmer
+
+So:  
+$$ 14302 + 9644 = 23946 $$
+
+---
+
+### Step 6: Ravi splits the apples equally into 12 baskets and keeps only one basket
+
+So:  
+$$ \frac{23946}{12} = 1995 $$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{1995}
+$$
+
+Ravi ends up with **1995 apples**.",DISTRACTOR_USE,,
+dd0df190275d,0,Ravi has $8 in a piggy bank. Ravi receives $9 as a gift. Ravi's savings then grow to 4 times the amount. Ravi's savings then grow to 2 times the amount. Ravi splits the money equally into 2 envelopes and keeps one envelope. Ravi's savings then grow to 2 times the amount. How much money does Ravi have now?,136,"Let's go through the problem step by step:
+
+---
+
+### **Initial Situation:**
+- Ravi has $8 in a piggy bank.
+- He receives $9 as a gift.
+- **So, his total savings after receiving the gift is:**
+  $$
+  8 + 9 = 17 \text{ dollars}
+  $$
+
+---
+
+### **First Growth:**
+- Ravi's savings **grow to 4 times** the amount.
+  $$
+  17 \times 4 = 68 \text{ dollars}
+  $$
+
+---
+
+### **Second Growth:**
+- Ravi's savings **grow to 2 times** the amount.
+  $$
+  68 \times 2 = 136 \text{ dollars}
+  $$
+
+---
+
+### **Third Step:**
+- Ravi splits the money **equally into 2 envelopes** and keeps **one envelope**.
+
+So, he gives $68 in total to two envelopes, and keeps $68 in his own envelope.
+
+Thus, after splitting:
+- He gives away $68 to 2 envelopes.
+- Keeps $68 in his envelope.
+
+---
+
+### **Final Amount:**
+- He has **$68 in his envelope**, and the other 68 is split into two envelopes.
+
+So, Ravi's **total savings** now is:
+
+$$
+\boxed{68} \text{ dollars}
+$$
+
+--- 
+
+**Answer: $68**.",FORMAT_ERROR,,
+f46c222cb751,2,Dev bakes 2 cookies. Dev bakes another 5 cookies. Jonah bakes 8 muffins. Dev receives 9 cookies from a friend. Dev bakes another 9 cookies. The oven is set to 3 degrees. Dev sells 2 cookies. Dev receives 6 cookies from a friend. How many cookies does Dev have now?,29,"Let's break down the problem step by step.
+
+1. **Dev bakes 2 cookies**.
+2. **Dev bakes another 5 cookies** → So far, **Dev has baked 2 + 5 = 7 cookies**.
+3. **Jonah bakes 8 muffins** → But **muffins are not cookies**, so **this doesn't affect the count of cookies Dev has**.
+4. **Dev receives 9 cookies from a friend** → So far, **Dev has 7 + 9 = 16 cookies**.
+5. **Dev bakes another 9 cookies** → So far, **Dev has 16 + 9 = 25 cookies**.
+
+**Final Answer:**
+$$
+\boxed{25}
+$$",PLAN_ERROR,,
+8ecf5efaea96,0,Ravi has $2 in a piggy bank. Ravi earns $5 doing chores. Ravi splits the money equally into 7 envelopes and keeps one envelope. Asha has $3 in a wallet. Asha has $8 in a wallet. Ravi receives $9 as a gift. How many dollars does Ravi end up with?,10,"We are given the following information:
+
+- Ravi has **$2 in a piggy bank**.
+- Ravi **earns $5 doing chores**.
+- Ravi **splits the money equally into 7 envelopes and keeps one**.
+- Ravi **receives $9 as a gift**.
+
+---
+
+### Step 1: Calculate how much Ravi has from chores
+
+Ravi earns **$5** from doing chores.
+
+So:
+
+$$
+\text{Amount from chores} = 5
+$$
+
+---
+
+### Step 2: Distribute money equally among 7 envelopes
+
+Ravi splits the money equally into 7 envelopes. So, he gives:
+
+$$
+\frac{5}{7} = 0.7143 \text{ dollars per envelope}
+$$
+
+But since we are only asked how much Ravi ends up with, we can just keep the amount he **ends up with** after splitting.
+
+He keeps **one envelope**, so he keeps:
+
+$$
+5 \text{ dollars}
+$$
+
+---
+
+### Step 3: Add the gift
+
+Ravi also receives **$9 as a gift**.
+
+So, total amount Ravi has is:
+
+$$
+5 + 9 = \boxed{14} \text{ dollars}
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{14}
+$$",UNVERIFIABLE,,
+4daee8915cb0,1,Mei stocks 68 seed packets. Mei divides the seed packets equally among 4 gardens and keeps one garden's share. Mei's stock of seed packets then becomes 3 times as large. Mei divides the seed packets equally among 3 gardens and keeps one garden's share. The store is open 80 hours a week. Mei sells 13 seed packets. Mei divides the seed packets equally among 2 gardens and keeps one garden's share. Mei orders 65 more seed packets. Mei receives a shipment of 44 seed packets. The store is open 50 hours a week. How many seed packets does Mei have now?,111,"Let's solve the problem step by step:
+
+---
+
+### **Step 1: Initial Stock**
+
+- Mei starts with **68 seed packets**.
+
+---
+
+### **Step 2: First Division (Divide equally among 4 gardens, keep 1)**
+
+- She divides 68 packets among 4 gardens, so each gets:
+  $$
+  \frac{68}{4} = 17 \text{ packets}
+  $$
+- She keeps **1** of the 4 gardens' share, so she has:
+  $$
+  68 - 4 \times 17 = 68 - 68 = 0 \text{ packets}
+  $$
+
+So, after this step, Mei has **0 seed packets**.
+
+---
+
+### **Step 3: Second Division (Divide equally among 3 gardens, keep 1)**
+
+- She now has 0 seed packets, so she can't divide them equally. So, she divides the 68 packets again.
+
+- She divides 68 packets among 3 gardens, so each gets:
+  $$
+  \frac{68}{3} \approx 22.67 \text{ packets}
+  $$
+- She keeps 1 of the 3 gardens' share, so she has:
+  $$
+  68 - 3 \times 22.67 \approx 68 - 68 = 0 \text{ packets}
+  $$
+
+So, after this step, Mei has **0 seed packets**.
+
+---
+
+### **Step 4: Store is open 80 hours a week**
+
+- She sells **13 seed packets** per hour.
+
+- In 80 hours a week:
+  $$
+  13 \times 80 = 1040 \text{ seed packets}
+  $$
+
+---
+
+### **Step 5: Orders and Shipment**
+
+- She orders **65 more seed packets**.
+- She receives a shipment of **44 seed packets**.
+
+So, total seed packets now:
+$$
+1040 + 65 + 44 = \boxed{1149}
+$$
+
+---
+
+### ✅ **Final Answer:**
+
+$$
+\boxed{1149}
+$$
+
+Mei has **1149 seed packets** now.",ARITHMETIC_SLIP,,
+eb18461fdb10,0,"Ravi starts the day with 3679 apples. A supplier delivers 8969 apples to Ravi. Dev has 2884 oranges. The fruit stand opened 1962 days ago. After a big harvest, Ravi's number of apples becomes 7 times as large. How many apples does Ravi have now?",88536,"We are given the following information:
+
+- Ravi starts the day with **3679 apples**.
+- A supplier delivers **8969 apples** to Ravi.
+- Dev has **2884 oranges**.
+- The fruit stand **opened 1962 days ago**.
+- After a big harvest, **Ravi’s number of apples becomes 7 times as large**.
+
+We are to find how many apples Ravi has **now**.
+
+---
+
+### Step 1: Start with the initial number of apples
+
+Ravi starts the day with:
+$$
+3679 \text{ apples}
+$$
+
+### Step 2: Add the apples delivered
+
+The supplier delivers:
+$$
+8969 \text{ apples}
+$$
+
+So, after the delivery, the total number of apples Ravi has is:
+$$
+3679 + 8969 = 12648 \text{ apples}
+$$
+
+### Step 3: Consider the fruit stand opened 1962 days ago
+
+That means Ravi has had **1962 days** of apples since then. So the number of apples **now** is:
+$$
+12648 + 1962 = 14610 \text{ apples}
+$$
+
+### Step 4: After a big harvest, Ravi’s number of apples becomes 7 times as large
+
+So, the number of apples now is:
+$$
+7 \times 14610 = 102270 \text{ apples}
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{102270}
+$$",DISTRACTOR_USE,,
+33bb3d87593a,2,"Ishaan starts the day with 40 apples. After a big harvest, Ishaan's number of apples becomes 8 times as large. Ishaan splits the apples equally into 4 baskets and keeps only one basket. After a big harvest, Ishaan's number of apples becomes 8 times as large. Ishaan splits the apples equally into 2 baskets and keeps only one basket. How many apples does Ishaan have now?",320,"Let's solve the problem step by step:
+
+---
+
+### **Step 1: Initial number of apples**
+
+Ishaan starts with **40 apples**.
+
+---
+
+### **Step 2: After the harvest, apples become 8 times as large**
+
+So, the number of apples becomes:
+
+$$
+40 \times 8 = 320 \text{ apples}
+$$
+
+---
+
+### **Step 3: Ishaan splits apples equally into 2 baskets and keeps only one**
+
+She splits the **320 apples** equally into **2 baskets**:
+
+$$
+\frac{320}{2} = 160 \text{ apples per basket}
+$$
+
+She keeps **only one basket**, so she keeps:
+
+$$
+160 \text{ apples}
+$$
+
+---
+
+### **Final Answer:**
+
+$$
+\boxed{160}
+$$
+
+Ishaan now has **160 apples**.",FORMAT_ERROR,,
+f0e2c40dce44,0,"Priya's album holds 8837 stickers. Priya trades for 3375 more stickers. Priya shares the stickers equally among 4 friends, keeping one friend's share. Priya gives away 1311 stickers. Priya buys a pack of 6962 stickers. Priya shares the stickers equally among 8 friends, keeping one friend's share. Priya shares the stickers equally among 2 friends, keeping one friend's share. Priya shares the stickers equally among 4 friends, keeping one friend's share. How many stickers does Priya have now?",136,"We are given a few operations involving stickers and need to find out how many stickers Priya has now.
+
+---
+
+### Step 1: Start with the initial number of stickers
+
+Priya's **album holds** 8837 stickers.
+
+---
+
+### Step 2: Trade for 3375 more stickers
+
+Priya trades **3375 more** stickers, so:
+
+$$
+8837 + 3375 = 12212 \text{ stickers}
+$$
+
+---
+
+### Step 3: Share the stickers equally among **4 friends**, keeping **1 friend's share**
+
+This means Priya keeps **1/4** of the stickers for herself, and gives the rest to 3 friends.
+
+So, she gives away:
+
+$$
+12212 - \left( \frac{12212}{4} \right) = 12212 - 3053 = 9159 \text{ stickers}
+$$
+
+---
+
+### Step 4: Buy a pack of 6962 stickers
+
+Priya buys a pack of **6962 stickers**, so:
+
+$$
+9159 + 6962 = 16121 \text{ stickers}
+$$
+
+---
+
+### Step 5: Share the stickers equally among **8 friends**, keeping **1 friend's share**
+
+She gives away:
+
+$$
+\frac{16121}{8} = 2015.125 \approx 2015 \text{ stickers}
+$$
+
+So she keeps:
+
+$$
+16121 - 2015 = 14106 \text{ stickers}
+$$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{14106} \text{ stickers}
+$$",PLAN_ERROR,,
+a2422a519e33,0,"Elena has 7812 apples at a fruit stand. Elena buys 2830 more apples from a farmer. After a big harvest, Elena's number of apples becomes 7 times as large. Elena sells 9664 apples. After a big harvest, Elena's number of apples becomes 7 times as large. The fruit stand opened 8610 days ago. Elena gives 5681 apples to a neighbour. How many apples does Elena have now?",448129,"We are given the following information about Elena's apples:
+
+- **Start**: Elena has 7,812 apples.
+- **Bought**: She buys 2,830 more apples.
+- **After a harvest**: Her apples become 7 times as large.
+- **Sells**: She sells 9,664 apples.
+- **Fruit stand opened 8610 days ago**: This means the current time is 8,610 days after the fruit stand was opened.
+- **Gave 5,681 apples to a neighbour**: This is **after** the harvest.
+
+Let’s break it down step by step:
+
+---
+
+### Step 1: Calculate apples after the harvest
+
+- Start: 7,812 apples
+- Bought: +2,830 → 7,812 + 2,830 = **10,642**
+- After harvest: 10,642 × 7 = **74,494**
+
+---
+
+### Step 2: Subtract apples sold
+
+- Apples after harvest: 74,494
+- Sold: 9,664 → **74,494 - 9,664 = 64,830**
+
+---
+
+### Step 3: Add apples given to a neighbour
+
+- Apples: 64,830
+- Give: 5,681 → **64,830 - 5,681 = 59,149**
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{59149}
+$$ apples.",UNVERIFIABLE,,
+d0543d15a547,2,Priya's album holds 205 stickers. Priya buys a pack of 203 stickers. Priya buys a pack of 508 stickers. The album has 756 pages. The album has 897 pages. Priya's sticker count then becomes 11 times as large. Priya trades for 205 more stickers. Priya's sticker count then becomes 6 times as large. How many stickers does Priya have now?,61686,"We are given the following information:
+
+- Priya's **original sticker count** = 205 stickers  
+- Priya **buys a pack of 203 stickers**  
+- Priya **buys a pack of 508 stickers**  
+- The **album has 756 pages**  
+- The **album has 897 pages**  
+- The **album has 11 times as many pages** as Priya's sticker count  
+- Priya **trades for 205 more stickers**
+
+---
+
+### Step 1: Determine the total number of pages in the album
+
+- **Album has 756 pages**  
+- **Album has 897 pages**  
+- The album has **11 times as many pages** as Priya's sticker count  
+- So,  
+  $$
+  \text{Priya's sticker count} = \frac{756}{11} = 68.727... \text{ pages}
+  $$
+
+This means the album's pages and Priya's sticker count are **not directly related** in this context — it's **not stated** that the sticker count is based on pages. So, we **cannot use the pages** to find the sticker count.
+
+---
+
+### Step 2: Add the stickers she buys
+
+- First, add the two packs:  
+  $$
+  203 + 508 = 711
+  $$
+
+So, after buying the two packs, Priya has:
+
+- Original: 205  
+- After buying: $ 205 + 711 = 916 $
+
+---
+
+### Step 3: Priya trades for 205 more stickers
+
+So, after trading, she has:
+
+- $ 916 + 205 = 1121 $ stickers
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{1121}
+$$",ARITHMETIC_SLIP,,
+858a703991e4,2,Mei has 99 cookies in the bakery. Elena bakes 23 muffins. Mei scales up the batch so the number of cookies becomes 6 times as large. Mei bakes another 98 cookies. Mei scales up the batch so the number of cookies becomes 8 times as large. Elena bakes 52 muffins. How many cookies does Mei have now?,5536,"Let's go step by step through Mei's baking process.
+
+---
+
+### **Initial conditions:**
+
+- Mei starts with **99 cookies**.
+- Elena bakes **23 muffins**.
+
+---
+
+### **Step 1: Scale up the batch of cookies**
+
+Mei scales up the batch so the number of **cookies becomes 6 times as large**.
+
+- Original number of cookies: 99
+- After scaling:  
+  $ 99 \times 6 = 594 $ cookies
+
+---
+
+### **Step 2: Add the extra 98 cookies**
+
+Mei then bakes **another 98 cookies**.
+
+- Total now:  
+  $ 594 + 98 = 692 $ cookies
+
+---
+
+### **Step 3: Scale up the batch of muffins**
+
+Mei scales up the batch so the number of **muffins becomes 8 times as large**.
+
+- Original number of muffins: 23
+- After scaling:  
+  $ 23 \times 8 = 184 $ muffins
+
+---
+
+### **Step 4: Bake 52 muffins**
+
+Now, Mei bakes **52 more muffins**.
+
+- Total now:  
+  $ 184 + 52 = 236 $ muffins
+
+---
+
+### **Final Answer:**
+
+$$
+\boxed{236}
+$$
+
+Mei has **236 cookies** now.",DISTRACTOR_USE,,
+5fb0871335bb,1,Tariq has 28 stickers. The album has 11 pages. Tariq buys a pack of 75 stickers. Tariq trades for 84 more stickers. Tariq trades for 80 more stickers. Tariq buys a pack of 96 stickers. The album has 44 pages. How many stickers does Tariq have now?,363,"We are given the following information:
+
+- **Tariq starts with 28 stickers.**
+- **The album has 11 pages.**
+- **Tariq buys a pack of 75 stickers.**
+- **Tariq trades for 84 more stickers.**
+- **Tariq trades for 80 more stickers.**
+- **Tariq buys a pack of 96 stickers.**
+
+Let's break it down step by step.
+
+---
+
+### **Step 1: Initial amount**
+Tariq starts with **28 stickers**.
+
+---
+
+### **Step 2: First transaction (buying a pack of 75 stickers)**
+
+Tariq buys a pack of **75 stickers**. So, he now has:
+
+$$
+28 + 75 = 103 \text{ stickers}
+$$
+
+---
+
+### **Step 3: Second transaction (trading for 84 more stickers)**
+
+Tariq trades **84 more stickers** for the 75. So:
+
+$$
+103 - 84 = 19 \text{ stickers}
+$$
+
+Now, he has **19 stickers**.
+
+---
+
+### **Step 4: Third transaction (trading for 80 more stickers)**
+
+He now trades **80 more stickers**, so:
+
+$$
+19 + 80 = 99 \text{ stickers}
+$$
+
+---
+
+### **Step 5: Final transaction (buying a pack of 96 stickers)**
+
+He buys a pack of **96 stickers**, so:
+
+$$
+99 + 96 = 195 \text{ stickers}
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{195}
+$$",PLAN_ERROR,,
+133cb191cef0,1,Priya saves $5. Priya earns $7 doing chores. The piggy bank weighs 9 grams. The piggy bank weighs 8 grams. Priya earns $3 doing chores. Priya receives $4 as a gift. Priya earns $6 doing chores. How many dollars does Priya end up with?,25,"Let's break down the information step by step:
+
+1. **Priya saves $5**.  
+   So, she saves $5.
+
+2. **Priya earns $7 doing chores**.  
+   She earns $7.
+
+3. **Priya receives $3 as a gift**.  
+   She receives $3.
+
+4. **Priya earns $6 doing chores**.  
+   She earns $6.
+
+5. **Priya ends up with** the money from her savings and earnings.
+
+So, total amount Priya ends up with is:
+
+$$
+5 + 7 + 3 + 6 = \boxed{21}
+$$
+
+**Final Answer:** $\boxed{21}$ dollars.",UNVERIFIABLE,,
+d6a0c9c1e795,0,Sam has $879 in a piggy bank. The piggy bank weighs 641 grams. Sam earns $146 doing chores. Sam splits the money equally into 5 envelopes and keeps one envelope. Sam splits the money equally into 5 envelopes and keeps one envelope. Sam earns $973 doing chores. Sam splits the money equally into 6 envelopes and keeps one envelope. Sam earns $671 doing chores. The piggy bank weighs 467 grams. Sam splits the money equally into 10 envelopes and keeps one envelope. How many dollars does Sam end up with?,84,"We are given the following data:
+
+- Sam has **$879** in a piggy bank.
+- The **piggy bank weighs 641 grams**.
+- Sam earns **$146** doing chores.
+- Sam splits the money **equally into 5 envelopes** and keeps **one**.
+- Sam earns **$973** doing chores.
+- Sam splits the money **equally into 6 envelopes** and keeps **one**.
+- Sam earns **$671** doing chores.
+- The **piggy bank weighs 467 grams**.
+- Sam splits the money **equally into 10 envelopes** and keeps **one**.
+
+We are to find how many **dollars Sam ends up with**.
+
+---
+
+### Step 1: Calculate how much money Sam earns from chores
+
+Sam earns money from chores each time. We have two instances:
+
+1. $146  
+2. $973  
+3. $671  
+
+So total earnings from chores:
+
+$$
+146 + 973 + 671 = 1800 \text{ dollars}
+$$
+
+---
+
+### Step 2: Determine how many envelopes Sam keeps
+
+From the problem:
+
+- 5 envelopes and keeps **one**  
+- 6 envelopes and keeps **one**  
+- 10 envelopes and keeps **one**  
+
+So, **Sam keeps 1 envelope from each case**.
+
+---
+
+### Step 3: Calculate the total money Sam keeps
+
+Sam keeps **1 envelope** from each of the following:
+
+- 5 envelopes → 5 envelopes × $1 = $5  
+- 6 envelopes → 6 envelopes × $1 = $6  
+- 10 envelopes → 10 envelopes × $1 = $10  
+
+Total money Sam keeps:
+
+$$
+5 + 6 + 10 = 21 \text{ dollars}
+$$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{21} \text{ dollars}
+$$",ARITHMETIC_SLIP,,
+0dd8167fa6fb,2,"Kiran's album holds 1125 stickers. Kiran shares the stickers equally among 3 friends, keeping one friend's share. The album has 9177 pages. Kiran shares the stickers equally among 3 friends, keeping one friend's share. Kiran shares the stickers equally among 5 friends, keeping one friend's share. Kiran buys a pack of 4640 stickers. Kiran shares the stickers equally among 5 friends, keeping one friend's share. The album has 9142 pages. Kiran shares the stickers equally among 3 friends, keeping one friend's share. How many stickers does Kiran have now?",311,"We are given the following information:
+
+- **Kiran's album has 9177 pages.**
+- **Kiran shares the stickers equally among 3 friends, keeping one friend's share.**
+- **Kiran buys a pack of 4640 stickers.**
+- **Kiran shares the stickers equally among 5 friends, keeping one friend's share.**
+- **Kiran shares the stickers equally among 3 friends, keeping one friend's share.**
+
+We are to find how many **stickers Kiran has now**.
+
+---
+
+### Step 1: First, calculate the number of stickers Kiran had before buying the pack.
+
+We are told:
+- Kiran shares the stickers **equally among 3 friends**, keeping **one friend's share**.
+
+So, the number of stickers Kiran **has** is:
+
+$$
+\text{Number of stickers} = \text{Total pages in the album} = 9177
+$$
+
+---
+
+### Step 2: Add the stickers he buys.
+
+$$
+\text{Total stickers} = 9177 + 4640 = 13817
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{13817}
+$$
+
+Kiran now has **13,817 stickers**.",DISTRACTOR_USE,,
+71d3b30600b6,2,"Ishaan collects 1618 eggs. Ishaan places the eggs equally into 2 cartons and keeps one carton. By the end of the season, Ishaan's number of eggs becomes 3 times as large. The hens lay another 5253 eggs for Ishaan. Ishaan places the eggs equally into 8 cartons and keeps one carton. Ishaan collects 2672 more eggs. How many eggs does Ishaan have now?",3632,"We are given the following information:
+
+1. **Ishaan starts with 1618 eggs.**
+2. **He divides the eggs equally into 2 cartons and keeps 1 carton.**
+   - So, the number of eggs in each carton is $ \frac{1618}{2} = 809 $, and he keeps 1 carton.
+   - After this, his **number of eggs becomes 3 times as large**, which means he now has:
+     $$
+     3 \times 1618 = 4854 \text{ eggs}
+     $$
+3. **The hens lay another 5253 eggs.**
+   - So, total number of eggs becomes:
+     $$
+     4854 + 5253 = 10107 \text{ eggs}
+     $$
+4. **Ishaan places the eggs equally into 8 cartons and keeps 1 carton.**
+   - The number of eggs per carton is:
+     $$
+     \frac{10107}{8} = 1263.375
+     $$
+   - Since we are told that he places the eggs **equally**, and the number of eggs per carton must be an integer, this suggests that the total eggs must be divisible by 8.
+
+Let’s test this:
+
+$$
+10107 \div 8 = 1263.375
+$$
+
+This is **not an integer**, which implies that there is a mistake in the problem statement. However, assuming the problem is consistent, we can proceed with the initial numbers:
+
+5. **Ishaan collects 2672 more eggs.**
+
+So, total eggs now is:
+
+$$
+10107 + 2672 = 12779 \text{ eggs}
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{12779}
+$$",PLAN_ERROR,,
+a649f81f38a7,1,Hana has 1052 books on a shelf. Hana divides the books equally among 2 shelves and keeps only one shelf of them. Hana divides the books equally among 2 shelves and keeps only one shelf of them. Felix has read 4582 magazines. Hana's book collection then grows to 12 times its size. Hana's book collection then grows to 2 times its size. Hana divides the books equally among 4 shelves and keeps only one shelf of them. Hana's book collection then grows to 6 times its size. Hana buys 5775 new books. How many books does Hana end up with?,15243,"We are given a series of operations involving Hana's book collection, and we are to determine how many books she ends up with after all these operations. Let's break it down step by step:
+
+---
+
+### **Initial Setup**
+
+- Hana starts with **1052 books** on a shelf.
+
+---
+
+### **First Operation: Divide equally among 2 shelves and keep 1**
+
+- Divide 1052 books equally among **2 shelves**: $ \frac{1052}{2} = 526 $ books per shelf.
+- Hana keeps **1 shelf** of the books.
+- So, **1 shelf has 1052 books**, and the other 1 shelf has 526 books.
+
+---
+
+### **Second Operation: Divide equally among 2 shelves and keep 1**
+
+- Divide 1052 books equally among **2 shelves**: $ \frac{1052}{2} = 526 $ books per shelf.
+- Hana keeps **1 shelf** of the books.
+- So, **1 shelf has 1052 books**, and the other 1 shelf has 526 books.
+
+---
+
+### **Third Operation: Divide equally among 4 shelves and keep 1**
+
+- Divide 1052 books equally among **4 shelves**: $ \frac{1052}{4} = 263 $ books per shelf.
+- Hana keeps **1 shelf** of the books.
+- So, **1 shelf has 1052 books**, and the other 3 shelves have 263 books each.
+
+---
+
+### **Fourth Operation: Hana's book collection then grows to 12 times its size**
+
+- So, the total number of books in her collection becomes $ 12 \times $ the original number.
+
+---
+
+### **Fifth Operation: Hana's book collection then grows to 2 times its size**
+
+- So, the total number of books in her collection becomes $ 2 \times $ the previous total.
+
+---
+
+### **Sixth Operation: Hana buys 5775 new books**
+
+- Add 5775 books to her current collection.
+
+---
+
+### **Final Calculation**
+
+Let’s compute the total number of books Hana ends up with:
+
+1. Start with: 1052 books.
+2. After first 2 operations: 1052 books (since 1 shelf has 1052,",UNVERIFIABLE,,
+e8b1edce47ad,0,Ravi saves $434. Ravi receives $862 as a gift. Ravi receives $413 as a gift. The piggy bank weighs 785 grams. Ravi spends $718 on a toy. Mei has $135 in a wallet. Ravi receives $307 as a gift. Ravi earns $944 doing chores. Ravi spends $166 on a toy. How much money does Ravi have now?,2076,"We are given the following information about Ravi's money:
+
+- **Ravi saves $434**
+- **Ravi receives $862 as a gift**
+- **Ravi receives $413 as a gift**
+- **Ravi spends $718 on a toy**
+- **Mei has $135 in a wallet**
+- **Ravi earns $944 doing chores**
+- **Ravi spends $166 on a toy**
+
+### Step 1: Add all the money Ravi has
+- Start with the money saved: $434
+- Add the gift received: $862
+- Add the gift received: $413
+- Add the money earned: $944
+- Add the money spent: $166
+
+So, total money = $434 + $862 + $413 + $944 + $166
+
+Let's compute:
+
+- $434 + $862 = $1,296
+- $1,296 + $413 = $1,709
+- $1,709 + $944 = $2,653
+- $2,653 + $166 = $2,819
+
+### Step 2: Subtract the money spent
+Ravi spent $166 on a toy.
+
+So, final amount = $2,819 - $166 = **$2,653**
+
+### ✅ Final Answer: **$2,653**",ARITHMETIC_SLIP,,
+afe8b0eeabe2,2,Lucia has $9 in a piggy bank. The piggy bank weighs 6 grams. Lucia's savings then grow to 5 times the amount. Lucia splits the money equally into 5 envelopes and keeps one envelope. The piggy bank weighs 2 grams. How much money does Lucia have now?,9,"We are given the following information:
+
+- Lucia has $9 in a piggy bank.
+- The piggy bank weighs **6 grams**.
+- Lucia's savings then grow to **5 times** the amount.
+- Lucia splits the money equally into **5 envelopes** and keeps **one envelope**.
+- The piggy bank weighs **2 grams**.
+
+---
+
+### Step 1: Understand the initial situation
+
+Lucia has:
+
+- **$9** in a piggy bank.
+
+The **piggy bank weighs 6 grams**, and the **savings grow to 5 times the amount**. This suggests that she now has:
+
+$$
+9 \times 5 = 45 \text{ dollars}
+$$
+
+---
+
+### Step 2: Split the money into envelopes
+
+Lucia splits the $45 into 5 equal envelopes:
+
+$$
+\frac{45}{5} = 9 \text{ dollars per envelope}
+$$
+
+She keeps **1 envelope**.
+
+---
+
+### Step 3: Add the weight of the piggy bank to the money
+
+She now has $45 in money, and the piggy bank weighs **2 grams**.
+
+So, the total amount of money (including the piggy bank's weight) is:
+
+$$
+45 + 2 = 47 \text{ grams}
+$$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{47}
+$$
+
+**Lucia has $47 in total.**",DISTRACTOR_USE,,
+5fb0871335bb,2,Tariq has 28 stickers. The album has 11 pages. Tariq buys a pack of 75 stickers. Tariq trades for 84 more stickers. Tariq trades for 80 more stickers. Tariq buys a pack of 96 stickers. The album has 44 pages. How many stickers does Tariq have now?,363,"We are given the following information:
+
+- **Tariq starts with** 28 stickers.
+- **The album has 11 pages**.
+- **Tariq buys a pack of 75 stickers**.
+- **Tariq trades for 84 more stickers**.
+- **Tariq trades for 80 more stickers**.
+- **Tariq buys a pack of 96 stickers**.
+
+We need to find out how many **stickers Tariq has now**.
+
+---
+
+### Step 1: Start with the initial number of stickers
+
+$$
+\text{Initial stickers} = 28
+$$
+
+---
+
+### Step 2: Tariq trades for 84 more stickers
+
+$$
+28 + 84 = 112
+$$
+
+---
+
+### Step 3: Tariq trades for another 80 more stickers
+
+$$
+112 + 80 = 192
+$$
+
+---
+
+### Step 4: Tariq buys a pack of 96 stickers
+
+$$
+192 + 96 = 288
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{288}
+$$
+
+Tariq now has **288 stickers**.",PLAN_ERROR,,
+d76faabd0c36,2,Jonah stocks 9224 seed packets. Jonah orders 5820 more seed packets. Jonah sells 6652 seed packets. Jonah plants 5169 seed packets. Jonah sells 2407 seed packets. Jonah orders 6066 more seed packets. Jonah divides the seed packets equally among 2 gardens and keeps one garden's share. Aditi has 3812 flower pots. How many seed packets does Jonah end up with?,3441,"Let's break down the problem step by step:
+
+### **Jonah's purchases:**
+1. Stocks 9224 seed packets.
+2. Orders 5820 more seed packets.
+3. sells 6652 seed packets.
+4. plants 5169 seed packets.
+5. sells 2407 seed packets.
+6. orders 6066 more seed packets.
+
+### **Jonah's total seed packets:**
+- Initial stock: 9224
+- Adds 5820: 9224 + 5820 = **15044**
+- Then sells 6652: 15044 - 6652 = **8392**
+- Then plants 5169: 8392 + 5169 = **13561**
+- Then sells 2407: 13561 - 2407 = **11154**
+- Then orders 6066 more: 11154 + 6066 = **17220**
+
+### **Aditi has 3812 flower pots.**
+- The question asks: **How many seed packets does Jonah end up with?**
+
+Jonah's total seed packets: **17220**
+
+### ✅ Final Answer:
+$$
+\boxed{17220}
+$$",UNVERIFIABLE,,
+4bb0d715b4ac,0,"Elena has 3460 eggs in the barn. The hens lay another 2293 eggs for Elena. The farm is 4465 acres. Leo owns 9444 cows. By the end of the season, Elena's number of eggs becomes 6 times as large. The hens lay another 8827 eggs for Elena. The hens lay another 3342 eggs for Elena. How many eggs does Elena have now?",46687,"We are given the following data:
+
+- Elena starts with **3460 eggs** in the barn.
+- The hens lay **2293 eggs** for Elena.
+- The hens lay another **8827 eggs** for Elena.
+- The total number of eggs at the end of the season is **6 times** as large as the number of eggs Elena started with.
+
+---
+
+### Step 1: Start with the initial eggs
+
+- Elena starts with **3460 eggs**.
+
+---
+
+### Step 2: Add the eggs laid by the hens
+
+- First hens lay 2293 eggs.
+- Second hens lay 8827 eggs.
+
+So, total eggs after adding:
+
+$$
+3460 + 2293 + 8827 = 3460 + (2293 + 8827)
+$$
+
+$$
+2293 + 8827 = 11120
+$$
+
+$$
+3460 + 11120 = 14580
+$$
+
+---
+
+### Step 3: Check if this is 6 times as many as the initial eggs
+
+- 6 times the initial eggs (3460) is:
+
+$$
+6 \times 3460 = 20760
+$$
+
+This is **not** 14580.
+
+So, the problem must have a typo or we need to re-examine.
+
+---
+
+### Step 4: Re-evaluate the problem
+
+The problem says:
+
+> ""Elena's number of eggs becomes 6 times as large.""
+
+So, the total eggs after all layings is **6 times** the initial eggs.
+
+Let’s denote:
+
+- Initial eggs = 3460
+- Total eggs after layings = 6 × 3460 = 20760
+
+Let’s now re-calculate the number of eggs after layings by solving:
+
+$$
+3460 + 2293 + 8827 = 20760
+$$
+
+$$
+2293 + 8827 = 11120
+$$
+
+$$
+3460 + 11120 = 14580
+$$
+
+So, **14580** eggs.
+
+---
+
+### ✅ Final Answer:
+
+$$",ARITHMETIC_SLIP,,
+e5b21f9d89eb,2,Asha's album holds 652 stickers. Asha loses 186 stickers. Asha loses 108 stickers. Asha gives away 112 stickers. Asha gives away 156 stickers. Asha buys a pack of 985 stickers. The album has 763 pages. How many stickers does Asha have now?,1075,"We are given the following information:
+
+- Asha's original album has **763 pages**.
+- Asha loses **186 stickers**.
+- Then loses **108 stickers**.
+- Then gives away **112 stickers**.
+- Then gives away **156 stickers**.
+- Finally, she buys a **pack of 985 stickers**.
+
+We are to find how many **stickers Asha has now**.
+
+---
+
+### Step-by-step calculation:
+
+1. **Start with the number of stickers in the album:**
+   $$
+   763 \text{ stickers}
+   $$
+
+2. **Subtract the stickers lost:**
+   $$
+   763 - 186 = 577
+   $$
+
+3. **Subtract the second amount lost:**
+   $$
+   577 - 108 = 469
+   $$
+
+4. **Subtract the stickers given away:**
+   $$
+   469 - 112 = 357
+   $$
+
+5. **Subtract the third amount given away:**
+   $$
+   357 - 156 = 201
+   $$
+
+6. **Add the new stickers from the pack:**
+   $$
+   201 + 985 = 1186
+   $$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{1186}
+$$",DISTRACTOR_USE,,
+f33905d190cf,0,Mei has 8488 marbles in a jar. Mei wins 2398 marbles in a game. The jar is 6065 centimetres tall. Kiran has 5810 toy cars. Mei wins 1154 marbles in a game. Mei finds 5168 more marbles. How many marbles does Mei have now?,17208,"We are given the following:
+
+- Mei starts with **8488 marbles**.
+- Mei **wins 2398 marbles**.
+- Mei **finds 5168 more marbles**.
+- Kiran has **5810 toy cars**.
+
+We are to find how many **marbles** Mei has **now**.
+
+---
+
+### Step-by-step:
+
+1. Start with the initial number of marbles:
+   $$
+   8488 \text{ marbles}
+   $$
+
+2. Add the marbles she wins:
+   $$
+   8488 + 2398 = 10886
+   $$
+
+3. Add the marbles she finds:
+   $$
+   10886 + 5168 = 16054
+   $$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{16054} \text{ marbles}
+$$",PLAN_ERROR,,
+7d6ffbea4ccf,0,"Leo has 12 stickers. Leo shares the stickers equally among 12 friends, keeping one friend's share. The album has 49 pages. Mei has 99 postcards. Leo buys a pack of 15 stickers. How many stickers does Leo have now?",16,"We are given the following information:
+
+- **Leo has 12 stickers.**
+- Leo **shares the stickers equally among 12 friends**, meaning **each friend gets 1 sticker**.
+- The **album has 49 pages**.
+- **Mei has 99 postcards**.
+- Leo **buys a pack of 15 stickers**.
+
+### Step 1: Determine how many stickers Leo has now
+
+Leo initially has 12 stickers.
+
+Leo **shares them equally among 12 friends** → Each friend gets **1 sticker**.
+
+Leo **buys a pack of 15 stickers**.
+
+So, Leo now has:
+
+$$
+12 + 15 = \boxed{27}
+$$
+
+### Final Answer:
+
+$$
+\boxed{27}
+$$",UNVERIFIABLE,,
+994013077f92,0,Ishaan has 5936 seed packets. The store is open 6136 hours a week. Ishaan's stock of seed packets then becomes 8 times as large. Ishaan's stock of seed packets then becomes 8 times as large. Ishaan divides the seed packets equally among 2 gardens and keeps one garden's share. Ishaan's stock of seed packets then becomes 5 times as large. Ishaan divides the seed packets equally among 5 gardens and keeps one garden's share. Ishaan plants 6536 seed packets. How many seed packets does Ishaan have now?,183416,"We are given the following information:
+
+1. **Initial stock**: Ishaan has 5936 seed packets.
+2. **Number of hours the store is open**: 6136 hours/week.
+3. **First time**: The stock becomes 8 times as large.
+4. **Second time**: The stock becomes 8 times as large.
+5. **Third time**: The stock becomes 5 times as large.
+6. **Dividing among 2 gardens**: 5936 divided by 2.
+7. **Dividing among 5 gardens**: 5936 divided by 5.
+8. **Plants 6536 seed packets**.
+
+We are to find how many seed packets Ishaan has **now**.
+
+---
+
+### Step-by-step:
+
+**Step 1: First time stock becomes 8 times as large**
+
+- Initial stock: 5936
+- After 1st increase: $ 5936 \times 8 = 47488 $
+
+**Step 2: Second time stock becomes 8 times as large**
+
+- 47488 × 8 = 379904
+
+**Step 3: Third time stock becomes 5 times as large**
+
+- 379904 × 5 = 1,899,520
+
+Now, Ishaan **divides the seed packets equally among 2 gardens** and keeps **one garden's share**.
+
+So, she keeps 500,000 seed packets (half of 1,899,520), and she plants 6536 seed packets.
+
+So:
+
+- **Seed packets she keeps**: 500,000
+- **Seed packets she plants**: 6536
+
+Now, **add** these two:
+
+$$
+500,000 + 6,536 = \boxed{506,536}
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{506536}
+$$ seed packets.",ARITHMETIC_SLIP,,
+531ef20d07f0,2,Lucia owns 84 books. Lucia lends out 79 books and does not get them back. Lucia is given 58 books as a gift. Felix has read 41 magazines. Lucia lends out 27 books and does not get them back. Lucia lends out 14 books and does not get them back. Felix has read 94 magazines. Lucia's book collection then grows to 9 times its size. How many books does Lucia end up with?,198,"We are given the following details:
+
+- **Lucia starts with 84 books.**
+- **She lends out 79 books and doesn't get them back.**
+- **She receives 58 books as a gift.**
+
+So, **Lucia's total book collection becomes:**
+
+$$
+84 - 79 + 58 = 63
+$$
+
+Next, we are told:
+
+- **Felix has read 41 magazines.**
+- **Lucia lends out 27 books and doesn't get them back.**
+- **Lucia lends out 14 books and doesn't get them back.**
+
+So, **Lucia lends out 27 + 14 = 41 books**, and **she receives nothing** from Felix.
+
+So, **Lucia's total book collection becomes:**
+
+$$
+63 - 41 = 22
+$$
+
+### Final Answer:
+
+$$
+\boxed{22}
+$$",DISTRACTOR_USE,,
+52d605c3bb11,2,Aditi has 49 books on a shelf. Aditi's book collection then grows to 10 times its size. Aditi's book collection then grows to 10 times its size. Aditi divides the books equally among 5 shelves and keeps only one shelf of them. Omar has read 45 magazines. Aditi buys 71 new books. Aditi is given 20 books as a gift. Omar has read 72 magazines. How many books does Aditi have now?,1071,"We are given a series of events involving Aditi and Omar, and we need to calculate **how many books Aditi has now**.
+
+---
+
+### Step 1: Start with Aditi's initial collection
+
+Aditi has **49 books** on a shelf.
+
+---
+
+### Step 2: Aditi's book collection grows to 10 times its size
+
+- 49 × 10 = **490 books**
+
+So, after the first growth, Aditi has **490 books**.
+
+---
+
+### Step 3: Aditi divides the books equally among 5 shelves and keeps **only one shelf** of them
+
+- Divide 490 by 5:  
+  $$
+  490 \div 5 = 98
+  $$
+
+- So, she keeps **98 books** on one shelf, and keeps **490 - 98 = 392 books** on the other shelves.
+
+---
+
+### Step 4: Add the gift of 20 books
+
+- Total now = 98 + 20 = **118 books**
+
+---
+
+### Step 5: Add the magazines Omar has read
+
+- Omar has read **72 magazines**, which he has not yet read.  
+  So, he **does not add to Aditi's collection**.
+
+---
+
+### Final Answer:
+
+$$
+\boxed{118}
+$$",PLAN_ERROR,,
+868db4cf9b8f,0,Jonah bakes 32 cookies. Jonah eats 19 of the cookies. Jonah bakes another 19 cookies. Jonah sells 29 cookies. Jonah receives 33 cookies from a friend. Jonah eats 24 of the cookies. Jonah sells 10 cookies. The oven is set to 22 degrees. Jonah bakes another 84 cookies. The oven is set to 57 degrees. How many cookies does Jonah end up with?,86,"We are given the following steps and quantities:
+
+1. **Jonah bakes 32 cookies.**
+2. **Jonah eats 19 cookies.**
+3. **Jonah bakes another 19 cookies.**
+4. **Jonah sells 29 cookies.**
+5. **Jonah receives 33 cookies from a friend.**
+6. **Jonah eats 24 cookies.**
+7. **Jonah sells 10 cookies.**
+8. **The oven is set to 22 degrees. Jonah bakes another 84 cookies.**
+9. **The oven is set to 57 degrees.**
+
+We need to find out how many **cookies Jonah ends up with** after all these transactions.
+
+---
+
+### Step-by-step:
+
+- **Start with:** 32 cookies  
+- **Eat 19:** 32 - 19 = **13 cookies**  
+- **Bake 19:** 13 + 19 = **32 cookies** (no change)  
+- **Sell 29:** 32 - 29 = **3 cookies**  
+- **Receive 33:** 3 + 33 = **36 cookies**  
+- **Eat 24:** 36 - 24 = **12 cookies**  
+- **Sell 10:** 12 - 10 = **2 cookies**
+
+---
+
+### Final Answer:
+
+$$
+\boxed{2}
+$$
+
+Jonah ends up with **2 cookies**.",UNVERIFIABLE,,
+9e18a50c14f2,0,Ravi has 514 books on a shelf. Ravi lends out 240 books and does not get them back. Ravi donates 203 books. Ravi is given 851 books as a gift. Ravi buys 411 new books. Ravi is given 229 books as a gift. Ravi's book collection then grows to 5 times its size. How many books does Ravi have now?,7810,"We are given the following information:
+
+- **Initial number of books on the shelf**: 514  
+- **Books Ravi lends out**: 240  
+- **Books Ravi donates**: 203  
+- **Books Ravi receives as a gift**: 851  
+- **Books Ravi buys**: 411  
+- **Books Ravi receives as a gift again**: 229  
+- **Final condition**: After all these actions, Ravi’s book collection **grows to 5 times its size**.
+
+---
+
+### Step 1: Start with the initial number of books
+
+Ravi starts with **514 books**.
+
+---
+
+### Step 2: Subtract the books he lends out and donates
+
+- Lends out 240 books  
+- Donates 203 books  
+So:
+
+$$
+514 - 240 - 203 = 514 - 443 = 71
+$$
+
+So, after these two actions, he has **71 books** left.
+
+---
+
+### Step 3: Add the books he receives as gifts
+
+- Gets 851 books  
+So:
+
+$$
+71 + 851 = 922
+$$
+
+---
+
+### Step 4: Add the books he buys
+
+- Buys 411 books  
+So:
+
+$$
+922 + 411 = 1333
+$$
+
+---
+
+### Step 5: Add the books he receives as a gift again
+
+- Gets 229 books  
+So:
+
+$$
+1333 + 229 = 1562
+$$
+
+---
+
+### Step 6: Final check: Ravi's book collection grows to **5 times its original size**
+
+- Original size: 514  
+- 5 times original size: $5 \times 514 = 2570$
+
+But we just added up to 1562.
+
+Wait — this means the **final book collection is 1562**, and it's **not 5 times the original size**.
+
+So, our calculation must have an error. Let's double-check:
+
+---
+
+### Step 7: Let’s verify the total by adding all the books:
+
+- Lends out: 240  
+- Donates: 203  
+- Gets gifts: 851 + 2",ARITHMETIC_SLIP,,
+33828daa2901,2,"Mei starts the day with 5495 apples. The fruit stand opened 3614 days ago. Mei splits the apples equally into 7 baskets and keeps only one basket. After a big harvest, Mei's number of apples becomes 12 times as large. How many apples does Mei end up with?",9420,"We are given:
+
+- Mei starts the day with **5495 apples**.
+- 3614 days ago, the fruit stand **opened** **3614 days ago**.
+- Mei **splits the apples equally into 7 baskets**, **and keeps only one basket**.
+- After a **big harvest**, Mei's number of apples becomes **12 times** as large.
+
+We need to find how many apples Mei **ends up with**.
+
+---
+
+### Step 1: Find how many apples Mei has now
+
+- She started with **5495 apples**.
+- 3614 days ago, the fruit stand opened, so the apples were reduced by that amount.
+- So, the apples she has now are:
+
+$$
+5495 - 3614 = 1881
+$$
+
+---
+
+### Step 2: She splits the apples into 7 baskets and keeps only one
+
+So, she splits the 1881 apples equally into 7 baskets. The number of apples in each basket is:
+
+$$
+\frac{1881}{7} = 268.714\ldots
+$$
+
+But since we're told that **she keeps only one basket**, this means she keeps **one apple** from the 7 baskets.
+
+So, she ends up with:
+
+$$
+268 + 1 = 269 \text{ apples}
+$$
+
+---
+
+### Step 3: After a big harvest, her number of apples becomes 12 times as large
+
+So, now her apples are:
+
+$$
+269 \times 12 = 3228
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{3228}
+$$",DISTRACTOR_USE,,
+2120d16111fa,0,Lucia owns 727 books. Lucia's book collection then grows to 10 times its size. Lucia's book collection then grows to 2 times its size. Lucia buys 795 new books. Lucia donates 130 books. How many books does Lucia have now?,15205,"We are given the following information:
+
+- Lucia starts with **727 books**.
+- The book collection **grows to 10 times its size**.
+- Then, the book collection **grows to 2 times its size**.
+- Lucia **buys 795 new books**.
+- Lucia **donates 130 books**.
+
+---
+
+### Step 1: First, compute the size of the book collection after growing to 10 times its original size.
+
+$$
+\text{After first growth: } 727 \times 10 = 7270 \text{ books}
+$$
+
+---
+
+### Step 2: Then compute the size of the book collection after growing to 2 times its size.
+
+$$
+\text{After second growth: } 7270 \times 2 = 14540 \text{ books}
+$$
+
+---
+
+### Step 3: Add the books Lucia buys and donates.
+
+$$
+\text{Total books now} = 14540 + 795 + 130
+$$
+
+$$
+14540 + 795 = 15335
+$$
+$$
+15335 + 130 = 15465
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{15465}
+$$",PLAN_ERROR,,
+c8d837f7f35c,1,Kiran has 9 seed packets. Kiran sells 2 seed packets. Kiran receives a shipment of 2 seed packets. Kiran orders 4 more seed packets. Kiran orders 7 more seed packets. Kiran receives a shipment of 3 seed packets. Kiran orders 7 more seed packets. How many seed packets does Kiran have now?,30,"Let's break down the problem step by step.
+
+### Initial amount:
+- **Kiran has 9 seed packets.**
+
+### Sales:
+- Kiran sells **2 seed packets**.
+- So, **9 - 2 = 7 seed packets** remaining.
+
+### Receiving shipment:
+- Kiran receives a shipment of **2 seed packets**.
+- So, **7 + 2 = 9 seed packets**.
+
+### Ordering:
+- Kiran orders **4 more seed packets**.
+- So, **9 + 4 = 13 seed packets**.
+
+- Kiran orders **7 more seed packets**.
+- So, **13 + 7 = 20 seed packets**.
+
+### Final amount:
+- Kiran now has **20 seed packets**.
+
+### Final Answer:
+$$
+\boxed{20}
+$$",UNVERIFIABLE,,
+7285aac5c192,2,"Maya has 1179 eggs in the barn. Maya places the eggs equally into 9 cartons and keeps one carton. The farm is 2955 acres. The hens lay another 4718 eggs for Maya. By the end of the season, Maya's number of eggs becomes 7 times as large. Maya places the eggs equally into 7 cartons and keeps one carton. Maya collects 1700 more eggs. How many eggs does Maya end up with?",6549,"We are given the following information:
+
+- Maya starts with **1179 eggs**.
+- She places the eggs **equally into 9 cartons** and keeps **1 carton**.
+- The **farm is 2955 acres**.
+- The **hens lay 4718 eggs** for Maya.
+- By the end of the season, Maya's **number of eggs becomes 7 times as large**.
+- Maya then places the eggs **equally into 7 cartons** and keeps **1 carton**.
+- She **collects 1700 more eggs**.
+
+We are to find how many **eggs Maya ends up with**.
+
+---
+
+### Step 1: Start with the initial eggs
+
+Maya starts with **1179 eggs**.
+
+---
+
+### Step 2: Place eggs into cartons and keep 1
+
+She places the eggs **equally into 9 cartons** and keeps **1 carton**.
+
+So, the number of eggs per carton is:
+
+$$
+\frac{1179}{9} = 131
+$$
+
+So, she keeps **1 carton** with 131 eggs, and the rest are distributed into 8 cartons.
+
+After placing the eggs, the total eggs are:
+
+$$
+1179 - 131 = 1048
+$$
+
+Then she keeps **1 carton** (131), and the rest go to 8 cartons.
+
+So, she ends up with:
+
+$$
+131 + 8 \times 131 = 131 \times 9 = 1179
+$$
+
+---
+
+### Step 3: Add the eggs laid by hens
+
+$$
+1179 + 4718 = 5897
+$$
+
+---
+
+### Step 4: Multiply by 7 (to get 7 times as many eggs)
+
+$$
+5897 \times 7 = 41279
+$$
+
+So, by the end of the season, Maya has **41,279 eggs**.
+
+---
+
+### Step 5: Place eggs into cartons and keep 1
+
+She now places the eggs **equally into 7 cartons** and keeps **1 carton**.
+
+So, the number of eggs per carton is:
+
+$$
+\frac{41279}{7",ARITHMETIC_SLIP,,
+c043660e8aab,1,Leo has 663 marbles in a jar. Leo gives 313 marbles to a cousin. Leo wins 289 marbles in a game. Leo loses 114 marbles in a game. Hana has 255 toy cars. Leo loses 243 marbles in a game. Hana has 246 toy cars. Leo gives 161 marbles to a cousin. Leo gives 111 marbles to a cousin. How many marbles does Leo end up with?,10,"We are given the following information:
+
+- **Leo starts with 663 marbles.**
+- **Leo gives 313 marbles to a cousin.**
+- **Leo wins 289 marbles in a game.**
+- **Leo loses 114 marbles in a game.**
+- **Hana starts with 255 toy cars.**
+- **Leo loses 243 marbles in a game.**
+- **Hana has 246 toy cars.**
+- **Leo gives 161 marbles to a cousin.**
+- **Leo gives 111 marbles to a cousin.**
+
+---
+
+### Step 1: Track the number of marbles Leo starts with and then changes
+
+**Initial marbles Leo has:**
+$$ 663 $$
+
+**Marbles given to cousin 1:**
+$$ 313 $$
+
+**Marbles won in game:**
+$$ +289 $$
+
+**Marbles lost in game:**
+$$ -114 $$
+
+So total change in marbles:
+$$ 663 - 313 + 289 - 114 $$
+
+Let’s compute:
+$$ 663 - 313 = 350 $$
+$$ 350 + 289 = 639 $$
+$$ 639 - 114 = 525 $$
+
+So **Leo ends up with 525 marbles**.
+
+---
+
+### Step 2: Track the number of toy cars Hana has and then changes
+
+**Hana starts with:**
+$$ 255 $$
+
+**Marbles lost in game:**
+$$ -243 $$
+
+**Hana ends up with:**
+$$ 255 - 243 = 12 $$
+
+---
+
+### Final Answer:
+
+$$ \boxed{525} $$ marbles.",DISTRACTOR_USE,,
+f4d079eb1e83,0,Zara owns 9 marbles. Zara gives 7 marbles to a cousin. Zara's marble count then becomes 7 times as large. Zara wins 8 marbles in a game. Zara finds 2 more marbles. Zara loses 6 marbles in a game. Zara wins 8 marbles in a game. How many marbles does Zara have now?,26,"We are given the following steps for Zara's marble count:
+
+1. **Starts with 9 marbles.**
+
+2. **Gives 7 marbles to a cousin.**  
+   $$
+   9 - 7 = 2
+   $$
+
+3. **Zara's marble count becomes 7 times as large.**  
+   $$
+   2 \times 7 = 14
+   $$
+
+4. **Zara wins 8 marbles in a game.**  
+   $$
+   14 + 8 = 22
+   $$
+
+5. **Zara finds 2 more marbles.**  
+   $$
+   22 + 2 = 24
+   $$
+
+6. **Zara loses 6 marbles in a game.**  
+   $$
+   24 - 6 = 18
+   $$
+
+**Final answer:**  
+$$
+\boxed{18}
+$$",PLAN_ERROR,,
+e60271afec78,0,"Maya has 80 eggs in the barn. Maya collects 78 more eggs. The farm is 25 acres. By the end of the season, Maya's number of eggs becomes 7 times as large. Maya sells 80 eggs at the market. Maya sells 47 eggs at the market. Maya uses 39 eggs for breakfast. Tariq owns 60 cows. Maya collects 27 more eggs. How many eggs does Maya end up with?",967,"We are given the following information:
+
+- **Maya starts with 80 eggs.**
+- **Maya collects 78 more eggs.**  
+  So, **80 + 78 = 158 eggs**.
+- **The farm is 25 acres.** (Not relevant to the problem.)
+- **By the end of the season, Maya's number of eggs becomes 7 times as large.**  
+  So, **7 × 80 = 560 eggs**.
+- **Maya sells 80 eggs at the market.**  
+  So, **560 - 80 = 480 eggs**.
+- **Maya sells 47 eggs at the market.**  
+  So, **480 - 47 = 433 eggs**.
+- **Maya uses 39 eggs for breakfast.**  
+  So, **433 - 39 = 394 eggs**.
+- **Tariq owns 60 cows.** (Not relevant to the problem.)
+- **Maya collects 27 more eggs.**  
+  So, **394 + 27 = 421 eggs**.
+
+### Final Answer:
+$$
+\boxed{421}
+$$",UNVERIFIABLE,,
+b400633dd466,1,Ishaan owns 687 books. Ishaan buys 188 new books. Ishaan buys 850 new books. The library is 315 years old. Ishaan's book collection then grows to 6 times its size. Ishaan divides the books equally among 10 shelves and keeps only one shelf of them. Ishaan divides the books equally among 9 shelves and keeps only one shelf of them. Ishaan is given 174 books as a gift. Ishaan buys 516 new books. How many books does Ishaan have now?,805,"We are given a series of events involving Ishaan and his book collection:
+
+---
+
+### **Initial Information:**
+- Ishaan starts with **687 books**.
+- He buys **188 new books**.
+- He buys **850 new books**.
+
+So, total books after these purchases:
+
+$$
+687 + 188 + 850 = 1725
+$$
+
+---
+
+### **Then, the library is 315 years old.**
+
+This statement doesn’t directly affect the number of books Ishaan has, so we’ll assume it’s a red herring or just information that doesn’t change the total.
+
+---
+
+### **Then, Ishaan divides the books equally among 10 shelves and keeps **only one shelf** of them.**
+
+- So, he divides **1725 books** into 10 shelves.
+- He keeps **1 shelf**, so he keeps **1 book**.
+
+So, he keeps **1 book per shelf**.
+
+$$
+\text{Books kept} = 1725 - 1725 \div 10 = 1725 - 172.5 = 1552.5
+$$
+
+But this number is **not an integer**, which makes sense because shelves are discrete.
+
+So, we assume that he keeps **1 book per shelf**.
+
+So, he keeps **1 book per shelf**, and keeps **1 shelf**.
+
+$$
+\text{Total books kept} = 1725 \div 10 = 172.5
+$$
+
+This again gives us a decimal. Since books are discrete, we need to round.
+
+So, he keeps **1552 books**.
+
+---
+
+### **Next, Ishaan divides the books equally among 9 shelves and keeps only one shelf of them.**
+
+He divides **1552 books** into 9 shelves.
+
+He keeps **1 shelf**, so he keeps **1 book**.
+
+$$
+\text{Books kept} = 1552 \div 9 = 172.444...
+$$
+
+Again, not an integer.
+
+So, we assume he keeps **172 books**.
+
+---
+
+### **Then, Ishaan is given 174 books as a gift.**
+
+So, total books now:
+
+$$
+172 + 174 = 346",ARITHMETIC_SLIP,,
+9b953cac6bbf,0,Felix has 27 seed packets. Felix plants 11 seed packets. Felix plants 11 seed packets. Felix orders 69 more seed packets. The store is open 90 hours a week. Leo has 49 flower pots. Felix plants 42 seed packets. How many seed packets does Felix end up with?,32,"We are given the following information:
+
+1. Felix has **27 seed packets**.
+2. Felix plants **11 seed packets**.
+3. Felix plants **11 seed packets** again.
+4. Felix orders **69 more seed packets**.
+5. The store is open **90 hours a week**.
+6. Leo has **49 flower pots**.
+7. Felix plants **42 seed packets**.
+
+We are asked to **find how many seed packets Felix ends up with**.
+
+---
+
+### Step-by-step:
+
+1. **Start with the initial seed packets**:
+   - Felix has **27 seed packets**.
+
+2. **Add the seed packets Felix plants**:
+   - He plants **11 seed packets**.
+   - He plants **11 seed packets** again.
+   - Total so far: $27 + 11 + 11 = 49$ seed packets.
+
+3. **Add the seed packets he orders**:
+   - He orders **69 seed packets**.
+   - Total now: $49 + 69 = 118$ seed packets.
+
+---
+
+### Final Answer:
+
+$$
+\boxed{118}
+$$
+
+Felix ends up with **118 seed packets**.",DISTRACTOR_USE,,
+038629ee383e,2,Kiran saves $6181. Kiran's savings then grow to 5 times the amount. Kiran splits the money equally into 5 envelopes and keeps one envelope. Hana has $2449 in a wallet. Kiran spends $1144 on a toy. The piggy bank weighs 4589 grams. How much money does Kiran have now?,5037,"We are given the following information:
+
+- Kiran saves **$6181**.
+- After saving, his savings **grow to 5 times** the amount.
+- He **splits the money equally into 5 envelopes** and keeps **1 envelope**.
+- Hana has **$2449** in a wallet.
+- Kiran **spends $1144** on a toy.
+- The **piggy bank weighs 4589 grams**, but this is not relevant to the problem.
+
+---
+
+### Step-by-step reasoning:
+
+1. **Initial savings**: $6181  
+2. **After growth**: The savings grow to 5 times the initial amount.
+
+   $$
+   5 \times 6181 = 30,905
+   $$
+
+   So, Kiran now has **$30,905**.
+
+3. **He splits the money equally into 5 envelopes and keeps one**. That means each envelope has:
+
+   $$
+   \frac{30,905}{5} = 6,181
+   $$
+
+   So, each envelope has **$6,181**.
+
+4. **Hana has $2449 in a wallet** — this is **not** relevant to Kiran’s money.
+
+5. **Kiran spends $1144** on a toy — this means he reduces his money by $1,144.
+
+---
+
+### Final amount Kiran has:
+
+$$
+30,905 - 1,144 = \boxed{29,761}
+$$
+
+So, Kiran now has **$29,761**.",PLAN_ERROR,,
+bf5feaa5488d,2,"Ravi collects 4 eggs. Ravi places the eggs equally into 2 cartons and keeps one carton. By the end of the season, Ravi's number of eggs becomes 4 times as large. By the end of the season, Ravi's number of eggs becomes 3 times as large. By the end of the season, Ravi's number of eggs becomes 8 times as large. The farm is 9 acres. By the end of the season, Ravi's number of eggs becomes 3 times as large. The farm is 6 acres. The hens lay another 4 eggs for Ravi. Ravi places the eggs equally into 5 cartons and keeps one carton. How many eggs does Ravi have now?",116,"We are given the following information:
+
+1. **Ravi starts with 4 eggs.**
+2. **He places the eggs equally into 2 cartons and keeps 1 carton.**
+3. **By the end of the season, his number of eggs becomes 4 times as large.**
+4. **Then, he places the eggs equally into 5 cartons and keeps 1 carton.**
+5. **By the end of the season, his number of eggs becomes 3 times as large.**
+6. **The farm is 9 acres.**
+7. **He places the eggs equally into 2 cartons and keeps 1 carton.**
+8. **By the end of the season, his number of eggs becomes 8 times as large.**
+9. **The farm is 6 acres.**
+10. **The hens lay another 4 eggs.**
+11. **Ravi places the eggs equally into 5 cartons and keeps 1 carton.**
+
+We are to find how many eggs Ravi has now.
+
+---
+
+### Step-by-step approach:
+
+Let’s denote the number of eggs Ravi has at the start of the season as $ x $.
+
+1. **First scenario**:
+   - He places the eggs equally into **2 cartons and keeps 1 carton**.
+   - So, each carton has $ \frac{x}{2} $ eggs.
+   - Then, **by the end of the season, his number of eggs becomes 4 times as large**.
+
+   So, he now has:
+
+   $$
+   4 \times \frac{x}{2} = 2x
+   $$
+
+   This is the total number of eggs.
+
+---
+
+2. **Second scenario**:
+   - He places the eggs equally into **5 cartons and keeps 1 carton**.
+   - So, each carton has $ \frac{2x}{5} $ eggs.
+   - Then, **by the end of the season, his number of eggs becomes 3 times as large**.
+
+   So, he now has:
+
+   $$
+   3 \times \frac{2x}{5} = \frac{6x}{5}
+   $$
+
+   This is the total number of eggs.
+
+---
+
+3. **Third scenario**:
+   - He places the eggs equally into **5 cartons and keeps 1 carton**.
+   - So, each carton has $ \frac{",UNVERIFIABLE,,
+5665ed65f012,0,Asha owns 9895 books. Asha donates 2338 books. Asha donates 2156 books. Asha lends out 1037 books and does not get them back. Asha lends out 3385 books and does not get them back. Asha buys 8483 new books. The library is 4491 years old. Asha buys 3282 new books. How many books does Asha have now?,12744,"We are given the following information:
+
+- **Asha owns 9895 books.**
+- **Asha donates 2338 books.**
+- **Asha donates another 2156 books.**
+- **Asha lends out 1037 books and does not get them back.**
+- **Asha lends out 3385 books and does not get them back.**
+- **Asha buys 8483 new books.**
+- **Asha buys another 3282 new books.**
+
+---
+
+### Step-by-step calculation:
+
+1. **Start with the initial number of books:**
+   $$
+   9895
+   $$
+
+2. **Add the books donated:**
+   $$
+   9895 + 2338 + 2156 = 14439
+   $$
+
+3. **Subtract the books lent out (not returned):**
+   $$
+   14439 - 1037 - 3385 = 14439 - 4422 = 10017
+   $$
+
+4. **Add the books bought:**
+   $$
+   10017 + 8483 + 3282 = 10017 + 11765 = 21782
+   $$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{21782}
+$$ books.",ARITHMETIC_SLIP,,
+0233bb56ab61,0,Zara has 347 cookies in the bakery. The oven is set to 188 degrees. Zara sells 194 cookies. Lucia bakes 293 muffins. Zara receives 536 cookies from a friend. Zara sells 681 cookies. Zara receives 758 cookies from a friend. How many cookies does Zara end up with?,766,"We are given the following information:
+
+- **Zara starts with** 347 cookies.
+- **Sells 194 cookies**.
+- **Bakes 293 muffins**.
+- **Sells 681 cookies**.
+- **Receives 536 cookies** from a friend.
+- **Receives 758 cookies** from a friend.
+
+We need to calculate how many **cookies Zara ends up with**.
+
+---
+
+### Step-by-step:
+
+1. **Start with** 347 cookies.
+
+2. **Sells 194 cookies** →  
+   $ 347 - 194 = 153 $ cookies.
+
+3. **Bakes 293 muffins** →  
+   $ 153 + 293 = 446 $ cookies.
+
+4. **Sells 681 cookies** →  
+   $ 446 - 681 = -235 $ cookies.
+
+5. **Receives 536 cookies** →  
+   $ -235 + 536 = 301 $ cookies.
+
+6. **Receives 758 cookies** →  
+   $ 301 + 758 = 1059 $ cookies.
+
+---
+
+### Final Answer:
+
+$$
+\boxed{1059}
+$$
+
+Zara ends up with **1059 cookies**.",DISTRACTOR_USE,,
+083d41cac752,0,Felix owns 149 books. Felix lends out 147 books and does not get them back. Felix's book collection then grows to 7 times its size. Priya has read 448 magazines. Felix's book collection then grows to 3 times its size. How many books does Felix have now?,42,"We are told:
+
+- Felix **lends out 147 books** and **does not get them back**.
+- Felix's **book collection grows to 7 times its size**.
+- Priya has read 448 **magazines**.
+- Felix's **book collection then grows to 3 times its size**.
+
+We are asked: **How many books does Felix have now?**
+
+---
+
+### Step 1: Let’s define the original number of books Felix has.
+
+Let $ x $ be the number of books Felix has **before** lending out 147 books.
+
+So:
+
+$$
+x + 147 = 7x
+$$
+
+### Step 2: Solve for $ x $
+
+$$
+x + 147 = 7x \\
+147 = 6x \\
+x = \frac{147}{6} = 24.5
+$$
+
+So Felix **has 24.5 books** before lending out 147.
+
+---
+
+### Step 3: Now, Felix lends out 147 books and does not get them back.
+
+So, after lending out 147 books, his book collection becomes:
+
+$$
+24.5 - 147 = -122.5
+$$
+
+Wait a minute! That can’t be right. If he lends out 147 books and **does not get them back**, he would have:
+
+$$
+x - 147
+$$
+
+So the growth is:
+
+$$
+x - 147 = 7x
+$$
+
+Let’s solve again:
+
+$$
+x - 147 = 7x \\
+-147 = 6x \\
+x = -24.5
+$$
+
+But that’s negative, which doesn’t make sense. So there must be a **mistake** in our interpretation.
+
+---
+
+### Let’s try again:
+
+Let’s suppose that **after lending out 147 books**, Felix’s collection grows to 7 times its original size.
+
+So:
+
+$$
+x + 147 = 7x
+$$
+
+Solving:
+
+$$
+x + 147 = 7x \\
+147 = 6x \\
+x = 24.5
+$$
+
+So, Felix had **24.5 books** before lending out 147.
+
+---
+
+### Step 4: Felix lends out 147 books and does",PLAN_ERROR,,
+494c81161499,2,Ravi has 58 stickers. Ravi loses 41 stickers. Ravi buys a pack of 38 stickers. Ravi's sticker count then becomes 2 times as large. Ravi trades for 80 more stickers. The album has 22 pages. Ravi trades for 26 more stickers. The album has 52 pages. Ravi trades for 44 more stickers. Ravi gives away 83 stickers. How many stickers does Ravi end up with?,177,"We are given the following information step by step about Ravi's changes in his sticker count:
+
+1. **Initial sticker count**: 58  
+2. **Ravi loses 41 stickers**:  
+   - 58 - 41 = **17 stickers**  
+3. **Ravi buys a pack of 38 stickers**:  
+   - 17 + 38 = **55 stickers**  
+4. **Ravi trades 80 more stickers**:  
+   - 55 - 80 = **-25** → So, he **loses 25 stickers**  
+5. **Ravi trades 26 more stickers**:  
+   - -25 - 26 = **-51** → So, he **loses 51 stickers**  
+6. **Ravi gives away 83 stickers**:  
+   - -51 - 83 = **-134** → So, he **loses 134 stickers**
+
+Now, we are asked: **How many stickers does Ravi end up with?**
+
+### Final Answer:
+$$
+\boxed{-134}
+$$
+
+This means Ravi **loses 134 stickers**.",UNVERIFIABLE,,
+f0d020b864b2,1,Leo collects 575 eggs. Aditi owns 683 cows. Leo places the eggs equally into 5 cartons and keeps one carton. Aditi owns 699 cows. Leo places the eggs equally into 5 cartons and keeps one carton. How many eggs does Leo end up with?,23,"We are given the following information:
+
+- **Leo collects 575 eggs.**
+- **Aditi owns 699 cows.**
+- **Leo places the eggs equally into 5 cartons and keeps one carton.**
+- We are to find out **how many eggs Leo ends up with**.
+
+---
+
+### Step 1: Determine how many eggs Leo gets per carton
+
+Since Leo places the eggs equally into **5 cartons** and keeps **1 carton**, this means he **uses 4 cartons** for the eggs and keeps **1** carton for himself.
+
+So, the number of eggs he ends up with is:
+
+$$
+\frac{575}{5} = 115 \text{ eggs per carton}
+$$
+
+$$
+\text{Total eggs Leo ends up with} = 115 \times 4 + 1 = 460 + 1 = \boxed{461}
+$$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{461}
+$$",ARITHMETIC_SLIP,,
+038629ee383e,0,Kiran saves $6181. Kiran's savings then grow to 5 times the amount. Kiran splits the money equally into 5 envelopes and keeps one envelope. Hana has $2449 in a wallet. Kiran spends $1144 on a toy. The piggy bank weighs 4589 grams. How much money does Kiran have now?,5037,"We are given the following information:
+
+- **Kiran saves $6,181.**
+- **Kiran's savings then grow to 5 times the amount.**
+- **Kiran splits the money equally into 5 envelopes and keeps one envelope.**
+- **Hana has $2,449 in a wallet.**
+- **Kiran spends $1,144 on a toy.**
+- **The piggy bank weighs 4,589 grams.**
+
+We are asked: **How much money does Kiran have now?**
+
+---
+
+### Step 1: Calculate Kiran's new savings
+
+Kiran originally saves **$6,181**, and his savings grow to **5 times** this amount.
+
+$$
+\text{New savings} = 5 \times 6181 = 30,905
+$$
+
+---
+
+### Step 2: Split the money equally into 5 envelopes and keep one
+
+Kiran keeps **one envelope** of the total money, and **spends** the other 4 envelopes for the toy.
+
+So, he keeps:
+
+$$
+\frac{30,905}{5} = 6,181
+$$
+
+---
+
+### Step 3: Add Hana's money
+
+Hana has **$2,449** in a wallet.
+
+So, Kiran's total money now is:
+
+$$
+6,181 + 2,449 = 8,630
+$$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{8630}
+$$",DISTRACTOR_USE,,
+6b15c6d5d000,1,Lucia has 5 books on a shelf. Zara has read 3 magazines. The library is 8 years old. Lucia's book collection then grows to 7 times its size. Lucia divides the books equally among 7 shelves and keeps only one shelf of them. Lucia's book collection then grows to 4 times its size. Lucia is given 6 books as a gift. Lucia divides the books equally among 2 shelves and keeps only one shelf of them. Lucia donates 2 books. How many books does Lucia end up with?,11,"We are told that Lucia has a series of events involving book collections, shelves, and donations. Let's break it down step by step.
+
+---
+
+### Step 1: Start with Lucia's current book collection
+
+Lucia has **5 books** on a shelf.
+
+- **Grows to 7 times its size**:  
+  So, 5 books → 7 × 5 = **35 books**.
+
+---
+
+### Step 2: Divide the books equally among 7 shelves
+
+- **Divides the books equally among 7 shelves**:  
+  Since there are 35 books, divide them equally:  
+  $$
+  \frac{35}{7} = 5 \text{ books per shelf}
+  $$
+
+- **Keeps only one shelf of them**:  
+  Keep 1 shelf with 5 books, and divide the remaining 6 shelves with 5 books each:  
+  $$
+  6 \times 5 = 30 \text{ books}
+  $$
+
+So, after this step, **30 books** remain.
+
+---
+
+### Step 3: Lucia is given 6 books as a gift
+
+- Add 6 books to the 30:  
+  $$
+  30 + 6 = 36 \text{ books}
+  $$
+
+---
+
+### Step 4: Divide the books equally among 2 shelves
+
+- Divide the 36 books equally:  
+  $$
+  \frac{36}{2} = 18 \text{ books per shelf}
+  $$
+
+- **Keeps only one shelf**:  
+  Keep 1 shelf with 18 books, and divide the remaining 1 shelf with 18 books:  
+  $$
+  18 \text{ books}
+  $$
+
+---
+
+### Step 5: Donates 2 books
+
+- Remove 2 books from the 18:  
+  $$
+  18 - 2 = 16 \text{ books}
+  $$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{16}
+$$",PLAN_ERROR,,
+c127e5230b38,1,Leo stocks 260 seed packets. Leo sells 188 seed packets. Leo receives a shipment of 806 seed packets. Leo receives a shipment of 435 seed packets. Leo plants 215 seed packets. The store is open 403 hours a week. Leo sells 851 seed packets. How many seed packets does Leo have now?,247,"To determine how many seed packets Leo has now, we need to update his total by adding the number of seed packets he received and subtracting the ones he used or sold.
+
+### Step-by-step:
+
+1. **Initial stock**: Leo starts with **260 seed packets**.
+2. **Seed packets sold**: Leo sells **188**.
+3. **Seed packets received**: He receives **806** seed packets.
+4. **Seed packets planted**: He plants **215**.
+5. **Seed packets sold**: He sells **851**.
+
+Now, let's compute the total:
+
+$$
+\text{Total} = \text{Initial} + \text{Received} - \text{Sold} + \text{Planted}
+$$
+
+$$
+\text{Total} = 260 + 806 - 188 + 215
+$$
+
+$$
+\text{Total} = 1066 + 215 = \boxed{1281}
+$$
+
+### Final Answer:
+$$
+\boxed{1281}
+$$ seed packets.",UNVERIFIABLE,,
+144f8e6a6e5b,1,Mei bakes 2 cookies. Mei scales up the batch so the number of cookies becomes 9 times as large. Mei bakes another 2 cookies. Mei bakes another 9 cookies. Mei scales up the batch so the number of cookies becomes 8 times as large. Mei scales up the batch so the number of cookies becomes 4 times as large. Noor bakes 3 muffins. Mei eats 7 of the cookies. The oven is set to 6 degrees. How many cookies does Mei end up with?,921,"We are given the following details:
+
+- Mei bakes **2 cookies**.
+- She scales the batch **9 times** as large (so she bakes 2 * 9 = 18 cookies).
+- Then she bakes **2 more cookies**, making it 20.
+- She bakes **9 more cookies**, making it 29.
+- She scales the batch **8 times** as large (so she bakes 29 * 8 = 232 cookies).
+- Then she scales the batch **4 times** as large (so she bakes 232 * 4 = 928 cookies).
+- Noor bakes **3 muffins**.
+- Mei eats **7 cookies**.
+
+---
+
+### Step-by-step:
+
+1. **Initial baking:**
+   - 2 cookies
+
+2. **After scaling:**
+   - 2 * 9 = 18 cookies
+   - 18 + 2 = 20
+   - 20 + 9 = 29 cookies
+
+3. **After scaling again:**
+   - 29 * 8 = 232 cookies
+   - 232 * 4 = 928 cookies
+
+4. **Total cookies baked by Mei:**
+   - 29 + 928 = 957 cookies
+
+5. **Noor bakes 3 muffins** → Not part of the cookies.
+
+6. **Mei eats 7 cookies** → So she ends up with:
+
+   $$
+   957 - 7 = 950 \text{ cookies}
+   $$
+
+---
+
+### Final Answer:
+$$
+\boxed{950}
+$$",ARITHMETIC_SLIP,,
+7c280804a237,2,"Mei starts the day with 540 apples. The fruit stand opened 369 days ago. After a big harvest, Mei's number of apples becomes 3 times as large. Mei sells 392 apples. After a big harvest, Mei's number of apples becomes 2 times as large. Mei buys 186 more apples from a farmer. How many apples does Mei have now?",2642,"Let's solve the problem step by step.
+
+---
+
+### Step 1: Start with the initial number of apples
+Mei starts the day with **540 apples**.
+
+---
+
+### Step 2: The fruit stand opened 369 days ago
+
+So, **369 days ago**, Mei had **540 apples**.
+
+Now, the number of apples **369 days ago** is **540 - 369 = 171 apples**.
+
+Then, **after a big harvest**, Mei's number of apples becomes **3 times** as large.
+
+So, new number of apples is:
+
+$$
+540 + 369 = 909 \text{ apples}
+$$
+
+---
+
+### Step 3: Mei sells 392 apples
+
+$$
+909 - 392 = 517 \text{ apples}
+$$
+
+---
+
+### Step 4: After a big harvest, Mei's number of apples becomes **2 times as large**
+
+So, now the apples are:
+
+$$
+517 \times 2 = 1034 \text{ apples}
+$$
+
+---
+
+### Step 5: Mei buys 186 more apples
+
+$$
+1034 + 186 = \boxed{1220} \text{ apples}
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{1220}
+$$",DISTRACTOR_USE,,
+00424de93729,1,Zara collects 983 eggs. Zara collects 859 more eggs. Zara sells 307 eggs at the market. Zara sells 650 eggs at the market. The hens lay another 184 eggs for Zara. Zara uses 423 eggs for breakfast. Zara sells 531 eggs at the market. Zara uses 103 eggs for breakfast. How many eggs does Zara have now?,12,"Let's break down the problem step by step and calculate the final number of eggs Zara has.
+
+### Initial Egg Count:
+Zara starts with **983 eggs**.
+
+### Zara collects 859 more eggs:
+$$
+983 + 859 = 1842 \text{ eggs}
+$$
+
+### Zara sells 307 eggs at the market:
+$$
+1842 - 307 = 1535 \text{ eggs}
+$$
+
+### Zara sells 650 eggs at the market:
+$$
+1535 - 650 = 885 \text{ eggs}
+$$
+
+### Zara hens lay 184 eggs:
+$$
+885 + 184 = 1069 \text{ eggs}
+$$
+
+### Zara uses 423 eggs for breakfast:
+$$
+1069 - 423 = 646 \text{ eggs}
+$$
+
+### Zara uses 103 eggs for breakfast:
+$$
+646 - 103 = 543 \text{ eggs}
+$$
+
+### Final Answer:
+$$
+\boxed{543}
+$$
+
+Zara has **543 eggs** now.",PLAN_ERROR,,
+742fece4ab65,1,Zara owns 7 books. The library is 4 years old. The library is 3 years old. Zara is given 7 books as a gift. Zara divides the books equally among 7 shelves and keeps only one shelf of them. How many books does Zara end up with?,2,"We are given the following information:
+
+- **Zara owns 7 books.**
+- The **library is 4 years old**, and **Zara is given 7 books as a gift.**
+- Zara **divides the books equally among 7 shelves**, which implies each shelf gets **1 book**.
+- **Zara keeps only one shelf of them**.
+
+Let's break it down:
+
+1. Zara has **7 books**.
+2. She **divides the books equally among 7 shelves**, so **each shelf gets 1 book**.
+3. She **keeps only one shelf**, meaning **she ends up with 0 books**.
+
+### Final Answer:
+$$
+\boxed{0}
+$$",UNVERIFIABLE,,
+1aa1e4425ab5,1,Lucia saves $1481. Lucia's savings then grow to 3 times the amount. Lucia spends $1572 on a toy. Lucia earns $4848 doing chores. The piggy bank weighs 2699 grams. Lucia spends $5347 on a toy. The piggy bank weighs 6763 grams. Lucia pays $1186 for lunch. How many dollars does Lucia end up with?,1186,"We are given several details about Lucia's savings and spending:
+
+1. **Lucia saves $1481**.
+2. **Lucia's savings grow to 3 times the amount**.
+   - So, the new amount is $1481 \times 3 = 4443$.
+3. **Lucia spends $1572 on a toy**.
+4. **Lucia earns $4848 doing chores**.
+5. **The piggy bank weighs 2699 grams**.
+6. **Lucia spends $5347 on a toy**.
+7. **The piggy bank weighs 6763 grams**.
+8. **Lucia pays $1186 for lunch**.
+
+We are to find how much **Lucia ends up with**.
+
+### Step-by-step:
+
+1. **Initial savings**: $1481  
+2. **After growing to 3 times**: $1481 \times 3 = 4443$  
+3. **Savings after buying toy**: $4443 - 1572 = 2871$  
+4. **Earnings from chores**: $4848$  
+5. **Total amount after buying toy and earning from chores**:  
+   $2871 + 4848 = 7719$  
+6. **Piggy bank weight is 2699 grams** (ignored)  
+7. **Piggy bank weight is 6763 grams** (also ignored)  
+8. **No spending on lunch** (as it's already accounted for in the chores)  
+9. **Final amount**: $7719$
+
+### Final Answer:
+
+$$
+\boxed{7719}
+$$
+
+Lucia ends up with **$7719**.",ARITHMETIC_SLIP,,
+9b953cac6bbf,1,Felix has 27 seed packets. Felix plants 11 seed packets. Felix plants 11 seed packets. Felix orders 69 more seed packets. The store is open 90 hours a week. Leo has 49 flower pots. Felix plants 42 seed packets. How many seed packets does Felix end up with?,32,"We are given the following information:
+
+- Felix has 27 seed packets.
+- Felix plants **11** seed packets.
+- Felix plants **11** seed packets again.
+- Felix orders **69** more seed packets.
+- The store is open **90 hours a week**.
+- Leo has **49** flower pots.
+- Felix plants **42** seed packets.
+
+We are to find how many **seed packets** Felix ends up with.
+
+---
+
+### Step-by-step:
+
+1. Felix starts with **27 seed packets**.
+2. Felix plants **11** seed packets:
+   $$
+   27 + 11 = 38
+   $$
+3. Felix plants **11** more seed packets:
+   $$
+   38 + 11 = 49
+   $$
+4. Felix orders **69** more seed packets:
+   $$
+   49 + 69 = 118
+   $$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{118}
+$$
+
+Felix ends up with **118 seed packets**.",DISTRACTOR_USE,,
+4234e8bdc659,2,"Tariq collects 2752 eggs. By the end of the season, Tariq's number of eggs becomes 4 times as large. The farm is 3153 acres. By the end of the season, Tariq's number of eggs becomes 3 times as large. Tariq places the eggs equally into 8 cartons and keeps one carton. The farm is 8416 acres. How many eggs does Tariq have now?",4128,"We are given the following information:
+
+- **Tariq starts with 2752 eggs**.
+- **After the season, his eggs become 4 times as large**.
+- **Then, his eggs become 3 times as large**.
+- **Tariq places his eggs equally into 8 cartons**, and keeps **1 carton**.
+- **The farm has 3153 acres**, and **Tariq's eggs are 8416 acres**.
+
+We are to find how many eggs Tariq has now.
+
+---
+
+### Step 1: Calculate the number of eggs after the season
+
+- **Initial eggs = 2752**
+- **After the season: 4 times as many**  
+  $$ 2752 \times 4 = 11008 $$
+
+- **Then, after the season, his eggs become 3 times as many**  
+  $$ 11008 \times 3 = 33024 $$
+
+So, **Tariq now has 33,024 eggs**.
+
+---
+
+### Step 2: Calculate how many eggs are in each carton
+
+- **Tariq places his eggs equally into 8 cartons**, and keeps **1 carton**.
+
+So, the **number of eggs per carton** is:
+
+$$
+\frac{33024}{8} = 4128
+$$
+
+---
+
+### Step 3: Interpret the final information
+
+- The **farm is 3153 acres**, and **Tariq's eggs are 8416 acres**.  
+  These are **total acres** for the farm and for Tariq's eggs respectively.
+
+But we are asked to find how many eggs **Tariq has now**, which we already calculated.
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{33024}
+$$
+
+Tariq now has **33,024 eggs**.",PLAN_ERROR,,
+6a72b8b5558b,2,Felix has $30 in a piggy bank. Felix pays $11 for lunch. The piggy bank weighs 68 grams. Felix pays $17 for lunch. Zara has $96 in a wallet. Felix splits the money equally into 2 envelopes and keeps one envelope. How much money does Felix have now?,1,"We are given the following:
+
+1. Felix has **$30** in a piggy bank.
+2. Felix pays **$11** for lunch.
+3. The **piggy bank weighs 68 grams**.
+4. Zara has **$96** in a wallet.
+5. Felix **splits the money equally into 2 envelopes** and keeps **one envelope**.
+
+We are to find out how much **money Felix has now**.
+
+---
+
+### Step-by-step breakdown:
+
+- **Initial money in piggy bank**: $30  
+- Felix pays $11 for lunch → **$30 - $11 = $19** remains in the piggy bank.  
+- Felix keeps **one envelope**, so he keeps **$19** in the piggy bank.
+
+- Zara has $96 in a wallet.  
+- Felix **splits the money equally** into 2 envelopes and keeps **one**.  
+- So, Felix gives **$48** to Zara (half of $96), and keeps **$48**.
+
+---
+
+### Final amount Felix has:
+
+- He has **$19** in the piggy bank.  
+- He also has **$48** in envelopes.
+
+So, **$19 + $48 = $67**.
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{67}
+$$",UNVERIFIABLE,,
+3cf8414f9253,2,Omar saves $453. Omar receives $246 as a gift. Omar spends $339 on a toy. Omar receives $926 as a gift. Omar receives $341 as a gift. Omar pays $983 for lunch. Omar earns $450 doing chores. Omar pays $817 for lunch. How much money does Omar have now?,277,"To determine how much money Omar has now, we need to add up all the amounts he has saved, received, spent, and earned.
+
+### Step-by-step breakdown:
+
+1. **Saves $453**  
+2. **Receives $246**  
+3. **Spends $339**  
+4. **Receives $926**  
+5. **Receives $341**  
+6. **Pays $983**  
+7. **Earns $450**  
+8. **Pays $817**  
+
+Now sum them all:
+
+$$
+453 + 246 = 700 \\
+700 + 339 = 1039 \\
+1039 + 926 = 1965 \\
+1965 + 341 = 2306 \\
+2306 - 983 = 1323 \\
+1323 + 450 = 1773 \\
+1773 - 817 = 956
+$$
+
+### Final Answer:
+
+$$
+\boxed{956}
+$$",ARITHMETIC_SLIP,,
+bf5feaa5488d,0,"Ravi collects 4 eggs. Ravi places the eggs equally into 2 cartons and keeps one carton. By the end of the season, Ravi's number of eggs becomes 4 times as large. By the end of the season, Ravi's number of eggs becomes 3 times as large. By the end of the season, Ravi's number of eggs becomes 8 times as large. The farm is 9 acres. By the end of the season, Ravi's number of eggs becomes 3 times as large. The farm is 6 acres. The hens lay another 4 eggs for Ravi. Ravi places the eggs equally into 5 cartons and keeps one carton. How many eggs does Ravi have now?",116,"We are given a sequence of events involving Ravi and eggs:
+
+1. **Initial Egg Count**: Ravi starts with **4 eggs**.
+
+2. **Placing Eggs into Cartons**:  
+   - The eggs are **placed equally into 2 cartons** and **kept 1 carton**.  
+   - So, each carton has:  
+     $$
+     \frac{4}{2} = 2 \text{ eggs}
+     $$
+   - Total eggs = $ 2 \times 2 + 2 = 6 $ eggs.
+
+3. **After the Season**:  
+   - Ravi's number of eggs becomes **4 times as large**:  
+     $ 6 \times 4 = 24 $ eggs.  
+   - Then, **3 times as large**:  
+     $ 24 \times 3 = 72 $ eggs.  
+   - Then, **8 times as large**:  
+     $ 72 \times 8 = 576 $ eggs.
+
+4. **Final Egg Count**:  
+   - At the end of the season, Ravi’s number of eggs becomes **3 times as large**:  
+     $ 576 \times 3 = 1728 $ eggs.
+
+5. **Hens Lay Eggs**:  
+   - Hens lay **another 4 eggs**.
+
+6. **Placing Eggs into 5 Cartons**:  
+   - Eggs are now equally distributed into **5 cartons** and **1 carton** kept by Ravi.
+
+So, the number of eggs Ravi has now is:
+
+$$
+1728 + 4 = \boxed{1732}
+$$
+
+**Answer:** $\boxed{1732}$ eggs.",DISTRACTOR_USE,,
+14253da89d02,2,Kiran has 46 seed packets. Kiran orders 81 more seed packets. Kiran plants 21 seed packets. Kiran plants 31 seed packets. Kiran plants 36 seed packets. Kiran sells 10 seed packets. Omar has 55 flower pots. Omar has 74 flower pots. Kiran sells 22 seed packets. How many seed packets does Kiran end up with?,7,"We are given the following:
+
+- **Kiran starts with 46 seed packets.**
+- **Kiran orders 81 more seed packets.**
+- **Kiran plants 21 seed packets.**
+- **Kiran plants 31 seed packets.**
+- **Kiran plants 36 seed packets.**
+- **Kiran sells 10 seed packets.**
+- **Omar starts with 55 flower pots.**
+- **Omar has 74 flower pots.**
+- **Kiran sells 22 seed packets.**
+
+We need to find how many seed packets Kiran **ends up with**.
+
+---
+
+### Step 1: Calculate the total number of seed packets Kiran has
+
+Start with the initial 46 seed packets.
+
+- Add the 81 more he orders:
+  $$
+  46 + 81 = 127
+  $$
+
+- Then plant 21, 31, and 36 seed packets:
+  $$
+  127 + 21 = 148 \\
+  148 + 31 = 179 \\
+  179 + 36 = 215
+  $$
+
+So, Kiran plants **215 seed packets**.
+
+- Then sells 10 seed packets:
+  $$
+  215 - 10 = 205
+  $$
+
+---
+
+### Step 2: Final Answer
+
+Kiran ends up with **205 seed packets**.
+
+$$
+\boxed{205}
+$$",PLAN_ERROR,,
+249f97ae72b3,0,Noor saves $54. Noor pays $47 for lunch. Elena has $74 in a wallet. Noor's savings then grow to 3 times the amount. Noor splits the money equally into 3 envelopes and keeps one envelope. Noor splits the money equally into 7 envelopes and keeps one envelope. How many dollars does Noor end up with?,1,"We are given the following:
+
+- **Noor saves $54.**
+- **Noor pays $47 for lunch.**
+- **Elena has $74 in a wallet.**
+- **Noor's savings then grow to 3 times the amount.**
+- **Noor splits the money equally into 3 envelopes and keeps one.**
+- **Noor splits the money equally into 7 envelopes and keeps one.**
+- **How many dollars does Noor end up with?**
+
+---
+
+### Step-by-step:
+
+1. **Initial savings:**
+   - Noor saves $54.
+
+2. **Net saving after lunch:**
+   - Noor saves $54, pays $47 for lunch → Net saving = $54 - $47 = **$7**.
+
+3. **Savings grow to 3 times the amount:**
+   - So new savings = $7 × 3 = **$21**.
+
+   (Note: This is the amount that Noor has in his savings after paying for lunch.)
+
+4. **Noor splits the money equally into 3 envelopes and keeps one:**
+   - So he keeps **$7** and gives **$21** to the 2 others.
+
+5. **Noor splits the money equally into 7 envelopes and keeps one:**
+   - He keeps **$7** from the 2 envelopes, and gives **$21** to the 6 others.
+
+---
+
+### Final Answer:
+
+- Noor **ends up with** **$7**.
+
+$$
+\boxed{7}
+$$",UNVERIFIABLE,,
+1860950c71d9,1,Priya owns 868 marbles. The jar is 382 centimetres tall. Priya wins 298 marbles in a game. Priya wins 237 marbles in a game. Tariq has 408 toy cars. Priya wins 834 marbles in a game. How many marbles does Priya end up with?,2237,"We are given the following data:
+
+- **Priya owns 868 marbles**.
+- **The jar is 382 centimeters tall**.
+- **Priya wins 298 marbles in a game**.
+- **Priya wins 237 marbles in a game**.
+- **Tariq has 408 toy cars**.
+- **Priya wins 834 marbles in a game**.
+
+We are asked to find how many **marbles** Priya ends up with.
+
+---
+
+### Step-by-step Calculation:
+
+1. **Priya starts with**: 868 marbles  
+2. **Priya wins 298 marbles**:  
+   $ 868 + 298 = 1166 $ marbles  
+3. **Priya wins 237 marbles**:  
+   $ 1166 + 237 = 1393 $ marbles  
+
+So, **Priya ends up with 1393 marbles**.
+
+---
+
+### Final Answer:
+
+$$
+\boxed{1393}
+$$",ARITHMETIC_SLIP,,
+bdb32427f809,1,Zara has 3 books on a shelf. Zara buys 7 new books. The library is 4 years old. Zara divides the books equally among 2 shelves and keeps only one shelf of them. Priya has read 8 magazines. Zara divides the books equally among 5 shelves and keeps only one shelf of them. Zara is given 2 books as a gift. How many books does Zara end up with?,3,"Let's break down the problem step by step.
+
+---
+
+### **Step 1: Start with Zara's books**
+Zara has **3 books** on a shelf.
+
+---
+
+### **Step 2: Zara buys 7 new books**
+So, she now has:
+$$
+3 + 7 = 10 \text{ books}
+$$
+
+---
+
+### **Step 3: Zara divides the books equally among 2 shelves**
+
+She divides 10 books equally between **2 shelves**:
+$$
+10 \div 2 = 5 \text{ books per shelf}
+$$
+
+---
+
+### **Step 4: Zara keeps only one shelf of them**
+
+Now, she keeps **1 shelf** with **5 books** and divides the other 4 books equally among the **remaining 1 shelf**:
+$$
+4 \div 1 = 4 \text{ books per shelf}
+$$
+
+So, Zara has:
+- **1 shelf of 5 books**
+- **1 shelf of 4 books**
+
+### **Step 5: Total number of books Zara ends up with**
+
+She has:
+- **5 books from the first shelf**
+- **4 books from the second shelf**
+
+So, the total number of books she ends up with is:
+$$
+5 + 4 = \boxed{9}
+$$
+
+---
+
+### ✅ Final Answer:
+$$
+\boxed{9}
+$$",DISTRACTOR_USE,,
+6bb8d945d766,0,"Aditi's album holds 9 stickers. Aditi trades for 9 more stickers. Aditi's sticker count then becomes 4 times as large. Aditi buys a pack of 9 stickers. Aditi gives away 3 stickers. Kiran has 2 postcards. Aditi buys a pack of 3 stickers. Aditi shares the stickers equally among 9 friends, keeping one friend's share. Aditi buys a pack of 3 stickers. How many stickers does Aditi have now?",12,"Let's break down the problem step by step:
+
+---
+
+### **Step 1: Start with Aditi's initial sticker count**
+
+- Aditi has **9 stickers**.
+
+---
+
+### **Step 2: Trade for 9 more stickers**
+
+- Aditi trades 9 stickers, so:
+  - She now has:  
+    $ 9 + 9 = 18 $ stickers.
+
+---
+
+### **Step 3: Buy a pack of 9 stickers**
+
+- She buys 9 stickers, so now:
+  - Total stickers = $ 18 + 9 = 27 $.
+
+---
+
+### **Step 4: Give away 3 stickers**
+
+- She gives away 3 stickers, so:
+  - Remaining stickers = $ 27 - 3 = 24 $.
+
+---
+
+### **Step 5: Share stickers equally among 9 friends**
+
+- She shares the 24 stickers **equally among 9 friends**.
+  - Each friend gets $ \frac{24}{9} = 2 $ stickers.
+
+---
+
+### **Step 6: Aditi buys a pack of 3 stickers**
+
+- She buys 3 stickers, so now:
+  - Total stickers = $ 24 + 3 = 27 $.
+
+---
+
+### **Final Answer:**
+
+Aditi now has **27 stickers**.
+
+$$
+\boxed{27}
+$$",PLAN_ERROR,,
+6b15c6d5d000,2,Lucia has 5 books on a shelf. Zara has read 3 magazines. The library is 8 years old. Lucia's book collection then grows to 7 times its size. Lucia divides the books equally among 7 shelves and keeps only one shelf of them. Lucia's book collection then grows to 4 times its size. Lucia is given 6 books as a gift. Lucia divides the books equally among 2 shelves and keeps only one shelf of them. Lucia donates 2 books. How many books does Lucia end up with?,11,"We are given a series of events involving Lucia, and we need to find how many books she ends up with at the end.
+
+---
+
+### Step-by-step Breakdown:
+
+#### **Initial Setup:**
+- Lucia has **5 books**.
+- Zara has **3 magazines**.
+- The **library is 8 years old**.
+- **None of the above is relevant** for the book collection.
+
+---
+
+#### **First Event:**
+- **Lucia's book collection grows to 7 times its size.**
+  - She started with 5 books.
+  - So, 5 × 7 = **35 books**.
+
+---
+
+#### **Second Event:**
+- Lucia **divides the books equally among 7 shelves** and keeps **only one shelf** of them.
+  - Total books = 35
+  - Divided among 7 shelves: 35 ÷ 7 = **5 books per shelf**
+  - Keeps only 1 shelf → **5 books**.
+  - So, she ends up with **5 books**.
+
+---
+
+#### **Third Event:**
+- She **donates 2 books**.
+  - So, 5 - 2 = **3 books**.
+
+---
+
+#### **Fourth Event:**
+- She **divides the books equally among 2 shelves** and keeps **only one shelf**.
+  - Total books = 3
+  - Divided among 2 shelves: 3 ÷ 2 = **1.5 books**
+  - So, she keeps **1 book**.
+
+---
+
+#### **Final Count:**
+- She ends up with **1 book**.
+
+---
+
+### ✅ Final Answer:
+$$
+\boxed{1}
+$$",UNVERIFIABLE,,
+04d202cb5a1f,2,Omar stocks 1827 seed packets. Omar sells 1622 seed packets. Omar orders 8747 more seed packets. Omar's stock of seed packets then becomes 5 times as large. Omar divides the seed packets equally among 4 gardens and keeps one garden's share. The store is open 7826 hours a week. Omar plants 6345 seed packets. How many seed packets does Omar end up with?,4845,"We are given the following information:
+
+- **Initial stock**: 1827 seed packets  
+- **Sells**: 1622 seed packets  
+- **Orders**: 8747 seed packets  
+- **Stock becomes 5 times as large**:  
+  $ 1827 + 1622 + 8747 = 1827 + 8747 = 10574 $  
+  $ 10574 + 1622 = 12196 $  
+  $ 12196 + 8747 = 20943 $  
+  So, the total seed packets after all transactions is **20943**.
+
+- **Divides seed packets equally among 4 gardens**:  
+  Each garden gets $ \frac{20943}{4} = 5235.75 $ seed packets  
+  Since we only keep **one garden's share**, the total seed packets remaining is:  
+  $ 5235.75 $ seed packets
+
+- **Plants 6345 seed packets**:  
+  This is added to the remaining seed packets.
+
+- **Final stock**:  
+  $ 5235.75 + 6345 = \boxed{11580.75} $ seed packets
+
+### ✅ Final Answer:  
+\boxed{11580.75} seed packets",ARITHMETIC_SLIP,,
+aa068c6e8b6b,2,Noor saves $491. Noor pays $217 for lunch. Noor splits the money equally into 2 envelopes and keeps one envelope. Hana has $611 in a wallet. Noor's savings then grow to 5 times the amount. Noor earns $255 doing chores. How much money does Noor have now?,940,"We are given the following information:
+
+1. **Noor saves $491**.
+2. **Noor pays $217 for lunch**.
+3. **Noor splits the money equally into 2 envelopes and keeps one**.
+4. **Hana has $611 in a wallet**.
+5. **Noor's savings then grow to 5 times the amount**.
+6. **Noor earns $255 doing chores**.
+
+Let's break this down step by step.
+
+---
+
+### Step 1: Calculate the amount Noor saves and pays
+
+- Noor saves **$491**.
+- Noor pays **$217** for lunch.
+
+So, the total amount Noor has after saving and paying is:
+
+$$
+491 - 217 = 274
+$$
+
+This is the **net amount Noor has**.
+
+---
+
+### Step 2: Split the money into two envelopes and keep one
+
+Noor splits the money equally into 2 envelopes and keeps **one envelope**.
+
+So, each envelope has:
+
+$$
+\frac{274}{2} = 137
+$$
+
+Therefore, **Noor keeps $137 in his envelope**, and pays $137 to Hana for lunch.
+
+Hana has $611 in her wallet, so the total money in the wallet is:
+
+$$
+611 + 137 = 748
+$$
+
+---
+
+### Step 3: Noor's savings grow to 5 times the amount
+
+So, **Noor's savings grow to 5 times the original amount**, which is 5 × 491 = **2455**
+
+So, after the chores, the total money in the wallet is:
+
+$$
+2455 + 748 = 3203
+$$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{3203}
+$$",DISTRACTOR_USE,,
+bdfe3022698b,0,Jonah has 4 cookies in the bakery. Jonah bakes another 2 cookies. The oven is set to 7 degrees. Jonah bakes another 8 cookies. Jonah bakes another 2 cookies. Jonah sells 2 cookies. Jonah bakes another 9 cookies. Jonah eats 2 of the cookies. How many cookies does Jonah end up with?,21,"Let's break down the problem step by step:
+
+### Initial cookies:
+- Jonah starts with **4 cookies**.
+
+### Bakes cookies:
+- Bakes **2** more.
+- Bakes **8** more.
+- Bakes **2** more.
+
+So, total cookies baked so far:
+$$
+4 + 2 + 8 + 2 = 16
+$$
+
+### Then he eats 2 cookies:
+$$
+16 - 2 = 14
+$$
+
+### Finally, he sells 2 cookies:
+$$
+14 - 2 = 12
+$$
+
+### Final answer:
+$$
+\boxed{12}
+$$
+
+Jonah ends up with **12 cookies**.",PLAN_ERROR,,
+f34da9f90dd9,2,Sam's album holds 3 stickers. Sam gives away 2 stickers. Sam buys a pack of 4 stickers. The album has 7 pages. Sam buys a pack of 5 stickers. Sam trades for 6 more stickers. The album has 9 pages. How many stickers does Sam have now?,16,"Let's break down the problem step by step:
+
+---
+
+### **Initial Stickers:**
+- Sam has **3 stickers** in total.
+
+---
+
+### **Sam gives away 2 stickers.**
+- So, **3 - 2 = 1 sticker** remains.
+
+---
+
+### **Sam buys a pack of 4 stickers.**
+- So, **1 + 4 = 5 stickers** now.
+
+---
+
+### **Sam trades for 6 more stickers.**
+- So, **5 + 6 = 11 stickers** now.
+
+---
+
+### **Album has 9 pages.**
+
+Sam has **7 pages** in the album. The problem doesn't mention any change in the number of pages, so we assume that Sam's page count remains the same.
+
+---
+
+### **Final Answer:**
+
+$$
+\boxed{11}
+$$
+
+Sam has **11 stickers** now.",UNVERIFIABLE,,
+710ab5135967,1,Sam starts the day with 509 apples. A supplier delivers 794 apples to Sam. Ishaan has 980 oranges. Sam sells 837 apples. A supplier delivers 365 apples to Sam. The fruit stand opened 543 days ago. How many apples does Sam have now?,831,"We are given the following information:
+
+- Sam starts the day with **509 apples**.
+- A supplier delivers **794 apples** to Sam.
+- Ishaan has **980 oranges**.
+- Sam sells **837 apples**.
+- A supplier delivers **365 apples** to Sam.
+- The fruit stand **opened 543 days ago**.
+
+---
+
+We are to find out how many **apples Sam has now**.
+
+Let’s break it down step by step:
+
+### Step 1: Start with Sam’s initial apples
+Sam has **509 apples**.
+
+### Step 2: Add apples delivered by supplier
+A supplier delivers **794 apples** to Sam:
+$$
+509 + 794 = 1203 \text{ apples}
+$$
+
+### Step 3: Subtract apples sold by Sam
+Sam sells **837 apples**:
+$$
+1203 - 837 = 366 \text{ apples}
+$$
+
+### Step 4: Add apples delivered by supplier (again)
+A supplier delivers **365 apples** to Sam:
+$$
+366 + 365 = 731 \text{ apples}
+$$
+
+### Step 5: Add 543 days ago’s apples (fruit stand opened 543 days ago)
+This means Sam has **543 apples** from the fruit stand that opened 543 days ago.
+
+So, the total is:
+$$
+731 + 543 = \boxed{1274}
+$$
+
+---
+
+### ✅ Final Answer:
+$$
+\boxed{1274} \text{ apples}
+$$",ARITHMETIC_SLIP,,
+8d8854bd766a,1,"Lucia has 432 apples at a fruit stand. Lucia splits the apples equally into 12 baskets and keeps only one basket. Lucia buys 502 more apples from a farmer. Lucia splits the apples equally into 2 baskets and keeps only one basket. Lucia buys 459 more apples from a farmer. A supplier delivers 866 apples to Lucia. The fruit stand opened 747 days ago. After a big harvest, Lucia's number of apples becomes 9 times as large. Lucia gives 462 apples to a neighbour. How many apples does Lucia have now?",13884,"We are given the following steps:
+
+1. **Initial apples**: 432 apples.
+2. **First purchase**: 502 apples are bought, so total apples now:  
+   $ 432 + 502 = 934 $
+
+3. **Second purchase**: 459 apples are bought, so total apples now:  
+   $ 934 + 459 = 1393 $
+
+4. **Supplier delivers**: 866 apples, so total apples now:  
+   $ 1393 + 866 = 2259 $
+
+5. **747 days ago**: The fruit stand had 747 days ago. So, apples are now:  
+   $ 2259 - 747 = 1512 $
+
+6. **After harvest**: The number of apples becomes 9 times as large.  
+   So, total apples now:  
+   $ 1512 \times 9 = 13608 $
+
+7. **Lucia gives 462 apples to a neighbor**:  
+   $ 13608 - 462 = 13146 $
+
+### ✅ Final Answer:  
+$$
+\boxed{13146}
+$$",DISTRACTOR_USE,,
+d07215ecb3ca,1,Dev has 7 stickers. The album has 5 pages. Dev trades for 9 more stickers. Dev gives away 8 stickers. Dev gives away 4 stickers. Dev trades for 7 more stickers. Dev trades for 6 more stickers. How many stickers does Dev have now?,17,"Let's break down the problem step by step.
+
+---
+
+### **Initial Information:**
+
+- **Dev starts with:** 7 stickers  
+- **The album has 5 pages.**
+
+---
+
+### **Step 1: Dev trades for 9 more stickers.**
+
+- Dev **gives away 8 stickers**.
+- So, **Dev now has:**  
+  $ 7 - 8 = -1 $ stickers  
+  (He is out of stickers, so he has **0 stickers** now)
+
+---
+
+### **Step 2: Dev trades for 7 more stickers.**
+
+- He now **gives away 4 stickers**, so he gives away **12 stickers** in total.
+
+- So, **Dev now has:**  
+  $ 0 + 7 = 7 $ stickers
+
+---
+
+### **Final Answer:**
+
+$$
+\boxed{7}
+$$
+
+Dev now has **7 stickers**.",PLAN_ERROR,,
+df7e2097bdbb,2,Dev has 8 seed packets. Dev divides the seed packets equally among 4 gardens and keeps one garden's share. Dev receives a shipment of 6 seed packets. The store is open 7 hours a week. Dev receives a shipment of 5 seed packets. How many seed packets does Dev end up with?,13,"Let's break the problem into steps:
+
+---
+
+### **Step 1: Divide seed packets equally among 4 gardens**
+Dev starts with **8 seed packets** and divides them **equally** among 4 gardens.
+
+- Each garden gets:  
+  $$
+  \frac{8}{4} = 2 \text{ seed packets per garden}
+  $$
+
+---
+
+### **Step 2: Keep one garden's share**
+Dev keeps **one garden's share** (2 seed packets), so he has:  
+$$
+2 \text{ seed packets}
+$$
+
+---
+
+### **Step 3: Receive a shipment of 5 seed packets**
+The store is open **7 hours a week**, and Dev receives a shipment of **5 seed packets**.
+
+---
+
+### **Final Calculation**
+Dev ends up with:  
+$$
+2 \text{ seed packets (from initial division and keeping)} + 5 \text{ seed packets (shipment)} = \boxed{7}
+$$
+
+---
+
+### ✅ Final Answer: $\boxed{7}$ seed packets.",UNVERIFIABLE,,
+940f111f957e,1,"Hana has 33 stickers. Elena has 88 postcards. Hana's sticker count then becomes 12 times as large. Hana buys a pack of 94 stickers. Hana's sticker count then becomes 9 times as large. Hana shares the stickers equally among 9 friends, keeping one friend's share. Hana trades for 31 more stickers. Hana trades for 17 more stickers. Hana shares the stickers equally among 2 friends, keeping one friend's share. How many stickers does Hana have now?",269,"We are given a series of events involving Hana's sticker count, and we need to work backward from the final state to find out how many stickers Hana has.
+
+---
+
+### Step-by-step:
+
+1. **Hana starts with 33 stickers.**
+2. **Elena has 88 postcards.**
+3. **Hana's sticker count becomes 12 times as large.**
+   - So, **Hana now has $ 33 \times 12 = 396 $ stickers**.
+4. **Hana buys a pack of 94 stickers.**
+   - **Hana now has $ 396 + 94 = 490 $ stickers**.
+5. **Hana's sticker count becomes 9 times as large.**
+   - So, **Hana now has $ 490 \times 9 = 4410 $ stickers**.
+
+6. **Hana shares the stickers equally among 9 friends, keeping one friend's share.**
+   - So, **Hana gives away 8 friends' shares**.
+   - Since each share is $ \frac{4410}{9} = 490 $ stickers, and she keeps 1, the final count is:
+     - $ 4410 - 8 \times 490 = 4410 - 3920 = 490 $ stickers.
+
+7. **Hana trades for 31 more stickers.**
+   - **Hana now has $ 490 + 31 = 521 $ stickers**.
+
+8. **Hana trades for 17 more stickers.**
+   - **Hana now has $ 521 + 17 = 538 $ stickers**.
+
+---
+
+### Final Answer:
+
+$$
+\boxed{538}
+$$",ARITHMETIC_SLIP,,
+93390792b6ca,0,Dev has $165 in a piggy bank. The piggy bank weighs 945 grams. Dev's savings then grow to 7 times the amount. The piggy bank weighs 889 grams. Dev splits the money equally into 11 envelopes and keeps one envelope. Dev pays $100 for lunch. Dev splits the money equally into 5 envelopes and keeps one envelope. Dev's savings then grow to 6 times the amount. How many dollars does Dev end up with?,6,"Let's break down the problem step by step.
+
+---
+
+### **Step 1: Initial Savings**
+
+- Dev's **initial savings** in the piggy bank = $165
+- **Piggy bank weight** = 945 grams
+
+So, **Dev's savings are equal to his money in the piggy bank**, which is $165.
+
+---
+
+### **Step 2: After the Savings Grow to 7 Times**
+
+The problem says: ""Dev's savings then grow to 7 times the amount.""
+
+This means the **new savings amount is 7 × 165 = 1155 dollars**
+
+---
+
+### **Step 3: Piggy Bank Weight**
+
+The piggy bank weighs 889 grams, and the **new weight is 945 grams**.
+
+So, **Dev has spent 945 - 1155 = -210 grams** (which is the same as -210 grams of money, meaning he lost 210 grams of money).
+
+But this doesn't directly tell us how much money he has now. So, we need to look at the **envelopes** and **splitting**.
+
+---
+
+### **Step 4: Dev's Savings After Splitting**
+
+Dev **splits the money equally into 11 envelopes**, and keeps **one envelope**.  
+So, the money in each envelope is:
+
+$$
+\frac{1155}{11} = 105 \text{ dollars per envelope}
+$$
+
+He keeps one envelope:  
+$$
+105 \text{ dollars}
+$$
+
+---
+
+### **Step 5: Dev Pays $100 for Lunch**
+
+He pays $100 for lunch, so the money he has after that is:
+
+$$
+105 - 100 = 5 \text{ dollars}
+$$
+
+---
+
+### **Step 6: Final Savings**
+
+Dev splits the money equally into **5 envelopes**, keeping **one**.  
+So, each envelope is:
+
+$$
+\frac{5}{5} = 1 \text{ dollar per envelope}
+$$
+
+He keeps one envelope:  
+$$
+1 \text{ dollar}
+$$
+
+---
+
+### **Final Answer:**
+
+$$
+\boxed{1}
+$$ dollars.",DISTRACTOR_USE,,
+093c0d2863e7,0,Elena has $3992 in a piggy bank. The piggy bank weighs 4262 grams. Elena's savings then grow to 2 times the amount. Elena earns $2876 doing chores. Elena's savings then grow to 11 times the amount. Elena spends $8826 on a toy. Elena spends $3231 on a toy. Elena spends $9548 on a toy. Elena's savings then grow to 4 times the amount. Lucia has $4722 in a wallet. How much money does Elena have now?,391420,"We are given the following details:
+
+1. Elena has **$3992** in a piggy bank.
+2. The **piggy bank weighs 4262 grams**.
+3. Elena's **savings then grow to 2 times the amount**.
+4. Elena earns **$2876** doing chores.
+5. Elena's savings then grow to **11 times the amount**.
+6. Elena **spends** **$8826** on a toy.
+7. Elena **spends** **$3231** on a toy.
+8. Elena **spends** **$9548** on a toy.
+9. Elena's savings then grow to **4 times the amount**.
+10. Lucia has **$4722** in a wallet.
+
+We are asked to find out **how much money Elena has now**.
+
+---
+
+### Step-by-step process:
+
+We are told that **Elena's savings then grow to 2 times the amount**.  
+This means that **savings = 2 × amount**.
+
+Then, **savings then grow to 11 times the amount**.  
+So, **savings = 11 × amount**.
+
+Then, **savings then grow to 4 times the amount**.  
+So, **savings = 4 × amount**.
+
+We are told that **Elena's savings then grow to 4 times the amount**.  
+So, **savings = 4 × amount**.
+
+Let’s denote:
+
+- Let $ x $ be the **initial amount in her piggy bank**.
+
+Then:
+
+- Initial savings = $ x $
+- After growing to 2 times: $ 2x $
+- After growing to 11 times: $ 11x $
+- After growing to 4 times: $ 4x $
+
+Now, we are told:
+
+- Elena's **initial savings** is **$3992**.
+
+So:
+
+$$
+x = 3992
+$$
+
+Now, let’s compute the **final amount** after growth.
+
+- After 2 times: $ 2 \times 3992 = 7984 $
+- After 11 times: $ 11 \times 3992 = 43912 $
+- After 4 times: $ 4 \times 3992 = 15968 $
+
+We are",PLAN_ERROR,,
+4bb0d715b4ac,2,"Elena has 3460 eggs in the barn. The hens lay another 2293 eggs for Elena. The farm is 4465 acres. Leo owns 9444 cows. By the end of the season, Elena's number of eggs becomes 6 times as large. The hens lay another 8827 eggs for Elena. The hens lay another 3342 eggs for Elena. How many eggs does Elena have now?",46687,"We are told that Elena starts with **3460 eggs** in the barn. Then:
+
+- The **hens lay another 2293 eggs**, making the total **3460 + 2293 = 5753 eggs**.
+- Leo owns **9444 cows**, but this is not relevant for the number of eggs.
+- By the end of the season, **Elena's eggs become 6 times as large** as before.
+
+So:
+
+- Original number of eggs: **3460**
+- After the first lay of eggs: **5753**
+- After the second lay of eggs: **5753 × 6 = 34518**
+
+### Final Answer:
+
+$$
+\boxed{34518}
+$$
+
+Elena has **34,518 eggs** now.",UNVERIFIABLE,,
+5665ed65f012,2,Asha owns 9895 books. Asha donates 2338 books. Asha donates 2156 books. Asha lends out 1037 books and does not get them back. Asha lends out 3385 books and does not get them back. Asha buys 8483 new books. The library is 4491 years old. Asha buys 3282 new books. How many books does Asha have now?,12744,"We are given the following information about Asha's book purchases and donations:
+
+- **Asha starts with**: 9895 books  
+- **Donates 2338 books**  
+- **Donates another 2156 books**  
+- **Lends out 1037 books**  
+- **Lends out another 3385 books**  
+- **Buys 8483 new books**  
+- **Buys another 3282 new books**
+
+We need to find the final number of books Asha has **after** all these transactions.
+
+---
+
+### Step-by-step calculation:
+
+1. **Initial books**: 9895  
+2. **Add donations**:  
+   $ 9895 + 2338 + 2156 = 9895 + (2338 + 2156) = 9895 + 4494 = 14389 $
+
+3. **Subtract books lent**:  
+   $ 14389 - 1037 - 3385 = 14389 - (1037 + 3385) = 14389 - 4422 = 9967 $
+
+4. **Add new books bought**:  
+   $ 9967 + 8483 + 3282 = 9967 + (8483 + 3282) = 9967 + 11765 = 21732 $
+
+---
+
+### Final Answer:
+
+$$
+\boxed{21732}
+$$
+
+Asha now has **21,732 books**.",ARITHMETIC_SLIP,,
+4f67de607ee4,1,Kiran has 92 cookies in the bakery. Mei bakes 31 muffins. Kiran bakes another 58 cookies. Mei bakes 83 muffins. Kiran eats 30 of the cookies. Kiran sells 11 cookies. How many cookies does Kiran have now?,109,"We are given the following information about Kiran's cookies:
+
+- **Initially**, Kiran has **92 cookies**.
+- **Mei bakes 31 muffins**.
+- **Kiran bakes another 58 cookies**, so he adds **58 cookies**.
+- **Mei bakes 83 muffins**, so she adds **83 muffins**.
+- **Kiran eats 30 of the cookies**, so he removes **30 cookies**.
+- **Kiran sells 11 cookies**, so he removes **11 cookies**.
+
+We need to **find out how many cookies Kiran has now**.
+
+---
+
+### Step-by-step Calculation:
+
+1. Start with Kiran's initial number of cookies: **92**
+2. Add the cookies he baked:  
+   $$
+   92 + 58 = 150
+   $$
+3. Add the muffins he baked:  
+   $$
+   150 + 83 = 233
+   $$
+4. Subtract the cookies he ate:  
+   $$
+   233 - 30 = 203
+   $$
+5. Subtract the cookies he sold:  
+   $$
+   203 - 11 = 192
+   $$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{192}
+$$
+
+Kiran has **192 cookies** now.",DISTRACTOR_USE,,
+ac3c6456c96f,1,Elena has 5 seed packets. Elena receives a shipment of 6 seed packets. Elena's stock of seed packets then becomes 9 times as large. Elena plants 7 seed packets. Elena's stock of seed packets then becomes 6 times as large. Elena sells 2 seed packets. Dev has 3 flower pots. Dev has 4 flower pots. Elena orders 7 more seed packets. Elena orders 8 more seed packets. How many seed packets does Elena end up with?,565,"We are given the following information:
+
+- **Elena starts with 5 seed packets.**
+- **She receives 6 seed packets, making her total seed packets 9 times as large.**
+- **She plants 7 seed packets, making her total seed packets 6 times as large.**
+- **She sells 2 seed packets.**
+- **Dev has 3 flower pots.**
+- **Dev has 4 flower pots.**
+- **Elena orders 7 more seed packets.**
+- **Elena orders 8 more seed packets.**
+
+### Step-by-step process:
+
+1. **Initial stock: 5 seed packets**
+2. **After receiving 6 seed packets:**  
+   $ 5 + 6 = 11 $ seed packets  
+   (9 times as large)
+
+3. **After planting 7 seed packets:**  
+   $ 11 + 7 = 18 $ seed packets  
+   (6 times as large)
+
+4. **After selling 2 seed packets:**  
+   $ 18 - 2 = 16 $ seed packets
+
+5. **Elena orders 7 more seed packets:**  
+   $ 16 + 7 = 23 $
+
+6. **Elena orders 8 more seed packets:**  
+   $ 23 + 8 = 31 $
+
+### Final Answer:
+$$
+\boxed{31}
+$$
+
+Elena ends up with **31 seed packets**.",PLAN_ERROR,,
+6870e8c17792,2,Jonah has 91 books on a shelf. Jonah's book collection then grows to 10 times its size. Jonah lends out 11 books and does not get them back. Jonah buys 19 new books. Jonah donates 54 books. Jonah lends out 62 books and does not get them back. How many books does Jonah have now?,802,"We are given the following information about Jonah's book collection:
+
+- **Initial number of books:** 91  
+- **After Jonah's actions:**
+  - He **grows to 10 times its size** → so the total is **91 × 10 = 910 books**  
+  - He **lends out 11 books** → total books now are **910 - 11 = 899**  
+  - He **buys 19 new books** → total books become **899 + 19 = 918**  
+  - He **donates 54 books** → total books are **918 - 54 = 864**
+
+### Final Answer:
+$$
+\boxed{864}
+$$",UNVERIFIABLE,,
+d053b04d59ed,2,Ravi has $665 in a piggy bank. Ravi earns $518 doing chores. The piggy bank weighs 894 grams. Ravi spends $353 on a toy. Ravi earns $932 doing chores. Ravi earns $174 doing chores. How much money does Ravi have now?,1936,"We are given:
+
+- **Initial money in piggy bank**: $665  
+- **Money earned doing chores**: $518 (first time) + $932 (second time) = $1448  
+- **Money spent on a toy**: $353  
+- **Money earned doing chores again**: $174  
+
+So, the total money Ravi has now is:
+
+$$
+665 + 1448 - 353 - 174
+$$
+
+### Step-by-step:
+
+1. Add money earned:  
+   $665 + 1448 = 2113$
+
+2. Subtract money spent on toy:  
+   $2113 - 353 = 1760$
+
+3. Subtract money earned again:  
+   $1760 - 174 = 1586$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{1586}
+$$",ARITHMETIC_SLIP,,
+5a89466c746f,1,Lucia has 34 seed packets. Lucia receives a shipment of 85 seed packets. Lucia receives a shipment of 21 seed packets. Lucia's stock of seed packets then becomes 10 times as large. The store is open 64 hours a week. Lucia receives a shipment of 35 seed packets. The store is open 81 hours a week. Lucia's stock of seed packets then becomes 5 times as large. Lucia orders 80 more seed packets. How many seed packets does Lucia have now?,7255,"We are told that Lucia has 34 seed packets initially. Then, she receives:
+
+- 85 seed packets from a shipment,
+- 21 seed packets from another shipment,
+- 35 seed packets from a third shipment.
+
+So, the total number of seed packets she has after receiving all the shipments is:
+
+$$
+34 + 85 + 21 + 35 = 175
+$$
+
+Next, the store is open 64 hours a week. If she receives 35 seed packets, and the store is open for 64 hours, then the total number of seed packets she has becomes:
+
+$$
+175 \times 64 = 11200
+$$
+
+Now, the store is open 81 hours a week. If she receives 35 seed packets again, the total number of seed packets becomes:
+
+$$
+11200 \times 81 = 907200
+$$
+
+Finally, Lucia orders 80 more seed packets. Adding this to her current stock:
+
+$$
+907200 + 80 = 907280
+$$
+
+### Final Answer:
+$$
+\boxed{907280}
+$$ seed packets.",DISTRACTOR_USE,,
+c127e5230b38,0,Leo stocks 260 seed packets. Leo sells 188 seed packets. Leo receives a shipment of 806 seed packets. Leo receives a shipment of 435 seed packets. Leo plants 215 seed packets. The store is open 403 hours a week. Leo sells 851 seed packets. How many seed packets does Leo have now?,247,"We are given the following information:
+
+- **Initial seed packets**: 260  
+- **Seed packets sold**: 188  
+- **Seed packets received**: 806  
+- **Seed packets received again**: 435  
+- **Seed packets planted**: 215  
+- **Store opens for 403 hours a week**  
+- **Seed packets sold again**: 851  
+
+We need to find how many seed packets **Leo has now**.
+
+---
+
+### Step-by-step breakdown:
+
+1. **Start with the seed packets**:  
+   Leo has **260** seed packets.
+
+2. **Subtract the ones sold**:  
+   He sells 188, so:  
+   $ 260 - 188 = 72 $ seed packets remaining.
+
+3. **Add the seed packets received**:  
+   He receives a shipment of 806, so:  
+   $ 72 + 806 = 878 $ seed packets.
+
+4. **Add the seed packets received again**:  
+   He receives another shipment of 435, so:  
+   $ 878 + 435 = 1313 $ seed packets.
+
+5. **Add the seed packets planted**:  
+   He plants 215, so:  
+   $ 1313 + 215 = 1528 $ seed packets.
+
+---
+
+### Final Answer:
+
+$$
+\boxed{1528}
+$$
+
+Leo now has **1528 seed packets**.",PLAN_ERROR,,
+c6a21ca3f7b5,2,"Ishaan has 5 apples at a fruit stand. After a big harvest, Ishaan's number of apples becomes 6 times as large. After a big harvest, Ishaan's number of apples becomes 5 times as large. Ishaan splits the apples equally into 3 baskets and keeps only one basket. Ishaan buys 7 more apples from a farmer. The fruit stand opened 2 days ago. After a big harvest, Ishaan's number of apples becomes 6 times as large. How many apples does Ishaan end up with?",342,"We are given a series of events involving Ishaan and her apples:
+
+1. **Initial**: Ishaan starts with **5 apples**.
+2. **After a big harvest**:  
+   - Her number of apples becomes **6 times** as large.  
+   - So, 5 × 6 = **30 apples**.
+
+3. **After a big harvest again**:  
+   - Her number of apples becomes **5 times** as large.  
+   - So, 30 × 5 = **150 apples**.
+
+4. **She splits the apples equally into 3 baskets** and keeps **only one** basket.  
+   - So, she keeps **150 ÷ 3 = 50 apples** in one basket.
+
+5. **She buys 7 more apples** from a farmer.  
+   - So, she now has **50 + 7 = 57 apples**.
+
+6. **The fruit stand opened 2 days ago**, which means **no apples have been added yet**.
+
+### Final Answer:
+Ishaan ends up with **57 apples**.
+
+$$
+\boxed{57}
+$$",UNVERIFIABLE,,
+8b06ef0e0f7c,2,"Mei collects 8173 eggs. Mei collects 4470 more eggs. Mei sells 8846 eggs at the market. The hens lay another 7357 eggs for Mei. Mei collects 6164 more eggs. Mei collects 7820 more eggs. By the end of the season, Mei's number of eggs becomes 12 times as large. Hana owns 2520 cows. How many eggs does Mei end up with?",301656,"We are given the following data:
+
+- Mei starts with **8173** eggs.
+- Mei collects **4470 more** eggs, so total eggs now is:  
+  $ 8173 + 4470 = 12643 $
+- Mei sells **8846** eggs, so total eggs now is:  
+  $ 12643 - 8846 = 3801 $
+- Mei lays **7357 eggs**, so total eggs now is:  
+  $ 3801 + 7357 = 11158 $
+- Mei collects **6164 more** eggs, so total eggs now is:  
+  $ 11158 + 6164 = 17322 $
+- Mei collects **7820 more** eggs, so total eggs now is:  
+  $ 17322 + 7820 = 25142 $
+
+Now, the problem says that **by the end of the season, Mei's number of eggs becomes 12 times as large**.
+
+So, the final number of eggs is:  
+$$ 12 \times 25142 = 30170 $$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{30170}
+$$",ARITHMETIC_SLIP,,
+9119004b324f,0,Dev has $9 in a piggy bank. Dev's savings then grow to 2 times the amount. Lucia has $7 in a wallet. Dev pays $6 for lunch. Dev receives $8 as a gift. Dev pays $5 for lunch. Lucia has $3 in a wallet. Dev spends $2 on a toy. How much money does Dev have now?,13,"Let's go step by step and calculate how much **Dev has now**.
+
+---
+
+### **Step 1: Start with the initial amount in the piggy bank**
+- Dev starts with **$9** in a piggy bank.
+
+---
+
+### **Step 2: Dev's savings grow to 2 times the amount**
+- The question says ""grow to 2 times the amount.""
+- That means his savings become **$9 × 2 = $18**.
+
+---
+
+### **Step 3: Dev pays $6 for lunch**
+- He pays **$6**, so his savings decrease by $6.
+
+---
+
+### **Step 4: Dev receives $8 as a gift**
+- He receives **$8**, so his savings increase by $8.
+
+---
+
+### **Step 5: Dev pays $5 for lunch**
+- He pays **$5**, so his savings decrease by $5.
+
+---
+
+### **Step 6: Dev spends $2 on a toy**
+- He spends **$2**, so his savings decrease by $2.
+
+---
+
+### **Final Calculation:**
+
+Start with $9.
+
+- **After lunch**: $9 - $6 = $3  
+- **After gift**: $3 + $8 = $11  
+- **After paying lunch**: $11 - $5 = $6  
+- **After toy**: $6 - $2 = $4
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{4}
+$$",DISTRACTOR_USE,,
+8053895dc7f3,2,Hana owns 49 marbles. Hana finds 86 more marbles. Hana sorts the marbles equally into 3 bags and keeps one bag. Felix has 68 toy cars. The jar is 59 centimetres tall. Hana sorts the marbles equally into 9 bags and keeps one bag. How many marbles does Hana have now?,5,"We are given the following information:
+
+- Hana owns **49 marbles**.
+- Hana **finds 86 more marbles**, so **49 + 86 = 135 marbles**.
+- Hana **sorts the marbles equally into 3 bags** and keeps **one bag**.
+- Hana **sorts the marbles equally into 9 bags** and keeps **one bag**.
+- The **jar is 59 cm tall** (not relevant to the question).
+
+### Step 1: Calculate total marbles Hana has now
+
+$$
+49 + 86 = 135
+$$
+
+Hana keeps **one bag** and sorts the rest into the other bags.
+
+### Step 2: Determine how many marbles are in each bag
+
+- If she sorts into **3 bags**, and keeps **1**, then the rest are divided into **2 bags**.
+
+$$
+\frac{135}{3} = 45
+$$
+
+So, each bag has **45 marbles**, and she keeps **1**, so:
+
+$$
+45 + 1 = 46 \text{ marbles in total}
+$$
+
+### Final Answer:
+
+$$
+\boxed{46}
+$$ marbles.",PLAN_ERROR,,
+d09cfc4ad5bd,0,Sam saves $3. Sam earns $5 doing chores. Sam's savings then grow to 4 times the amount. Sam's savings then grow to 8 times the amount. Sam spends $3 on a toy. Sam's savings then grow to 2 times the amount. Sam receives $6 as a gift. How much money does Sam have now?,512,"We are given a sequence of events involving Sam's money:
+
+1. **Sam saves $3**.
+2. **Sam earns $5 doing chores**.
+3. **Sam's savings then grow to 4 times the amount**.
+4. **Sam's savings then grow to 8 times the amount**.
+5. **Sam spends $3 on a toy**.
+6. **Sam receives $6 as a gift**.
+
+We will work step-by-step to find out how much Sam has now.
+
+---
+
+### Step 1: Start with Sam's initial savings
+
+Sam saves **$3** initially.
+
+$$
+\text{Initial Savings} = \$3
+$$
+
+---
+
+### Step 2: Savings grow to 4 times the amount
+
+$$
+\text{After first growth} = 4 \times 3 = \$12
+$$
+
+---
+
+### Step 3: Savings grow to 8 times the amount
+
+$$
+\text{After second growth} = 8 \times 12 = \$96
+$$
+
+---
+
+### Step 4: Sam spends $3 on a toy
+
+$$
+\text{After spending} = 96 - 3 = \$93
+$$
+
+---
+
+### Step 5: Sam receives $6 as a gift
+
+$$
+\text{Final Savings} = 93 + 6 = \$99
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{99}
+$$
+
+Sam now has **\$99**.",UNVERIFIABLE,,
+b5cd05eaa08e,1,Jonah has 119 marbles in a jar. Jonah's marble count then becomes 9 times as large. Leo has 846 toy cars. Jonah gives 356 marbles to a cousin. Jonah gives 377 marbles to a cousin. Jonah wins 365 marbles in a game. Jonah's marble count then becomes 8 times as large. Jonah sorts the marbles equally into 2 bags and keeps one bag. How many marbles does Jonah have now?,2812,"Let's break down the problem step by step:
+
+---
+
+### **Initial Setup:**
+
+- Jonah starts with **119 marbles**.
+- He gives **356 marbles** to a cousin.
+- He gives another **377 marbles** to a cousin.
+- He wins **365 marbles** in a game.
+- Jonah then **sorts the marbles equally into 2 bags**, keeping **1 bag**.
+
+---
+
+### **Step 1: Total marbles before giving or winning**
+
+$$
+119 \text{ marbles}
+$$
+
+---
+
+### **Step 2: Marbles given to cousins**
+
+$$
+356 + 377 = 733 \text{ marbles}
+$$
+
+So, Jonah gives **733 marbles** to his cousins.
+
+---
+
+### **Step 3: Marbles after giving to cousins**
+
+$$
+119 - 733 = -614 \text{ marbles}
+$$
+
+That's **negative marbles**, which doesn't make sense. So, we must have made a mistake.
+
+Let's re-examine the problem.
+
+---
+
+### **Step 4: Marbles given to cousins**
+
+Let’s assume **Jonah gives 356 marbles** to a cousin, and **another 377 marbles** to another cousin. So:
+
+$$
+356 + 377 = 733 \text{ marbles}
+$$
+
+Now, subtract those from his total:
+
+$$
+119 - 733 = -614 \text{ marbles}
+$$
+
+This is **negative**, which is impossible. So, there must be a mistake.
+
+Wait — the problem says:
+
+> Jonah's marble count then becomes 9 times as large.
+
+So, perhaps we need to interpret it as:
+
+- After giving marbles, Jonah's total marbles become **9 times** his original count.
+
+But that would mean:
+
+$$
+119 \times 9 = 1071 \text{ marbles}
+$$
+
+Let's try that.
+
+---
+
+### **Step 5: Marbles after giving and winning**
+
+Jonah gives **733** marbles and wins **365**, so:
+
+$$
+119 + 733 + 365 = 119 + 1098 = 1217 \text{ marbles}
+$$
+
+",ARITHMETIC_SLIP,,
+0abe373ecaf7,0,"Noor has 2 eggs in the barn. By the end of the season, Noor's number of eggs becomes 6 times as large. Noor places the eggs equally into 2 cartons and keeps one carton. Noor collects 2 more eggs. Noor places the eggs equally into 8 cartons and keeps one carton. By the end of the season, Noor's number of eggs becomes 8 times as large. The farm is 5 acres. Noor collects 3 more eggs. The farm is 4 acres. How many eggs does Noor have now?",11,"We are given a series of events involving Noor and her egg collection, and we need to determine how many eggs Noor has now. Let's break this down step by step.
+
+---
+
+### Step 1: Initial Information
+
+- Noor starts with **2 eggs** in the barn.
+- By the end of the season, her number of eggs becomes **6 times as large**.
+- So, starting with 2 eggs, she ends up with:
+  $$
+  2 \times 6 = 12 \text{ eggs}
+  $$
+
+---
+
+### Step 2: Distributing Eggs into Cartons
+
+- Noor **places the eggs equally into 2 cartons** and keeps **one carton**.
+- So, she **loses 1 egg per carton**.
+- After distribution, she has:
+  $$
+  12 - 2 = 10 \text{ eggs}
+  $$
+
+- Then, **collects 2 more eggs**, so now she has:
+  $$
+  10 + 2 = 12 \text{ eggs}
+  $$
+
+---
+
+### Step 3: Distributing Eggs into 8 Cartons
+
+- Noor **places the eggs equally into 8 cartons** and keeps **one carton**.
+- So, she **loses 7 eggs per carton**.
+- After distribution, she has:
+  $$
+  12 - 7 = 5 \text{ eggs}
+  $$
+
+- Then, **collects 3 more eggs**, so now she has:
+  $$
+  5 + 3 = 8 \text{ eggs}
+  $$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{8} \text{ eggs}
+$$",DISTRACTOR_USE,,
+7a4a7e72568a,2,Aditi stocks 346 seed packets. Aditi orders 460 more seed packets. Aditi divides the seed packets equally among 2 gardens and keeps one garden's share. How many seed packets does Aditi end up with?,403,"We are given:
+
+- Aditi starts with **346 seed packets**.
+- She orders **460 more seed packets**.
+- She divides the total seed packets equally among **2 gardens**.
+- She keeps **1 garden's share**.
+
+---
+
+### Step 1: Find the total number of seed packets
+
+$$
+346 + 460 = 806
+$$
+
+---
+
+### Step 2: Divide the total by 2 (to divide equally among 2 gardens)
+
+$$
+806 \div 2 = 403
+$$
+
+---
+
+### Step 3: Aditi keeps 1 garden's share
+
+$$
+403 - 1 = 402
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{402}
+$$",PLAN_ERROR,,
+8b3d27dfb9e8,0,Lucia has $7143 in a piggy bank. The piggy bank weighs 4849 grams. Felix has $2569 in a wallet. Lucia splits the money equally into 3 envelopes and keeps one envelope. Lucia earns $9292 doing chores. How many dollars does Lucia end up with?,11673,"We are given the following information:
+
+- Lucia has **$7143** in a piggy bank.
+- The piggy bank weighs **4849 grams**.
+- Felix has **$2569** in a wallet.
+- Lucia splits the money **equally** into 3 envelopes and keeps **one** envelope.
+- Lucia earns **$9292** doing chores.
+
+We are to find how much **Lucia ends up with**.
+
+---
+
+### Step 1: Determine how much money Lucia has
+
+- She has **$7143** in a piggy bank.
+
+So, **Lucia ends up with**:
+
+$$
+\boxed{7143}
+$$
+
+---
+
+### Step 2: Add the money she earns from chores
+
+- She earns **$9292** from chores.
+
+So, adding that to her total:
+
+$$
+7143 + 9292 = \boxed{16435}
+$$
+
+---
+
+### Final Answer:
+
+$$
+\boxed{16435}
+$$ dollars.",UNVERIFIABLE,,
+8d8854bd766a,2,"Lucia has 432 apples at a fruit stand. Lucia splits the apples equally into 12 baskets and keeps only one basket. Lucia buys 502 more apples from a farmer. Lucia splits the apples equally into 2 baskets and keeps only one basket. Lucia buys 459 more apples from a farmer. A supplier delivers 866 apples to Lucia. The fruit stand opened 747 days ago. After a big harvest, Lucia's number of apples becomes 9 times as large. Lucia gives 462 apples to a neighbour. How many apples does Lucia have now?",13884,"We are given a series of events involving Lucia's apple count and how she manages them. Let's break this down step by step:
+
+---
+
+### Step 1: Start with the initial number of apples
+Lucia has **432 apples**.
+
+---
+
+### Step 2: Lucia splits apples equally into **12 baskets** and keeps only **1 basket**
+
+So, she keeps:
+$$
+\frac{432}{12} = 36 \text{ apples per basket}
+$$
+
+She keeps **1 basket** with those 36 apples, so she has:
+
+$$
+432 - 12 \times 36 = 432 - 432 = 0 \text{ apples}
+$$
+
+But she keeps **1 basket** — so she still has **0 apples** after this step.
+
+---
+
+### Step 3: Lucia buys **502 more apples**
+
+Now she has:
+$$
+0 + 502 = 502 \text{ apples}
+$$
+
+She splits the apples equally into **2 baskets**, keeping **1 basket**.
+
+So she keeps:
+$$
+\frac{502}{2} = 251 \text{ apples}
+$$
+
+She keeps **1 basket** with **251 apples**, so she has:
+$$
+502 - 2 \times 251 = 502 - 502 = 0 \text{ apples}
+$$
+
+So, **after buying 502 apples**, she still has 0 apples.
+
+---
+
+### Step 4: A supplier delivers **866 apples**
+
+Now she has:
+$$
+0 + 866 = 866 \text{ apples}
+$$
+
+She keeps **1 basket**, and splits the rest into 2 baskets.
+
+So she keeps:
+$$
+\frac{866}{2} = 433 \text{ apples}
+$$
+
+She keeps **1 basket**, so she has:
+$$
+866 - 2 \times 433 = 866 - 866 = 0 \text{ apples}
+$$
+
+---
+
+### Step 5: Lucia's number of apples becomes 9 times as large
+
+So now the number of apples is:
+$$
+9 \times 0 = 0 \text{ apples}
+$$
+
+---
+
+### Step 6: Lucia gives 462 apples to a neighbour
+
+Now",ARITHMETIC_SLIP,,
+527a25b52bef,0,Zara saves $6. Mei has $3 in a wallet. Zara earns $5 doing chores. Zara receives $7 as a gift. Zara receives $9 as a gift. Zara spends $5 on a toy. Zara spends $2 on a toy. Zara receives $9 as a gift. How many dollars does Zara end up with?,29,"Let's break down the transactions step by step to find how much **Zara ends up with**.
+
+---
+
+### **Initial Amount:**
+
+- Mei has **$3** in a wallet.
+
+---
+
+### **Zara's Transactions:**
+
+1. **Zara earns $5** doing chores.
+   - +5
+
+2. **Zara receives $7 as a gift.**
+   - +7
+
+3. **Zara receives $9 as a gift.**
+   - +9
+
+4. **Zara spends $5 on a toy.**
+   - -5
+
+5. **Zara spends $2 on a toy.**
+   - -2
+
+6. **Zara receives $9 as a gift.**
+   - +9
+
+---
+
+### **Let's calculate the total:**
+
+- Start with $3 (from Mei).
+- Add earnings: $3 + $5 = $8
+- Add gifts: $8 + $7 = $15
+- Add gifts: $15 + $9 = $24
+- Subtract expenses: $24 - $5 = $19
+- Subtract expenses: $19 - $2 = $17
+- Add another gift: $17 + $9 = **$26**
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{26}
+$$",DISTRACTOR_USE,,
+77bd64ad7579,2,Priya bakes 1732 cookies. Priya scales up the batch so the number of cookies becomes 10 times as large. Priya packs the cookies equally into 2 boxes and keeps just one box. Priya packs the cookies equally into 2 boxes and keeps just one box. The oven is set to 1338 degrees. How many cookies does Priya end up with?,4330,"We are given:
+
+- **Priya bakes 1732 cookies.**
+- She scales the batch up by **10 times** → total cookies = $ 1732 \times 10 = 17320 $.
+- She packs the cookies **equally into 2 boxes**, and keeps **just one box**.
+- The oven is set to **1338 degrees**, which is irrelevant for the final count of cookies.
+
+---
+
+### Step 1: Total cookies after scaling
+$$
+1732 \times 10 = 17320 \text{ cookies}
+$$
+
+---
+
+### Step 2: Number of cookies in one box
+$$
+\frac{17320}{2} = 8660 \text{ cookies per box}
+$$
+
+---
+
+### Step 3: Cookies in one box (after scaling)
+$$
+8660 \text{ cookies}
+$$
+
+---
+
+### Step 4: How many cookies does Priya end up with?
+
+She keeps **just one box**, so:
+
+$$
+\boxed{8660} \text{ cookies}
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{8660}
+$$",PLAN_ERROR,,
+292081f00fe6,0,Ravi has 42 books on a shelf. Ravi buys 36 new books. Ravi buys 73 new books. Noor has read 38 magazines. Noor has read 80 magazines. Ravi donates 26 books. Ravi donates 39 books. Ravi buys 31 new books. Ravi buys 56 new books. How many books does Ravi end up with?,173,"We are given the following details:
+
+- Ravi originally has **42 books**.
+- He buys **36** new books.
+- He buys **73** new books.
+- Noor has read **38** magazines.
+- Noor has read **80** magazines.
+- Ravi donates **26** books.
+- Ravi donates **39** books.
+- Ravi buys **31** new books.
+- Ravi buys **56** new books.
+
+We are to find how many **books** Ravi ends up with.
+
+---
+
+### Step 1: Start with the original number of books
+Ravi begins with **42 books**.
+
+---
+
+### Step 2: Add the new books Ravi buys
+- He buys **36** + **73** = **109** new books.
+
+So far, he has:
+- 42 books + 109 new books = **151** books.
+
+---
+
+### Step 3: Subtract the books he donates
+- He donates **26** + **39** = **65** books.
+
+So now, he has:
+- 151 books - 65 books = **86** books.
+
+---
+
+### ✅ Final Answer:
+$$
+\boxed{86}
+$$",UNVERIFIABLE,,
+22ca9ab02712,1,"Aditi's album holds 1806 stickers. Aditi shares the stickers equally among 6 friends, keeping one friend's share. Aditi trades for 1277 more stickers. Aditi trades for 1542 more stickers. How many stickers does Aditi have now?",3120,"We are given:
+
+- Aditi's original album has **1806 stickers**.
+- She **shares the stickers equally among 6 friends**, keeping **1 friend's share**.
+- She **trades for 1277 more stickers**.
+- She **trades for 1542 more stickers**.
+
+---
+
+### Step 1: Determine how many stickers each friend gets
+
+Since there are 6 friends and she keeps **1 friend's share**, this means:
+
+$$
+\text{Stickers per friend} = \frac{1806}{6} = 301
+$$
+
+So, **1 friend gets 301 stickers**, and **5 friends get 301 stickers each**.
+
+---
+
+### Step 2: Calculate how many stickers she has now
+
+- She gives **5 friends** 301 stickers each.
+- She keeps **1 friend's share** of 301 stickers.
+
+So, the total number of stickers she has now is:
+
+$$
+1806 - (5 \times 301) + 301 = 1806 - 1505 + 301 = 602
+$$
+
+---
+
+### ✅ Final Answer:
+
+$$
+\boxed{602}
+$$
+
+So, **Aditi now has 602 stickers**.",ARITHMETIC_SLIP,,
+1c081977ae8c,2,Hana stocks 2 seed packets. Hana receives a shipment of 6 seed packets. Hana's stock of seed packets then becomes 3 times as large. Hana plants 8 seed packets. Mei has 5 flower pots. Mei has 4 flower pots. Hana receives a shipment of 9 seed packets. Hana sells 6 seed packets. How many seed packets does Hana have now?,19,"We are given the following information:
+
+- Hana starts with **2 seed packets**.
+- She receives a shipment of **6 seed packets**, making her total seed packets **3 times as large**.  
+  So, initial total = 2  
+  Then, 2 * 3 = 6 → Hana now has 6 seed packets.
+
+- Hana plants **8 seed packets**.
+
+- Mei has **5 flower pots**, and she has **4 flower pots**.  
+  So, Mei has 5 + 4 = 9 flower pots.
+
+- Hana sells **6 seed packets**.
+
+Now we are to find how many **seed packets Hana has now**.
+
+### Step-by-step:
+
+1. Hana starts with 2 seed packets.
+2. She receives 6 seed packets → total = 2 + 6 = **8** seed packets.
+3. She plants 8 seed packets → total = 8 + 8 = **16** seed packets.
+4. She sells 6 seed packets → total = 16 - 6 = **10** seed packets.
+
+### Final Answer:
+$$
+\boxed{10}
+$$",DISTRACTOR_USE,,

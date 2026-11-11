@@ -623,3 +623,39 @@ Held-out probes above each threshold (before → after): multi_targeted `steps` 
 3. Multi-targeting raised `n_div` (0.76 → 0.81 vs single targeted) but untargeted data still does best (0.89).
 4. Answer-level GSM8K check (§17 method): both multi arms on both models write 4-line answers (≈210 chars vs 728/808);
    lost answers are 56-57% PLAN_ERROR and 23-28% ARITHMETIC_SLIP — the same style cost.
+
+## 19. Check of the error labels and an answer-reading fault — CPU analysis of stored GPU outputs, 2026-11-11
+**What:** the 150-answer sheets `annotate_errors.csv` of both single-weakness diagnosis runs (300 wrong answers of the
+untrained models, stratified by classifier label) were relabelled blind by an LLM annotator (Claude Opus 5.5), not by
+humans. The annotator used the same five labels and the same order, and checked every equation with Python. Result
+file: `paper/annotation/error_label_check.csv` (classifier label, LLM label, a short note, `boxed_equals_gold`).
+
+| Set | n | Agreement | Cohen's κ |
+|---|---|---|---|
+| All | 300 | 0.46 | 0.33 |
+| 0.6B | 150 | 0.51 | 0.38 |
+| 1.7B | 150 | 0.41 | 0.27 |
+| Truly wrong only | 284 | 0.44 | 0.30 |
+| … with UNVERIFIABLE counted as PLAN_ERROR | 284 | — | 0.42 |
+
+The κ is below the 0.6 bar from §3. The causes, read from the disagreements:
+1. `parse_equations` misses many calculations (e.g. with `×`, or inside `**bold**`), so the answer becomes
+   UNVERIFIABLE; the LLM called 49 of the 71 UNVERIFIABLE answers PLAN_ERROR.
+2. Chained equalities such as `17265 - 6469 - 3447 = 17265 - 9916 = 7349` are parsed as false, which gives false
+   ARITHMETIC_SLIPs; the LLM called 23 of the 74 slips PLAN_ERROR.
+3. For a cut-off answer the classifier still reads the last number; the LLM calls it FORMAT_ERROR.
+
+On the 284 truly wrong answers the LLM gives PLAN_ERROR to 149 (the classifier to 73) and ARITHMETIC_SLIP to 36 (the
+classifier to 74). So "plan errors dominate the lost GSM8K answers" (§17) holds even more strongly, and the slip shares
+there are upper bounds.
+
+**Answer-reading fault:** 16 of the 300 answers (15 from 1.7B) are in fact correct. `extract_answer` gives `####` first
+priority, so a Markdown heading such as `#### 7. **Spends $2437**` is read as the answer 7, ahead of `oxed{1325}`.
+Rescoring every stored answer with `oxed{}` first (scratch script, read-only) gives these changes:
+- 1.7B diagnosis: 25 of 2,592 answers change (0.6389 → 0.6485); 0.6B diagnosis: 1 of 2,592.
+- 1.7B base GSM8K: 0.815 → 0.818; 1.7B base training-family probes: 0.625 → 0.630.
+- Fine-tuned models: none of their answers change in any of the 4 paper runs, because they never write `####` headings.
+
+The paper keeps the logged numbers and reports this (paper §5.5). The fix (put `oxed` before `####` for `qwen_boxed`,
+plus parse `×`, bold text and chained equalities) is a code change to a scorer, so it waits for the team's OK.
+

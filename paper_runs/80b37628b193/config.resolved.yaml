@@ -1,0 +1,78 @@
+name: pl_80b37628b193
+output_dir: <repo>\runs\pipelines\80b37628b193
+model: Qwen/Qwen3-0.6B
+candidates:
+- Qwen/Qwen3-0.6B
+- Qwen/Qwen3-1.7B
+- meta-llama/Llama-3.2-1B-Instruct
+- google/gemma-3-1b-it
+- Qwen/Qwen2.5-1.5B-Instruct
+db: <repo>\runs\dreammachine.db
+generation:
+  max_new_tokens: 512
+  batch_size: 32
+  n_samples: 1
+  temperature: 0.0
+screen:
+  gsm8k_limit: 500
+  probe_per_cell: 1
+  min_accuracy: 0.25
+  max_format_share: 0.2
+diagnose:
+  probe_per_cell: 4
+  n_samples: 3
+  temperature: 0.7
+  bootstrap: 500
+  natural_pool: 5000
+  annotate: 150
+  seed: 0
+data:
+  pool_size: 40000
+  natural_size: 20000
+  token_budget: 600000
+  ratios:
+  - 3
+  - 9
+  main_ratio: 3
+  p_band:
+  - 0.3
+  - 0.7
+train:
+  load_in_4bit: true
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  learning_rate: 0.0002
+  num_epochs: 2
+  per_device_batch_size: 4
+  grad_accum: 4
+  max_seq_len: 512
+  gradient_checkpointing: true
+  save_steps: 200
+eval:
+  gsm8k_limit: 300
+  gsm_symbolic:
+  - main
+  gsm_symbolic_limit: 200
+  probe_per_cell: 2
+  probe_limit: 135
+  baseline_limits:
+    gsm8k: 660
+    gsm_symbolic:main: 300
+    probes_train_families: 216
+    probes_heldout_families: 216
+  load_in_4bit: false
+seeds:
+- 0
+- 1
+- 2
+real_data: gsm8k
+eval_data: {}
+prompt_version: qwen_boxed
+preflight:
+  min_free_gb: 10
+gpu:
+  required: true
+  memory_fraction: 0.92
+job_id: 80b37628b193
+mode: paper

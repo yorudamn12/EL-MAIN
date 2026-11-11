@@ -1,0 +1,23 @@
+{
+  "run_id": "90012875f2d3",
+  "arm": "multi_targeted",
+  "ratio": 3.0,
+  "seed": 1,
+  "gsm8k": 0.43666666666666665,
+  "gsm8k:truncated_share": 0.03666666666666667,
+  "gsm_symbolic:main": 0.395,
+  "gsm_symbolic:main:truncated_share": 0.055,
+  "probes_train_families": 0.9259259259259259,
+  "probes_train_families:truncated_share": 0.0,
+  "probes_heldout_families": 0.8222222222222222,
+  "probes_heldout_families:truncated_share": 0.0,
+  "eta": {
+    "steps": 0.21706711189901898,
+    "log10_max": 0.5948294992594789,
+    "n_mul": 0.004918513947852441,
+    "n_div": 0.3789023390049315,
+    "n_carry": 0.007129286551352608,
+    "n_distractors": 0.22474605196969782,
+    "has_merge": null
+  }
+}

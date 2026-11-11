@@ -170,6 +170,10 @@ Where to look now: Qwen3-0.6B → `runs/pipelines/04f319d1cca7/` (diagnosis made
 ## 6. Next steps
 
 **Claude:**
+- 2026-11-11: paper v0.3 (authors, statements, public repo link, verified references). Small outputs of the 4 paper
+  runs are now in git under `paper_runs/` (no adapters). The 300-answer check of the error labels was done by an LLM
+  annotator (RUNNING.md §19): κ = 0.33. It also found an answer-reading fault ("#### 7." headings); see §19. Fixing
+  the parser and extractor needs the team's OK, because it changes how future runs are scored.
 - 2026-11-10: both multi-weakness paper runs done and written up (RUNNING.md §16, §18, §17 for the GSM8K
   drop); paper draft in `paper/`.
 - 2026-11-09: multi-weakness protocol built (PLAN.md §16, D17; contract 0.3.0): train on all significant

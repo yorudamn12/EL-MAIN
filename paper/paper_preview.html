@@ -28,7 +28,8 @@
   .sc { font-variant: small-caps; }
 </style></head><body>
 <h1>Targeting or Difficulty? Controlled Tests of Weakness-Targeted<br>
-Synthetic Fine-Tuning for Small Language Models</h1><div class="meta"><span class="todo">[TODO: author names, affiliations, corresponding e-mail]</span><br>Draft v0.2, 10 November 2026</div>
+Synthetic Fine-Tuning for Small Language Models</h1><div class="meta">Attel Bhavani Prasad, Atharv Dass, Ajay Bhat, Preet Hiteshkumar Patel<br>
+ <span class="todo">[TODO: affiliation(s) and corresponding author's e-mail]</span><br>Draft v0.3, 11 November 2026</div>
 <div class="abstract"><h3>Abstract</h3><p>Methods that diagnose a language model's weaknesses and then fine-tune it on data built around them usually compare
 the targeted data with random or untargeted data. Targeted data is harder for the model by construction, so such
 comparisons cannot say whether a gain comes from aiming at the right skill or simply from training on harder
@@ -152,9 +153,9 @@ is sized by the shorter side and the pool is enlarged deterministically.</p>
 <h3 class="sub">3.4&nbsp;&nbsp;Error classification</h3><p>Each wrong answer receives one label, checked in this order: <span class="sc">format_error</span> (no extractable answer),
 <span class="sc">arithmetic_slip</span> (a written equation is false), <span class="sc">unverifiable</span> (no equation to check),
 <span class="sc">distractor_use</span> (an operand equals an irrelevant number) and otherwise <span class="sc">plan_error</span>. Reference steps
-come from the graph for generated problems and from the calculator annotations for GSM8K. A human check of the labels
-(Cohen's &kappa; on 150 stratified answers) is prepared but not yet done <span class="todo">[TODO: run the annotation and report
-&kappa;]</span>. GSM-Symbolic has no step annotations, so we report only its accuracy.</p>
+come from the graph for generated problems and from the calculator annotations for GSM8K. We checked these labels
+against an independent annotator on 300 sampled answers (Section&nbsp;5.5). GSM-Symbolic has no step
+annotations, so we report only its accuracy.</p>
 <h2>4&nbsp;&nbsp;Experimental Setup</h2>
 <p><span class="para">Models and prompt.</span>  Qwen3-0.6B and Qwen3-1.7B [12], thinking mode off, with the step-by-step math
 instruction recommended on the Qwen3 model card and a boxed final answer. On a 200-problem development slice of
@@ -308,10 +309,12 @@ heading; the fine-tuned models omit that list. On problems that changed from cor
 planning errors (a quantity left out, or a relation such as &ldquo;ten times more than&rdquo; misread), followed by arithmetic
 slips in short inline sums. For 0.6B the rate of false equations rises; for 1.7B it barely changes, so its loss is
 almost entirely in planning. The multi-weakness arms show the same pattern (plan errors 56&ndash;57% and arithmetic slips
-23&ndash;28% of lost answers).</p>
+23&ndash;28% of lost answers). These shares come from the automatic classifier; the label check below suggests that it
+counts too many slips and too few plan errors, so the slip shares are best read as upper bounds.</p>
 <div class="fig"><p class="cap"><b>Table 5.</b> Answer-level comparison on the same 300 GSM8K test problems: untrained model versus the 15 fine-tuned models
 of each single-weakness run. &ldquo;Lost&rdquo; = correct before, wrong after. False-equation rates are approximate, since
-LaTeX equations of the untrained model are parsed less reliably.</p><table>
+LaTeX equations of the untrained model are parsed less reliably. Error types are automatic labels
+(Section&nbsp;5.5).</p><table>
 <thead>
 <tr><th class="l"></th><th colspan="2">Qwen3-0.6B</th><th colspan="2">Qwen3-1.7B</th></tr>
 <tr><th class="l"></th><th class="l">untrained</th><th>fine-tuned</th><th>untrained</th><th>fine-tuned</th></tr>
@@ -331,6 +334,32 @@ replaces the longer reasoning format the model learned in post-training, and wit
 that protected it from planning errors. The loss is largest on the longest real problems, where more facts must be
 tracked. Because all arms pay the same cost, comparisons between arms remain fair, but the cost outweighs any benefit
 that targeting could add with this training recipe.</p>
+<h3 class="sub">5.5&nbsp;&nbsp;How reliable are the automatic error labels?</h3><p>To test the classifier, we drew 150 wrong answers of each untrained model from its diagnosis run, stratified by
+predicted label so that rare types were included, and had them relabelled blind. The annotator was a large language
+model (Claude Opus 5.5, Anthropic) that never saw the classifier's labels. It received the question, the gold answer and
+the response, applied the same five labels in the same order of precedence, and recomputed every written equation
+exactly with Python. The 300 answers were split into six batches of 50, each labelled in a separate session. The
+annotator is not a human, and agreement with it measures consistency with a second, independent reading, not ground
+truth.</p>
+<p>The two labelings agreed on 46% of answers, Cohen's &kappa; = 0.33 (0.38 for 0.6B, 0.27 for 1.7B), well below the
+0.6 usually taken as substantial agreement. Reading the disagreements identified three causes:</p><ul><li><b>Missed equations.</b> The parser misses many calculations, for example ones written with &ldquo;&times;&rdquo; or
+  inside bold text, and then labels the answer <span class="sc">unverifiable</span>; the annotator judged 49 of the 71 answers in that class to be
+  plan errors.</li><li><b>Chained equalities.</b> A line such as &ldquo;17265 &minus; 6469 &minus; 3447 = 17265 &minus; 9916 = 7349&rdquo; is true, but it is
+  parsed as a false equation. This is one reason why the annotator judged 23 of the 74 predicted slips to be plan
+  errors.</li><li><b>Cut-off answers.</b> When a response stops before its final answer, the classifier still reads its last
+  number, whereas the annotator labels it a format error.</li></ul><p>Treating <span class="sc">unverifiable</span> as a plan error raises &kappa; to 0.42. Overall the annotator assigned
+<span class="sc">plan_error</span> to about twice as many answers as the classifier (149 versus 73 of 284) and
+<span class="sc">arithmetic_slip</span> to about half as many (36 versus 74).</p>
+<p>The check also exposed an answer-extraction fault. Sixteen of the 300 sampled answers (15 from 1.7B) were in fact
+correct: their final <span class="tt">&#92;boxed{}</span> value equals the gold answer, but the extractor gives priority to the GSM8K marker
+&ldquo;<span class="tt">####</span>&rdquo; and so read a Markdown step heading such as &ldquo;<span class="tt">#### 7.</span>&rdquo; as the answer. Rescoring
+every stored answer with <span class="tt">&#92;boxed{}</span> first changes 25 of the 2,592 diagnosis answers of the untrained 1.7B model
+(1.0%) and one of the 0.6B model, and moves the untrained 1.7B accuracy by at most 0.5 points (GSM8K 0.815 to 0.818;
+training-family probes 0.625 to 0.630). No answer of any fine-tuned model changes, because those models do not write
+such headings. We report the numbers as logged.</p>
+<p>None of the accuracy comparisons depend on the error labels. The labels affect only the error-type shares in
+Table&nbsp;5. There, the check strengthens the main reading that planning errors dominate the lost answers,
+and the slip shares should be treated as upper bounds.</p>
 <h2>6&nbsp;&nbsp;Discussion</h2>
 <p><span class="para">Explaining each observed behaviour.</span> </p><ul><li><em>Targeted equals control on real benchmarks</em>: the shared style cost dominates real-benchmark accuracy, real
   long problems are a small share of GSM8K, and gains on generated long problems do not transfer to them.</li><li><em>Single-weakness targeting loses on generated probes</em>: it narrows coverage; the control and untargeted data
@@ -350,13 +379,16 @@ such as self-generated or self-distilled targets with more attempts on hard prob
 replay [28], or reinforcement learning with the generator as an exact reward
 [4, 29, 30], are the natural next step; with them the targeting question can be
 asked again without the shared cost.</p>
-<h2>7&nbsp;&nbsp;Limitations</h2><ul><li><b>Match quality of the 1.7B single-weakness control</b> was looser (KS 0.27) than the others (&le;0.034),
-  which weakens that one comparison. <span class="todo">[TODO: decide whether to rerun it with the enlarged pool used in the
-  multi-weakness runs]</span></li><li><b>Ceiling effects.</b> Fine-tuned 1.7B models answer 87&ndash;97% of generated probes, which limits how well arms
+<h2>7&nbsp;&nbsp;Limitations</h2><ul><li><b>Match quality of the 1.7B single-weakness control</b> was looser (KS 0.27) than in the other three
+  comparisons (&le;0.034), so that single comparison is the least clean. We report it unchanged rather than rerunning
+  it; the 1.7B multi-weakness comparison, whose control is closely matched (KS &le;0.002), leads to the same
+  conclusion.</li><li><b>Ceiling effects.</b> Fine-tuned 1.7B models answer 87&ndash;97% of generated probes, which limits how well arms
   can be separated on probes and makes post-training LLTM refits unreliable for that model.</li><li><b>Statistical power.</b> With 300 GSM8K and 200 GSM-Symbolic problems per model, paired intervals are about
   &plusmn;3 points; effects of one to two points would not be detected. The long-problem analysis uses only 50 problems
-  and is descriptive.</li><li><b>Error labels</b> have not yet been validated against human annotation <span class="todo">[TODO: report &kappa;]</span>, and
-  GSM-Symbolic error types are not reported.</li><li><b>Scope.</b> One task family, one model family, one training recipe (QLoRA supervised fine-tuning on terse
+  and is descriptive.</li><li><b>Error labels</b> agree only fairly with an independent LLM annotator (&kappa; = 0.33;
+  Section&nbsp;5.5), and no human annotation was done. Error-type shares are therefore descriptive, and
+  GSM-Symbolic error types are not reported. A small extraction fault inflates the untrained 1.7B model's error count
+  by about one percentage point; it does not affect any fine-tuned model.</li><li><b>Scope.</b> One task family, one model family, one training recipe (QLoRA supervised fine-tuning on terse
   solutions) and three seeds per arm.</li><li><b>Synthetic text.</b> Generated problems read less naturally than human-written ones, and probes share the
   generator with training data, so part of the probe gains may be format learning; held-out families reduce but do not
   remove this.</li></ul>
@@ -368,9 +400,19 @@ aiming at all weaknesses repaired this but, by construction, became nearly the s
 every supervised arm lost substantial real-benchmark accuracy by imitating terse solutions. We recommend that claims
 for targeted data synthesis be tested against difficulty-matched controls, together with a check of general accuracy.</p>
 <p><span class="para">Data and code availability.</span>  Code, configurations, run records and per-answer outputs are available in the
-project repository <span class="todo">[TODO: public URL]</span>. Paper runs: <span class="tt">80b37628b193</span> and <span class="tt">409305f3e2f2</span> (single weakness),
+public project repository, <a href="https://github.com/yorudamn12/EL-MAIN">https://github.com/yorudamn12/EL-MAIN</a> (branch
+<span class="tt">claude/wonderful-hypatia-pqs6t9</span>); the outputs of the paper runs are in its <span class="tt">paper_runs/</span> folder and
+the error-label check in <span class="tt">paper/annotation/</span>. Paper runs: <span class="tt">80b37628b193</span> and <span class="tt">409305f3e2f2</span> (single weakness),
 <span class="tt">76f2c9af5ea9</span> and <span class="tt">4e6b61903c00</span> (multi-weakness).</p>
-<p><span class="para">Author contributions, funding and competing interests.</span>  <span class="todo">[TODO: as required by the target journal]</span></p>
+<p><span class="para">Author contributions.</span>  All authors contributed to the study design, the software, the experiments, the
+analysis of the results and the writing of the manuscript, and all authors read and approved the final version.</p>
+<p><span class="para">Funding.</span>  This research received no specific grant from any funding agency in the public, commercial or
+not-for-profit sectors.</p>
+<p><span class="para">Competing interests.</span>  The authors declare no competing interests.</p>
+<p><span class="para">Use of AI tools.</span>  An AI assistant (Claude, Anthropic) was used to help write software, run analyses and
+draft and edit the text, and the same model served as the independent annotator for the error-label check
+(Section&nbsp;5.5). All experimental numbers come from the logged runs, and the authors checked the
+results, the references and the text and take full responsibility for the content.</p>
 
 <h2>References</h2><div class="refs"><p>[1] V. Gupta, Z. Wang, R.-G. Dumitru, M. Rezaei, A. Sabharwal and Y. He. CRAFT: Clustering Rubrics to Diagnose Weak LLM Capabilities and Generate Targeted Fine-Tuning Data. arXiv:2607.16122, 2026.</p>
 <p>[2] H. Zhao, J. Han, J. Liang, Y. Xiao, X. Meng and J. Wei. CDS: Knowledge Component-Driven Data Synthesis Guided by Cognitive Diagnosis Theory. arXiv:2501.07674, 2025.</p>
@@ -381,7 +423,7 @@ project repository <span class="todo">[TODO: public URL]</span>. Paper runs: <sp
 <p>[7] Z. He, M. T. Ribeiro and F. Khani. Targeted Data Generation: Finding and Fixing Model Weaknesses. In <i>Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)</i>, pages 8506&ndash;8520, 2023.</p>
 <p>[8] B. Sorscher, R. Geirhos, S. Shekhar, S. Ganguli and A. S. Morcos. Beyond neural scaling laws: beating power law scaling via data pruning. In <i>Advances in Neural Information Processing Systems (NeurIPS)</i>, 2022.</p>
 <p>[9] T. Ye, Z. Xu, Y. Li and Z. Allen-Zhu. Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process. In <i>International Conference on Learning Representations (ICLR)</i>, 2025.</p>
-<p>[10] I. Mirzadeh, K. Alizadeh, H. Shahrokhi, O. Tuzel, S. Bengio and M. Farajtabar. GSM-Symbolic: Understanding the Limitations of Mathematical Reasoning in Large Language Models. arXiv:2410.05229, 2024.</p>
+<p>[10] I. Mirzadeh, K. Alizadeh, H. Shahrokhi, O. Tuzel, S. Bengio and M. Farajtabar. GSM-Symbolic: Understanding the Limitations of Mathematical Reasoning in Large Language Models. In <i>International Conference on Learning Representations (ICLR)</i>, 2025.</p>
 <p>[11] G. H. Fischer. The Linear Logistic Test Model as an Instrument in Educational Research. <i>Acta Psychologica</i>, 37(6):359&ndash;374, 1973.</p>
 <p>[12] A. Yang et al. Qwen3 Technical Report. arXiv:2505.09388, 2025.</p>
 <p>[13] B. Liu, S. Bubeck, R. Eldan, J. Kulkarni, Y. Li, A. Nguyen, R. Ward and Y. Zhang. TinyGSM: achieving &gt;80% on GSM8k with small language models. arXiv:2312.09241, 2023.</p>
@@ -391,11 +433,11 @@ project repository <span class="todo">[TODO: public URL]</span>. Paper runs: <sp
 <p>[17] P. De Boeck and M. Wilson, editors. Explanatory Item Response Models: A Generalized Linear and Nonlinear Approach. Springer, 2004.</p>
 <p>[18] P. Rodriguez, J. Barrow, A. M. Hoyle, J. P. Lalor, R. Jia and J. Boyd-Graber. Evaluation Examples are not Equally Informative: How should that change NLP Leaderboards? In <i>Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)</i>, pages 4486&ndash;4503, 2021.</p>
 <p>[19] F. M. Polo, L. Weber, L. Choshen, Y. Sun, G. Xu and M. Yurochkin. tinyBenchmarks: evaluating LLMs with fewer examples. In <i>International Conference on Machine Learning (ICML)</i>, 2024.</p>
-<p>[20] Y. Tong, X. Zhang, R. Wang, R. Wu and J. He. DART-Math: Difficulty-Aware Rejection Tuning for Mathematical Problem-Solving. arXiv:2407.13690, 2024.</p>
+<p>[20] Y. Tong, X. Zhang, R. Wang, R. Wu and J. He. DART-Math: Difficulty-Aware Rejection Tuning for Mathematical Problem-Solving. In <i>Advances in Neural Information Processing Systems (NeurIPS)</i>, 2024.</p>
 <p>[21] J. Kirkpatrick et al. Overcoming Catastrophic Forgetting in Neural Networks. <i>Proceedings of the National Academy of Sciences</i>, 114(13):3521&ndash;3526, 2017.</p>
 <p>[22] E. J. Hu, Y. Shen, P. Wallis, Z. Allen-Zhu, Y. Li, S. Wang, L. Wang and W. Chen. LoRA: Low-Rank Adaptation of Large Language Models. arXiv:2106.09685, 2021.</p>
 <p>[23] T. Dettmers, A. Pagnoni, A. Holtzman and L. Zettlemoyer. QLoRA: Efficient Finetuning of Quantized LLMs. arXiv:2305.14314, 2023.</p>
-<p>[24] D. Biderman et al. LoRA Learns Less and Forgets Less. arXiv:2405.09673, 2024.</p>
+<p>[24] D. Biderman et al. LoRA Learns Less and Forgets Less. <i>Transactions on Machine Learning Research</i>, 2024.</p>
 <p>[25] C. Zhou et al. LIMA: Less Is More for Alignment. arXiv:2305.11206, 2023.</p>
 <p>[26] D. Li et al. LLMs Can Easily Learn to Reason from Demonstrations: Structure, not content, is what matters! arXiv:2502.07374, 2025.</p>
 <p>[27] Z. Yang, T. Pang, H. Feng, H. Wang, W. Chen, M. Zhu and Q. Liu. Self-Distillation Bridges Distribution Gap in Language Model Fine-Tuning. In <i>Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)</i>, pages 1028&ndash;1043, 2024.</p>

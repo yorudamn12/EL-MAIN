@@ -1,4 +1,4 @@
-% DreamMachine -- journal draft v0.2 (2026-11-10). Single-weakness and multi-weakness studies.
+% DreamMachine -- journal draft v0.3 (2026-11-11). Single-weakness and multi-weakness studies.
 % Every number comes from the repository: docs/RUNNING.md sections 10-18 and the results.json files of the four paper
 % runs (80b37628b193, 409305f3e2f2, 76f2c9af5ea9, 4e6b61903c00). Items marked [TODO] need the authors.
 \documentclass[11pt]{article}
@@ -16,8 +16,9 @@
 
 \title{Targeting or Difficulty? Controlled Tests of Weakness-Targeted\\
 Synthetic Fine-Tuning for Small Language Models}
-\author{\todo{author names, affiliations, corresponding e-mail}}
-\date{Draft v0.2, 10 November 2026}
+\author{Attel Bhavani Prasad \and Atharv Dass \and Ajay Bhat \and Preet Hiteshkumar Patel\\[4pt]
+\small \todo{affiliation(s) and corresponding author's e-mail}}
+\date{Draft v0.3, 11 November 2026}
 
 \begin{document}
 \maketitle
@@ -196,9 +197,9 @@ is sized by the shorter side and the pool is enlarged deterministically.
 Each wrong answer receives one label, checked in this order: \textsc{format\_error} (no extractable answer),
 \textsc{arithmetic\_slip} (a written equation is false), \textsc{unverifiable} (no equation to check),
 \textsc{distractor\_use} (an operand equals an irrelevant number) and otherwise \textsc{plan\_error}. Reference steps
-come from the graph for generated problems and from the calculator annotations for GSM8K. A human check of the labels
-(Cohen's $\kappa$ on 150 stratified answers) is prepared but not yet done \todo{run the annotation and report
-$\kappa$}. GSM-Symbolic has no step annotations, so we report only its accuracy.
+come from the graph for generated problems and from the calculator annotations for GSM8K. We checked these labels
+against an independent annotator on 300 sampled answers (Section~\ref{sec:labelcheck}). GSM-Symbolic has no step
+annotations, so we report only its accuracy.
 
 % =====================================================================================================================
 \section{Experimental Setup}
@@ -419,13 +420,15 @@ heading; the fine-tuned models omit that list. On problems that changed from cor
 planning errors (a quantity left out, or a relation such as ``ten times more than'' misread), followed by arithmetic
 slips in short inline sums. For 0.6B the rate of false equations rises; for 1.7B it barely changes, so its loss is
 almost entirely in planning. The multi-weakness arms show the same pattern (plan errors 56--57\% and arithmetic slips
-23--28\% of lost answers).
+23--28\% of lost answers). These shares come from the automatic classifier; the label check below suggests that it
+counts too many slips and too few plan errors, so the slip shares are best read as upper bounds.
 
 \begin{table}[t]
 \centering
 \caption{Answer-level comparison on the same 300 GSM8K test problems: untrained model versus the 15 fine-tuned models
 of each single-weakness run. ``Lost'' = correct before, wrong after. False-equation rates are approximate, since
-\LaTeX\ equations of the untrained model are parsed less reliably.}
+\LaTeX\ equations of the untrained model are parsed less reliably. Error types are automatic labels
+(Section~\ref{sec:labelcheck}).}
 \label{tab:cost}
 \small
 \begin{tabular}{lcccc}
@@ -452,6 +455,44 @@ replaces the longer reasoning format the model learned in post-training, and wit
 that protected it from planning errors. The loss is largest on the longest real problems, where more facts must be
 tracked. Because all arms pay the same cost, comparisons between arms remain fair, but the cost outweighs any benefit
 that targeting could add with this training recipe.
+
+\subsection{How reliable are the automatic error labels?}
+\label{sec:labelcheck}
+To test the classifier, we drew 150 wrong answers of each untrained model from its diagnosis run, stratified by
+predicted label so that rare types were included, and had them relabelled blind. The annotator was a large language
+model (Claude Opus 5.5, Anthropic) that never saw the classifier's labels. It received the question, the gold answer and
+the response, applied the same five labels in the same order of precedence, and recomputed every written equation
+exactly with Python. The 300 answers were split into six batches of 50, each labelled in a separate session. The
+annotator is not a human, and agreement with it measures consistency with a second, independent reading, not ground
+truth.
+
+The two labelings agreed on 46\% of answers, Cohen's $\kappa = 0.33$ (0.38 for 0.6B, 0.27 for 1.7B), well below the
+0.6 usually taken as substantial agreement. Reading the disagreements identified three causes:
+\begin{itemize}
+  \item \textbf{Missed equations.} The parser misses many calculations, for example ones written with ``$\times$'' or
+  inside bold text, and then labels the answer \textsc{unverifiable}; the annotator judged 49 of the 71 answers in that class to be
+  plan errors.
+  \item \textbf{Chained equalities.} A line such as ``$17265 - 6469 - 3447 = 17265 - 9916 = 7349$'' is true, but it is
+  parsed as a false equation. This is one reason why the annotator judged 23 of the 74 predicted slips to be plan
+  errors.
+  \item \textbf{Cut-off answers.} When a response stops before its final answer, the classifier still reads its last
+  number, whereas the annotator labels it a format error.
+\end{itemize}
+Treating \textsc{unverifiable} as a plan error raises $\kappa$ to 0.42. Overall the annotator assigned
+\textsc{plan\_error} to about twice as many answers as the classifier (149 versus 73 of 284) and
+\textsc{arithmetic\_slip} to about half as many (36 versus 74).
+
+The check also exposed an answer-extraction fault. Sixteen of the 300 sampled answers (15 from 1.7B) were in fact
+correct: their final \verb|\boxed{}| value equals the gold answer, but the extractor gives priority to the GSM8K marker
+``\texttt{\#\#\#\#}'' and so read a Markdown step heading such as ``\texttt{\#\#\#\# 7.}'' as the answer. Rescoring
+every stored answer with \verb|\boxed{}| first changes 25 of the 2{,}592 diagnosis answers of the untrained 1.7B model
+(1.0\%) and one of the 0.6B model, and moves the untrained 1.7B accuracy by at most 0.5 points (GSM8K 0.815 to 0.818;
+training-family probes 0.625 to 0.630). No answer of any fine-tuned model changes, because those models do not write
+such headings. We report the numbers as logged.
+
+None of the accuracy comparisons depend on the error labels. The labels affect only the error-type shares in
+Table~\ref{tab:cost}. There, the check strengthens the main reading that planning errors dominate the lost answers,
+and the slip shares should be treated as upper bounds.
 
 % =====================================================================================================================
 \section{Discussion}
@@ -487,16 +528,19 @@ asked again without the shared cost.
 \section{Limitations}
 \label{sec:limits}
 \begin{itemize}
-  \item \textbf{Match quality of the 1.7B single-weakness control} was looser (KS 0.27) than the others ($\le$0.034),
-  which weakens that one comparison. \todo{decide whether to rerun it with the enlarged pool used in the
-  multi-weakness runs}
+  \item \textbf{Match quality of the 1.7B single-weakness control} was looser (KS 0.27) than in the other three
+  comparisons ($\le$0.034), so that single comparison is the least clean. We report it unchanged rather than rerunning
+  it; the 1.7B multi-weakness comparison, whose control is closely matched (KS $\le$0.002), leads to the same
+  conclusion.
   \item \textbf{Ceiling effects.} Fine-tuned 1.7B models answer 87--97\% of generated probes, which limits how well arms
   can be separated on probes and makes post-training LLTM refits unreliable for that model.
   \item \textbf{Statistical power.} With 300 GSM8K and 200 GSM-Symbolic problems per model, paired intervals are about
   $\pm3$ points; effects of one to two points would not be detected. The long-problem analysis uses only 50 problems
   and is descriptive.
-  \item \textbf{Error labels} have not yet been validated against human annotation \todo{report $\kappa$}, and
-  GSM-Symbolic error types are not reported.
+  \item \textbf{Error labels} agree only fairly with an independent LLM annotator ($\kappa = 0.33$;
+  Section~\ref{sec:labelcheck}), and no human annotation was done. Error-type shares are therefore descriptive, and
+  GSM-Symbolic error types are not reported. A small extraction fault inflates the untrained 1.7B model's error count
+  by about one percentage point; it does not affect any fine-tuned model.
   \item \textbf{Scope.} One task family, one model family, one training recipe (QLoRA supervised fine-tuning on terse
   solutions) and three seeds per arm.
   \item \textbf{Synthetic text.} Generated problems read less naturally than human-written ones, and probes share the
@@ -514,10 +558,23 @@ every supervised arm lost substantial real-benchmark accuracy by imitating terse
 for targeted data synthesis be tested against difficulty-matched controls, together with a check of general accuracy.
 
 \paragraph{Data and code availability.} Code, configurations, run records and per-answer outputs are available in the
-project repository \todo{public URL}. Paper runs: \texttt{80b37628b193} and \texttt{409305f3e2f2} (single weakness),
+public project repository, \url{https://github.com/yorudamn12/EL-MAIN} (branch
+\texttt{claude/wonderful-hypatia-pqs6t9}); the outputs of the paper runs are in its \texttt{paper\_runs/} folder and
+the error-label check in \texttt{paper/annotation/}. Paper runs: \texttt{80b37628b193} and \texttt{409305f3e2f2} (single weakness),
 \texttt{76f2c9af5ea9} and \texttt{4e6b61903c00} (multi-weakness).
 
-\paragraph{Author contributions, funding and competing interests.} \todo{as required by the target journal}
+\paragraph{Author contributions.} All authors contributed to the study design, the software, the experiments, the
+analysis of the results and the writing of the manuscript, and all authors read and approved the final version.
+
+\paragraph{Funding.} This research received no specific grant from any funding agency in the public, commercial or
+not-for-profit sectors.
+
+\paragraph{Competing interests.} The authors declare no competing interests.
+
+\paragraph{Use of AI tools.} An AI assistant (Claude, Anthropic) was used to help write software, run analyses and
+draft and edit the text, and the same model served as the independent annotator for the error-label check
+(Section~\ref{sec:labelcheck}). All experimental numbers come from the logged runs, and the authors checked the
+results, the references and the text and take full responsibility for the content.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
