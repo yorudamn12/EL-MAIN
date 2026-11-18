@@ -103,11 +103,15 @@ Merging the trained add-on (LoRA adapter) into the model before testing: **1.84x
   straight to training. 1.7B has no earlier baseline on the test sets, so it runs its own once.
 - Total GPU time for both models went from about 8.8 days to **about 4 days**.
 
-### 5.3 Status (updated 2026-10-10 04:30) — both paper runs are done
-| Job | Model | State | Finish |
-|---|---|---|---|
-| `80b37628b193` | Qwen3-0.6B | **done**, paper-eligible | finished 2026-10-09 01:19 |
-| `409305f3e2f2` | Qwen3-1.7B | **done**, paper-eligible | finished 2026-10-10 04:04 |
+### 5.3 Status (updated 2026-11-18) — all four paper runs are done
+| Job | Model | Protocol | State | Finish |
+|---|---|---|---|---|
+| `80b37628b193` | Qwen3-0.6B | single weakness | **done**, paper-eligible | finished 2026-10-09 01:19 |
+| `409305f3e2f2` | Qwen3-1.7B | single weakness | **done**, paper-eligible | finished 2026-10-10 04:04 |
+| `76f2c9af5ea9` | Qwen3-0.6B | multi-weakness | **done**, paper-eligible | finished 2026-11-10 08:11 |
+| `4e6b61903c00` | Qwen3-1.7B | multi-weakness | **done**, paper-eligible | finished 2026-11-10 18:43 (one OOM at step 16, resumed) |
+
+Every number of the four runs: `docs/RESULTS.md`. Copies of their outputs (no adapters) are in git under `paper_runs/`.
 
 The 0.6B run was stopped once (2026-10-08 ~02:30) because the laptop ran low on memory; it was resumed from its
 last checkpoint, nothing finished was lost, ~9 hours were lost. Since then the worker runs in its own minimized
@@ -162,8 +166,10 @@ Yes — when a model is weak at, for example, multi-step problems, that is writt
    model. Updated by Claude after each model's diagnosis and again after training.
 
 Where to look now: Qwen3-0.6B → `runs/pipelines/04f319d1cca7/` (diagnosis made there, reused by
-`80b37628b193`); Qwen3-1.7B → `runs/pipelines/409305f3e2f2/`.
-**`runs/` is not in git** (too big; it stays only on this laptop) — copy it somewhere safe after the runs.
+`80b37628b193` and `76f2c9af5ea9`); Qwen3-1.7B → `runs/pipelines/409305f3e2f2/` (reused by `4e6b61903c00`).
+**`runs/` is not in git** (too big; it stays only on this laptop) — copy it somewhere safe after the runs. Since
+2026-11-11 the small outputs of the four paper runs (results, configs, every answer) are in git under `paper_runs/`;
+the adapters (about 2.7 GB) are not.
 
 ---
 
