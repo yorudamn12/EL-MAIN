@@ -10,7 +10,7 @@
 | Check of the error labels (LLM annotator, κ) | `annotation/` |
 | Equivalence tests (TOST) of targeted − control | `equivalence.py` → `equivalence.json` (no GPU; reads `../paper_runs/`) |
 | Figures (TikZ for LaTeX, SVG for the preview) | `make_figures.py` → `figures/` (run `equivalence.py` first) |
-| What to change for a specific journal | `JOURNAL_NOTES.md` |
+| What to change for a specific journal; holes in the paper and the plan to journal level | `JOURNAL_NOTES.md` |
 | The science plan and decisions | `../PLAN.md`, `../docs/RESEARCH.md` |
 | Earlier literature review (2026-10-22) | branch `worktree-research-review`, files `docs/RESEARCH_REVIEW_2026-10-22.md` and `docs/LITERATURE_REVIEW.txt` |
 

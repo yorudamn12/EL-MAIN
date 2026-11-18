@@ -186,6 +186,13 @@ the adapters (about 2.7 GB) are not.
   No protocol, config or scorer change, so no new runs. The review's "Future improvements" list (A1 teacher-written
   solutions, A2 full GSM8K re-evaluation, A3 rerun of the 1.7B control, ...) is for after the mentor draft and is not
   started.
+- 2026-11-19 (later): three verification passes of v0.5 against the stored outputs. Fixed: per-seed match quality
+  (0.6B KS ≤ 0.042, 1.7B 0.27–0.28; the 1.7B control is easier, predicted accuracy 0.59 vs 0.53), one table cell
+  (0.93 → 0.92), "targeted ≈ real-only" narrowed (1.7B 9:1 is worse on GSM-Symbolic), "9:1 narrows the gap" (no 9:1
+  control exists). New: a seed+problem bootstrap. The 1.7B single-weakness probe deficit and the 0.6B multi-weakness
+  probe gain are **not robust to seed variation**; the paper now calls them suggestive. Also new: limitations for
+  unequal problem counts (the targeted arm has 22–26% fewer problems) and thinking mode off. Holes and the plan to journal
+  level: `paper/JOURNAL_NOTES.md` (second part).
 - 2026-11-11: paper v0.3 (authors, statements, public repo link, verified references). Small outputs of the 4 paper
   runs are now in git under `paper_runs/` (no adapters). The 300-answer check of the error labels was done by an LLM
   annotator (RUNNING.md §19): κ = 0.33. It also found an answer-reading fault ("#### 7." headings); see §19. Fixing

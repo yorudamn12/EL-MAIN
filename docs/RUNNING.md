@@ -593,7 +593,7 @@ Job `4e6b61903c00` (commit `21439f9`, clean tree), same protocol as §16; refere
 **Timing:** training ~1.5 h, evaluation ~15 min per arm; whole run ~10.5 h. The last evaluation failed once at 18:28
 with a CUDA out-of-memory error while loading the adapter, 36 s after the previous training ended (the GPU was free
 again a minute later); resumed with the same settings, all finished steps kept.
-**Match quality (both multi runs):** mean |Δlogit| ≤ 0.0002, KS ≤ 0.002 for every seed. **Composition:** on 1.7B the
+**Match quality (both multi runs):** mean |Δlogit| < 0.0003, KS < 0.002 for every seed. **Composition:** on 1.7B the
 control is almost identical to multi_targeted in which weaknesses its items carry (share of items above threshold:
 `steps` 0.73 vs 0.74, `n_div` 0.57 vs 0.53, `n_mul` 0.65 vs 0.59, `n_distractors` 0.74 vs 0.72); on 0.6B they differ
 mainly in `steps` (0.53 vs 0.39). Equal predicted difficulty forces similar composition, as expected (PLAN.md §16).

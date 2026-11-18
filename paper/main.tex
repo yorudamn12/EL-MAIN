@@ -40,9 +40,10 @@ spreading the budget over all significant weaknesses in proportion to their effe
 fine-tuned with QLoRA on one 8\,GB laptop GPU, no targeted arm beats its difficulty-matched control on GSM8K or
 GSM-Symbolic: the four GSM8K differences lie between $-0.023$ and $+0.011$, the four GSM-Symbolic differences between
 $-0.028$ and $+0.015$, and every interval includes zero. One-sided tests rule out a targeting benefit larger than about
-4.5 points on either benchmark. On held-out
-generated problems, single-weakness targeting is worse than its control ($-0.158$ and $-0.047$), while targeting all
-weaknesses removes this deficit and gives a small gain for the smaller model ($+0.052$). Every fine-tuned arm,
+4.5 points on either benchmark when only problem sampling is considered, and about 7 points when the variation between
+training seeds is included. On held-out generated problems, single-weakness targeting is worse than its control
+($-0.158$ for the smaller model, robust to seed variation; $-0.047$ for the larger), while targeting all weaknesses
+removes this deficit (for the smaller model $+0.052$ over its control, a gain that is not robust to seed variation). Every fine-tuned arm,
 including one trained only on real problems, loses 15--24 points on GSM8K relative to the untrained model;
 answer-level analysis traces this to imitation of the terse training solutions, which leads to more planning errors,
 and it is largest on the longest real problems. The results suggest that, for supervised fine-tuning on terse
@@ -225,7 +226,12 @@ model and is trained with seeds 0, 1 and 2.
 \paragraph{Evaluation.} Greedy decoding, 512 new tokens, bf16 weights. Each fine-tuned model answers the first 300 GSM8K
 test problems, 200 GSM-Symbolic problems spread over its 100 templates, and 135 generated probe problems from each of
 the training and held-out families. The untrained model answers a superset of these, so every comparison is paired on
-identical problems. We report means over seeds and 95\% intervals from a paired bootstrap over problems.
+identical problems. We report means over seeds and 95\% intervals from a paired bootstrap over problems, in which each
+problem's correctness is first averaged over the three seeds of an arm. This interval reflects the sampling of test
+problems but not the variation between training seeds; we therefore also report, as a sensitivity check, a two-level
+bootstrap that resamples the seeds of each arm and then the problems (Table~\ref{tab:seeds}). The primary outcome,
+targeted minus difficulty-matched control on GSM8K and GSM-Symbolic, was fixed before the first paper run; probe
+results and all other comparisons are secondary and are not corrected for multiple testing.
 
 \paragraph{Protocol and runs.} Configurations were fixed before each run, every run started from a clean code version,
 and only these runs are reported as results. The study consists of four runs: one single-weakness run per model
@@ -276,10 +282,15 @@ single-weakness target, more than four steps.}
 \label{fig:steps}
 \end{figure}
 
-\paragraph{Match quality.} The single-weakness control for 0.6B matched all 9{,}977 targeted problems closely (mean
-$|\Delta\text{logit}| = 0.006$, KS $= 0.034$). For 1.7B the match was looser (mean $|\Delta\text{logit}| = 0.32$, KS $= 0.27$); this comparison is the weakest in the study (Section~\ref{sec:limits}). The
+\paragraph{Match quality.} In every run and seed, each of the roughly 10{,}000 targeted candidates (9{,}977--10{,}640)
+found a partner. The single-weakness control for 0.6B matched closely (mean $|\Delta\text{logit}| \le 0.008$, KS $\le 0.042$
+over the three seeds). For 1.7B the match was looser (mean $|\Delta\text{logit}|$ 0.32--0.34, KS 0.27--0.28): for this
+stronger model, short problems are rarely hard. In the seed-0 candidate pool only 7{,}483 problems with at most four
+steps fall in the predicted-accuracy band $[0.3, 0.7]$, fewer than the partners needed, against 12{,}385 for 0.6B, so
+many targeted problems were paired with easier ones (mean predicted accuracy of the problems in the training data,
+seed 0: 0.59 for the control versus 0.53 for the targeted arm; 0.41 for both arms of 0.6B). This comparison is the weakest in the study (Section~\ref{sec:limits}). The
 multi-weakness controls, drawn from a larger pool without feature restriction, matched almost exactly for both models
-(mean $|\Delta\text{logit}| \le 0.0002$, KS $\le 0.002$ for every seed).
+(mean $|\Delta\text{logit}| < 0.0003$, KS $< 0.002$ for every seed).
 
 \subsection{Main comparison}
 Table~\ref{tab:main} gives accuracy for every arm and Table~\ref{tab:primary} the paired comparisons that answer the
@@ -353,9 +364,10 @@ Comparison & Benchmark & Qwen3-0.6B & Qwen3-1.7B \\
 \paragraph{Result 1: no targeting benefit on real benchmarks.} For both models and both targeting rules, the targeted
 arm and its difficulty-matched control are indistinguishable on GSM8K and GSM-Symbolic: the four GSM8K differences lie
 between $-0.023$ and $+0.011$, the four GSM-Symbolic differences between $-0.028$ and $+0.015$, and every interval
-includes zero (Figure~\ref{fig:forest}). Targeted arms are also indistinguishable from untargeted generated data and
-from real-only training on these benchmarks (for example, 0.6B targeted minus untargeted on GSM8K: $-0.011$
-[$-0.038$, $+0.017$]).
+includes zero (Figure~\ref{fig:forest}). At the 3:1 mix, targeted arms are also indistinguishable from untargeted
+generated data and from real-only training on these benchmarks (for example, 0.6B targeted minus untargeted on GSM8K:
+$-0.011$ [$-0.038$, $+0.017$]). More synthetic data does not help either: the 9:1 targeted arm is never better than
+real-only training on the real benchmarks, and for 1.7B it is worse on GSM-Symbolic ($-0.057$ [$-0.102$, $-0.013$]).
 
 \paragraph{How large a benefit can be excluded?} A non-significant difference is not evidence of no effect, so we
 also ran two one-sided tests (TOST) on the same paired bootstrap, with 90\% intervals (Table~\ref{tab:equiv}). We
@@ -365,6 +377,46 @@ only for the 1.7B multi-weakness comparison on GSM8K; the other seven comparison
 so our data cannot exclude small effects in either direction. They do exclude a substantial benefit: the upper end of
 the 90\% interval, a one-sided 95\% bound on the gain from targeting, is at most $+0.034$ on GSM8K and $+0.045$ on
 GSM-Symbolic.
+
+\paragraph{Variation between training seeds.} The intervals above treat the three seeds of an arm as fixed. In the compared arms, the seeds
+differ by up to 3.6 points on GSM8K and up to 6.6 points on held-out probes (standard deviation of arm accuracy), so we
+repeated every primary comparison with a two-level bootstrap that also resamples the seeds (Table~\ref{tab:seeds}; thin
+lines in Figure~\ref{fig:forest}). With three seeds this check is coarse, but it changes the reading in two places. No
+real-benchmark conclusion changes: all intervals still include zero, and the largest upper end is $+0.059$ on GSM8K and
+$+0.068$ on GSM-Symbolic, so a benefit of about seven points or more remains excluded. On held-out probes, the
+single-weakness deficit of 0.6B stays clearly below zero ($[-0.247, -0.069]$), but the deficit of 1.7B ($-0.047$) and
+the multi-weakness gain of 0.6B ($+0.052$) are no longer distinguishable from zero. We therefore treat these two probe
+differences as suggestive only.
+
+\begin{table}[t]
+\centering
+\caption{Sensitivity check: targeted minus difficulty-matched control, mean of three seeds with 95\% intervals from a
+two-level bootstrap over training seeds and problems (10{,}000 resamples), next to the problem-only interval of
+Table~\ref{tab:primary}. Generated by \texttt{paper/equivalence.py}.}
+\label{tab:seeds}
+\small
+\begin{tabular}{llcc}
+\toprule
+Comparison & Benchmark & Problems only & Seeds and problems \\
+\midrule
+\multirow{3}{*}{Single weakness, 0.6B} & GSM8K & [$-0.039$, $+0.014$] & [$-0.070$, $+0.043$] \\
+& GSM-Symbolic & [$-0.037$, $+0.032$] & [$-0.058$, $+0.057$] \\
+& Probes, held-out & [$-0.225$, $-0.089$] & [$-0.247$, $-0.069$] \\
+\midrule
+\multirow{3}{*}{Single weakness, 1.7B} & GSM8K & [$-0.017$, $+0.039$] & [$-0.034$, $+0.059$] \\
+& GSM-Symbolic & [$-0.020$, $+0.050$] & [$-0.037$, $+0.067$] \\
+& Probes, held-out & [$-0.094$, $-0.000$] & [$-0.111$, $+0.017$] \\
+\midrule
+\multirow{3}{*}{Multi-weakness, 0.6B} & GSM8K & [$-0.051$, $+0.006$] & [$-0.070$, $+0.021$] \\
+& GSM-Symbolic & [$-0.063$, $+0.007$] & [$-0.077$, $+0.020$] \\
+& Probes, held-out & [$+0.010$, $+0.094$] & [$-0.035$, $+0.133$] \\
+\midrule
+\multirow{3}{*}{Multi-weakness, 1.7B} & GSM8K & [$-0.020$, $+0.033$] & [$-0.044$, $+0.056$] \\
+& GSM-Symbolic & [$-0.027$, $+0.043$] & [$-0.055$, $+0.068$] \\
+& Probes, held-out & [$-0.052$, $+0.007$] & [$-0.081$, $+0.040$] \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{table}[t]
 \centering
@@ -391,23 +443,26 @@ Multi-weakness, 1.7B  & [$-0.016$, $+0.029$] & 0.029 & 0.048 & [$-0.022$, $+0.03
 \begin{figure}[t]
 \centering
 \input{figures/fig_forest.tex}
-\caption{Targeted minus difficulty-matched control for the four comparisons (mean of three seeds, 95\% paired
-bootstrap interval). The shaded band is the $\pm3$-point margin used in Table~\ref{tab:equiv}. Held-out probes are
+\caption{Targeted minus difficulty-matched control for the four comparisons (mean of three seeds). Thick coloured
+lines: 95\% paired bootstrap interval over problems; thin grey lines: 95\% interval over training seeds and problems
+(Table~\ref{tab:seeds}). The shaded band is the $\pm3$-point margin used in Table~\ref{tab:equiv}. Held-out probes are
 generated problems from story families not used in training.}
 \label{fig:forest}
 \end{figure}
 
 \paragraph{Result 2: single-weakness targeting loses to its control on held-out generated problems.} On problems from
 the two held-out families, the single-weakness arm is below its control for both models; for 0.6B it is below even on
-the slice it was aimed at (problems with more than four steps: 0.54 versus 0.65). More synthetic data (9:1) narrows but
-does not close the gap. All probe results, here and below, need one caveat: probes come from the same generator as the
+the slice it was aimed at (problems with more than four steps: 0.54 versus 0.65). The 0.6B deficit survives the
+seed-level check; the 1.7B deficit does not. With more synthetic data (9:1, for which no matched control was trained)
+the targeted arm reaches 0.704 (0.6B) and 0.894 (1.7B) on held-out probes, still below the 3:1 controls (0.760 and
+0.919). All probe results, here and below, need one caveat: probes come from the same generator as the
 generated training data. Holding out two story families removes shared wording, but not the shared problem structure
 and answer format, so part of every probe gain may be learning of the generator's format rather than of the skill. The
 real benchmarks carry no such bias, which is why we treat them as the primary outcome.
 
 \paragraph{Result 3: targeting all weaknesses removes this deficit.} For 0.6B, multi-weakness targeting is far better
 than single-weakness targeting on generated problems ($+0.168$ held-out) and slightly better than its own control
-($+0.052$, $p=0.014$). For 1.7B none of these differences is significant; generated probes are close to their ceiling for
+($+0.052$, $p=0.014$ over problems, but not significant once seed variation is included). For 1.7B none of these differences is significant; generated probes are close to their ceiling for
 every arm (0.87--0.98).
 
 \subsection{Why targeting does not help: two mechanisms}
@@ -443,7 +498,7 @@ Model & Arm & steps & n\_div & n\_mul & n\_distr. & log10\_max \\
 & targeted 3:1     & 0.86 & 0.76 & 0.88 & 0.87 & -- \\
 & multi\_targeted  & 0.86 & 0.81 & 0.89 & 0.88 & -- \\
 & multi\_matched   & 0.88 & 0.81 & 0.88 & 0.89 & -- \\
-& untargeted 3:1   & 0.89 & 0.89 & 0.93 & 0.92 & -- \\
+& untargeted 3:1   & 0.89 & 0.89 & 0.92 & 0.92 & -- \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -582,7 +637,7 @@ and the slip shares should be treated as upper bounds.
   \item \emph{Single-weakness targeting loses on generated probes}: it narrows coverage; the control and untargeted data
   exercise multiplication and division, which long problems also need.
   \item \emph{Multi-weakness targeting repairs this for 0.6B}: covering every weakness restores the missing skills; the
-  small edge over its control coincides with its higher share of long problems.
+  small edge over its control (not robust to seed variation) coincides with its higher share of long problems.
   \item \emph{No difference for 1.7B}: generated probes are near the ceiling, and the two multi-weakness arms are almost
   the same data.
   \item \emph{Every arm loses real accuracy, real\_only included}: supervised imitation of terse solutions, not the
@@ -594,8 +649,8 @@ If difficulty is a weighted sum of factors, as in Eq.~\eqref{eq:lltm}, then data
 proportion to their effects is hard for the same reasons that make any equally hard data hard. A difficulty-matched
 control drawn without restriction then carries a similar factor mix, and the two arms converge by construction. What
 remains for targeting to change is the \emph{allocation} of the budget across factors, not the difficulty itself. Our
-data fit this reading: the only significant difference between the multi-weakness arms ($+0.052$ for 0.6B on held-out
-probes) appears where their factor mixes differ most (more long problems in the targeted arm), and for 1.7B, whose arms
+data fit this reading: the only difference between the multi-weakness arms that is significant over problems ($+0.052$
+for 0.6B on held-out probes, not significant once seed variation is included) appears where their factor mixes differ most (more long problems in the targeted arm), and for 1.7B, whose arms
 have almost the same mix and whose probes are near their ceiling, there is no difference. A direct test would build arms
 with equal predicted difficulty that differ only in factor mix.
 
@@ -616,15 +671,22 @@ asked again without the shared cost.
 \section{Limitations}
 \label{sec:limits}
 \begin{itemize}
-  \item \textbf{Match quality of the 1.7B single-weakness control} was looser (KS 0.27) than in the other three
-  comparisons ($\le$0.034), so that single comparison is the least clean. We report it unchanged rather than rerunning
+  \item \textbf{Match quality of the 1.7B single-weakness control} was looser (KS 0.27--0.28) than in the other three
+  comparisons ($\le$0.042), so that single comparison is the least clean. We report it unchanged rather than rerunning
   it; the 1.7B multi-weakness comparison, whose control is closely matched (KS $\le$0.002), leads to the same
   conclusion.
+  \item \textbf{Equal tokens, unequal problem counts.} Arms are equalised on training tokens. Long problems use more
+  tokens, so the single-weakness targeted arm contains 22--26\% fewer distinct generated problems than its control (seed
+  0: 4{,}598 versus 5{,}930 for 0.6B, 3{,}857 versus 5{,}225 for 1.7B). This may add to its narrower coverage. The
+  multi-weakness arms are balanced (5{,}321 versus 5{,}387 and 4{,}125 versus 4{,}104) and reach the same conclusion on
+  the real benchmarks.
   \item \textbf{Ceiling effects.} Fine-tuned 1.7B models answer 87--97\% of generated probes, which limits how well arms
   can be separated on probes and makes post-training LLTM refits unreliable for that model.
   \item \textbf{Statistical power.} With 300 GSM8K and 200 GSM-Symbolic problems per model, paired intervals are about
   $\pm3$ points; effects of one to two points would not be detected, and equivalence within $\pm3$ points is shown for
-  only one of eight comparisons (Table~\ref{tab:equiv}). Re-evaluating the same adapters on the full GSM8K test set
+  only one of eight comparisons (Table~\ref{tab:equiv}). With three seeds per arm, training-seed variation is
+  estimated coarsely, and including it widens the real-benchmark intervals to about $\pm5$--6 points (Table~\ref{tab:seeds}); more seeds
+  would narrow this. Re-evaluating the same adapters on the full GSM8K test set
   would roughly halve the interval width. The long-problem analysis uses only 50 problems and is descriptive.
   \item \textbf{Error labels} agree only fairly with an independent LLM annotator ($\kappa = 0.33$, or 0.39 after the parser
   corrections;
@@ -632,7 +694,8 @@ asked again without the shared cost.
   GSM-Symbolic error types are not reported. A small extraction fault inflates the untrained 1.7B model's error count
   by about one percentage point; it does not affect any fine-tuned model.
   \item \textbf{Scope.} One task family, one model family, one training recipe (QLoRA supervised fine-tuning on terse
-  solutions) and three seeds per arm.
+  solutions) and three seeds per arm. Qwen3's thinking mode was switched off throughout, so long-reasoning behaviour was
+  not studied.
   \item \textbf{Synthetic text.} Generated problems read less naturally than human-written ones, and probes share the
   generator with training data (see the caveat in the Results); human-written held-out probes would remove this doubt.
 \end{itemize}
@@ -641,7 +704,8 @@ asked again without the shared cost.
 We tested whether weakness-targeted synthetic fine-tuning helps because it targets the right skill or because it
 supplies harder data. With exact skill profiles, an LLTM diagnosis and a one-to-one difficulty-matched control, two
 targeting rules on two Qwen3 models give a consistent answer: targeting did not improve real-benchmark accuracy over
-equally hard data. Aiming at a single weakness narrowed coverage and lost to its control on new generated problems;
+equally hard data. Aiming at a single weakness narrowed coverage and lost to its control on new generated problems (clearly so for the
+smaller model);
 aiming at all weaknesses repaired this but, by construction, became nearly the same as matching difficulty. Separately,
 every supervised arm lost 15--24 points of GSM8K accuracy by imitating terse solutions, so our conclusion is scoped to
 supervised fine-tuning on terse solutions. The first open question is whether targeting helps under a recipe that

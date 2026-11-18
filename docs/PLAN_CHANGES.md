@@ -6,6 +6,7 @@ here in the same commit. The full text of any old version: `git show <commit>:PL
 
 | Date | Commit | What changed in PLAN.md | Why |
 |---|---|---|---|
+| 2026-11-19 | (this commit) | §16 status: the probe differences −0.047 (1.7B single) and +0.052 (0.6B multi) are not robust to seed variation (two-level bootstrap); pointer to the journal plan in `paper/JOURNAL_NOTES.md` | Paper v0.5 self-review |
 | 2026-11-18 | (this commit) | §16: status line (both multi-weakness runs done, finish times, where the results are) | Docs brought up to date with all four paper runs |
 | 2026-11-11 | (this commit) | Open question 10: error-label check (κ = 0.33, LLM annotator) and the `####` answer-reading fault; fixing the scorer is for the team to decide | Paper v0.3: label check done |
 | 2026-11-10 | (this commit) | Open question 10: added both multi-weakness results (no difference from the control on real problems; +0.05 held-out probes for 0.6B only) | Both multi-weakness paper runs finished |

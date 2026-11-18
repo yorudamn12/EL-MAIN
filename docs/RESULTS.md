@@ -26,22 +26,22 @@ What each number means and how it was produced: `docs/RUNNING.md` §14–19 and 
 
 ## Equivalence tests (TOST) of targeted − matched control
 
-From `paper/equivalence.json` (`python paper/equivalence.py`): 90% paired bootstrap interval (10000 resamples, seed 0), the smallest margin δ the comparison would pass, and the TOST p-value for the margin ±0.03 (chosen after the main results were known). The upper end of the 90% interval is a one-sided 95% bound on the benefit of targeting.
+From `paper/equivalence.json` (`python paper/equivalence.py`): 90% paired bootstrap interval (10000 resamples, seed 0), the smallest margin δ the comparison would pass, and the TOST p-value for the margin ±0.03 (chosen after the main results were known). The upper end of the 90% interval is a one-sided 95% bound on the benefit of targeting. The last column is a sensitivity check: a two-level bootstrap that also resamples the 3 training seeds of each arm (all other intervals in this file resample problems only, with correctness averaged over seeds).
 
-| Comparison | Benchmark | Difference | 90% CI | δ passed | p (TOST) | Equivalent at margin |
-|---|---|---|---|---|---|---|
-| Single weakness, 0.6B | GSM8K | -0.012 | [-0.034, +0.011] | 0.034 | 0.108 | no |
-| Single weakness, 0.6B | GSM-Sym | -0.002 | [-0.030, +0.027] | 0.030 | 0.055 | no |
-| Single weakness, 0.6B | Probes (held-out fam.) | -0.158 | [-0.215, -0.101] | 0.215 | 1.000 | no |
-| Single weakness, 1.7B | GSM8K | +0.011 | [-0.012, +0.034] | 0.034 | 0.101 | no |
-| Single weakness, 1.7B | GSM-Sym | +0.015 | [-0.013, +0.045] | 0.045 | 0.207 | no |
-| Single weakness, 1.7B | Probes (held-out fam.) | -0.047 | [-0.086, -0.007] | 0.086 | 0.742 | no |
-| Multi-weakness, 0.6B | GSM8K | -0.023 | [-0.047, +0.001] | 0.047 | 0.335 | no |
-| Multi-weakness, 0.6B | GSM-Sym | -0.028 | [-0.057, +0.002] | 0.057 | 0.469 | no |
-| Multi-weakness, 0.6B | Probes (held-out fam.) | +0.052 | [+0.017, +0.086] | 0.086 | 0.838 | no |
-| Multi-weakness, 1.7B | GSM8K | +0.007 | [-0.016, +0.029] | 0.029 | 0.048 | yes |
-| Multi-weakness, 1.7B | GSM-Sym | +0.008 | [-0.022, +0.037] | 0.037 | 0.116 | no |
-| Multi-weakness, 1.7B | Probes (held-out fam.) | -0.022 | [-0.047, +0.002] | 0.047 | 0.277 | no |
+| Comparison | Benchmark | Difference | 90% CI | δ passed | p (TOST) | Equivalent at margin | 95% CI, seeds + problems |
+|---|---|---|---|---|---|---|---|
+| Single weakness, 0.6B | GSM8K | -0.012 | [-0.034, +0.011] | 0.034 | 0.108 | no | [-0.070, +0.043] |
+| Single weakness, 0.6B | GSM-Sym | -0.002 | [-0.030, +0.027] | 0.030 | 0.055 | no | [-0.058, +0.057] |
+| Single weakness, 0.6B | Probes (held-out fam.) | -0.158 | [-0.215, -0.101] | 0.215 | 1.000 | no | [-0.247, -0.069] |
+| Single weakness, 1.7B | GSM8K | +0.011 | [-0.012, +0.034] | 0.034 | 0.101 | no | [-0.034, +0.059] |
+| Single weakness, 1.7B | GSM-Sym | +0.015 | [-0.013, +0.045] | 0.045 | 0.207 | no | [-0.037, +0.067] |
+| Single weakness, 1.7B | Probes (held-out fam.) | -0.047 | [-0.086, -0.007] | 0.086 | 0.742 | no | [-0.111, +0.017] |
+| Multi-weakness, 0.6B | GSM8K | -0.023 | [-0.047, +0.001] | 0.047 | 0.335 | no | [-0.070, +0.021] |
+| Multi-weakness, 0.6B | GSM-Sym | -0.028 | [-0.057, +0.002] | 0.057 | 0.469 | no | [-0.077, +0.020] |
+| Multi-weakness, 0.6B | Probes (held-out fam.) | +0.052 | [+0.017, +0.086] | 0.086 | 0.838 | no | [-0.035, +0.133] |
+| Multi-weakness, 1.7B | GSM8K | +0.007 | [-0.016, +0.029] | 0.029 | 0.048 | yes | [-0.044, +0.056] |
+| Multi-weakness, 1.7B | GSM-Sym | +0.008 | [-0.022, +0.037] | 0.037 | 0.116 | no | [-0.055, +0.068] |
+| Multi-weakness, 1.7B | Probes (held-out fam.) | -0.022 | [-0.047, +0.002] | 0.047 | 0.277 | no | [-0.081, +0.040] |
 
 ## Single weakness, Qwen3-0.6B — job `80b37628b193`
 

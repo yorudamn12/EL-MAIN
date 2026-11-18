@@ -222,8 +222,14 @@ def fig_forest(eq: dict):
         for r in [r for r in eq["rows"] if r["benchmark"] == g]:
             model = "Qwen3-0.6B" if "0.6B" in r["label"] else "Qwen3-1.7B"
             cv.text(14, yy, r["label"], "start", 7)
+            if "ci95_seed_problem" in r:
+                slo, shi = r["ci95_seed_problem"]
+                cv.line(tx(max(slo, lo_x)), yy, tx(min(shi, hi_x)), yy, "grey", 0.5)
+                for v in (slo, shi):
+                    if lo_x <= v <= hi_x:
+                        cv.line(tx(v), yy - 2.5, tx(v), yy + 2.5, "grey", 0.5)
             lo, hi = r["ci95"]
-            cv.line(tx(max(lo, lo_x)), yy, tx(min(hi, hi_x)), yy, model, 1.0)
+            cv.line(tx(max(lo, lo_x)), yy, tx(min(hi, hi_x)), yy, model, 1.6)
             cv.dot(tx(r["mean_diff"]), yy, 2.2, model, square=model.endswith("1.7B"))
             yy += row
         yy += 2

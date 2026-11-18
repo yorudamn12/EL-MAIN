@@ -46,6 +46,31 @@ def arm_items(job: str, arm: str) -> dict[str, dict[str, float]]:
     return {b: {i: float(np.mean(v)) for i, v in d.items()} for b, d in acc.items()}
 
 
+def arm_seed_items(job: str, arm: str) -> dict[str, dict[str, list[float]]]:
+    """{benchmark: {example_id: [correctness per seed, in seed order]}}."""
+    acc: dict[str, dict[str, list[float]]] = defaultdict(lambda: defaultdict(list))
+    for f in sorted((ROOT / "paper_runs" / job / "responses").glob(f"{arm}_s*.jsonl.gz")):
+        with gzip.open(f, "rt", encoding="utf-8") as fh:
+            for line in fh:
+                r = json.loads(line)
+                acc[r["source"]][r["example_id"]].append(float(r["correct"] in (True, "True", 1)))
+    return acc
+
+
+def seed_problem_ci(a: np.ndarray, b: np.ndarray) -> list[float]:
+    """Sensitivity check: 95% CI from a two-level bootstrap that resamples the three training seeds of each arm
+    (with replacement, independently) and then the problems, so seed-to-seed training variance is included.
+    a, b: arrays of shape (n_problems, n_seeds)."""
+    rng = np.random.default_rng(SEED)
+    n, k = a.shape
+    out = np.empty(N_BOOT)
+    for t in range(N_BOOT):
+        sa, sb = rng.integers(0, k, k), rng.integers(0, b.shape[1], b.shape[1])
+        items = rng.integers(0, n, n)
+        out[t] = a[items][:, sa].mean() - b[items][:, sb].mean()
+    return [float(np.percentile(out, 2.5)), float(np.percentile(out, 97.5))]
+
+
 def tost(diff: np.ndarray, margin: float) -> dict:
     rng = np.random.default_rng(SEED)
     idx = rng.integers(0, len(diff), (N_BOOT, len(diff)))
@@ -62,6 +87,7 @@ def run(margin: float = 0.03) -> dict:
     rows = []
     for job, label, a, b in COMPARISONS:
         xa, xb = arm_items(job, a), arm_items(job, b)
+        sa_, sb_ = arm_seed_items(job, a), arm_seed_items(job, b)
         stored = {(c["benchmark"]): c for c in json.loads((ROOT / "paper_runs" / job / "results.json")
                                                           .read_text(encoding="utf-8"))["comparisons"]
                   if c["a"] == a.rsplit("_r", 1)[0] and c["b"] == b.rsplit("_r", 1)[0]}
@@ -72,6 +98,8 @@ def run(margin: float = 0.03) -> dict:
             if s and (abs(s["ci_low"] - res["ci95"][0]) > 1e-9 or abs(s["ci_high"] - res["ci95"][1]) > 1e-9):
                 raise RuntimeError(f"{job} {bench}: recomputed 95% CI {res['ci95']} != stored "
                                    f"[{s['ci_low']}, {s['ci_high']}]")
+            res["ci95_seed_problem"] = seed_problem_ci(np.array([sa_[bench][i] for i in ids]),
+                                                       np.array([sb_[bench][i] for i in ids]))
             rows.append({"job": job, "label": label, "a": a.rsplit("_r", 1)[0], "b": b.rsplit("_r", 1)[0],
                          "benchmark": bench, **res})
     out = {"margin": margin, "alpha": 0.05, "n_boot": N_BOOT, "seed": SEED, "rows": rows}
@@ -86,5 +114,6 @@ if __name__ == "__main__":
     for r in res["rows"]:
         print(f"{r['label']:24s} {r['benchmark']:24s} {r['mean_diff']:+.3f}  90% [{r['ci90'][0]:+.3f}, "
               f"{r['ci90'][1]:+.3f}]  bound {r['bound']:.3f}  p_TOST {r['p_tost']:.3f}  "
-              f"{'EQUIVALENT' if r['equivalent'] else 'not shown'}")
+              f"{'EQUIVALENT' if r['equivalent'] else 'not shown'}  | seed+problem 95% [{r['ci95_seed_problem'][0]:+.3f}, "
+              f"{r['ci95_seed_problem'][1]:+.3f}]")
     print("wrote paper/equivalence.json (margin", res["margin"], ")")

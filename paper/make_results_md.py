@@ -162,13 +162,17 @@ def main() -> None:
               f"From `paper/equivalence.json` (`python paper/equivalence.py`): 90% paired bootstrap interval "
               f"({eq['n_boot']} resamples, seed {eq['seed']}), the smallest margin δ the comparison would pass, and the "
               f"TOST p-value for the margin ±{eq['margin']:g} (chosen after the main results were known). The upper end "
-              "of the 90% interval is a one-sided 95% bound on the benefit of targeting.", "",
-              "| Comparison | Benchmark | Difference | 90% CI | δ passed | p (TOST) | Equivalent at margin |",
-              "|---|---|---|---|---|---|---|"]
+              "of the 90% interval is a one-sided 95% bound on the benefit of targeting. The last column is a sensitivity check: a "
+              "two-level bootstrap that also resamples the 3 training seeds of each arm (all other intervals in this file "
+              "resample problems only, with correctness averaged over seeds).", "",
+              "| Comparison | Benchmark | Difference | 90% CI | δ passed | p (TOST) | Equivalent at margin | 95% CI, seeds + problems |",
+              "|---|---|---|---|---|---|---|---|"]
         for x in eq["rows"]:
             L.append(f"| {x['label']} | {SHORT.get(x['benchmark'], x['benchmark'])} | {sd(x['mean_diff'])} | "
                      f"[{sd(x['ci90'][0])}, {sd(x['ci90'][1])}] | {x['bound']:.3f} | {x['p_tost']:.3f} | "
-                     f"{'yes' if x['equivalent'] else 'no'} |")
+                     f"{'yes' if x['equivalent'] else 'no'} | "
+                     + (f"[{sd(x['ci95_seed_problem'][0])}, {sd(x['ci95_seed_problem'][1])}]" if 'ci95_seed_problem' in x else "—")
+                     + " |")
         L.append("")
     for job, title, pointer in RUNS:
         L += run_section(job, title, pointer)

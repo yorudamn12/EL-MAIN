@@ -673,6 +673,10 @@ step times, RUNNING.md §14-15).
 **Status (2026-11-18).** Both runs are done and paper-eligible: 0.6B `76f2c9af5ea9` (finished 2026-11-10 08:11,
 about 12.6 h) and 1.7B `4e6b61903c00` (finished 2026-11-10 18:43, about 10.5 h; one OOM at step 16, resumed).
 GPU-verified results are in `docs/RUNNING.md` §16 and §18, and every number is in `docs/RESULTS.md`.
+**2026-11-19:** a seed+problem bootstrap (CPU, stored answers; `paper/equivalence.py`) shows that the two smaller probe
+differences, 1.7B single-weakness −0.047 and 0.6B multi-weakness +0.052, are not robust to training-seed variation.
+The real-benchmark conclusion is unchanged. The paper (v0.5) reports both analyses. The holes found in a self-review
+and the plan to reach journal level are in `paper/JOURNAL_NOTES.md`; any new runs there need the team's OK.
 
 **Not changed.** The prompt (`qwen_boxed`), the solution style (terse, code-written; the real-test drop stays a stated
 cost), the evaluation sets, and the single-weakness protocol (`configs/main.yaml`, its results stay as they are).
