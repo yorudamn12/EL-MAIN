@@ -23,5 +23,6 @@
   tr.sep td { border-top: 0.6pt solid #000; }
   .cap { font-size: 9.2pt; margin: 10pt 4% 2pt; text-align: justify; }
   .fig { break-inside: avoid; margin-bottom: 10pt; }
+  .figure svg { display: block; margin: 4pt auto; max-width: 100%; height: auto; }
   .refs p { font-size: 9.4pt; text-align: left; margin-bottom: 4pt; padding-left: 22pt; text-indent: -22pt; }
   .sc { font-variant: small-caps; }

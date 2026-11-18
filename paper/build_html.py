@@ -100,7 +100,7 @@ def cite(m):
 MATH = [
     (r"\\operatorname\{logit\}", "logit"), (r"\\log", "log"), (r"\\text\{([^}]*)\}", r"\1"), (r"\\hat p", "p&#770;"),
     (r"\\eta", "&eta;"), (r"\\theta", "&theta;"), (r"\\Delta", "&Delta;"), (r"\\sum", "&Sigma;"),
-    (r"\\alpha", "&alpha;"), (r"\\kappa", "&kappa;"), (r"\\le\b", "&le;"), (r"\\in\b", "&isin;"),
+    (r"\\alpha", "&alpha;"), (r"\\delta", "&delta;"), (r"\\kappa", "&kappa;"), (r"\\le\b", "&le;"), (r"\\in\b", "&isin;"),
     (r"\\times", "&times;"), (r"\\div", "&divide;"), (r"\\pm", "&plusmn;"), (r"\\approx", "&asymp;"),
     (r"\\rightarrow", "&rarr;"), (r"\\dots", "&hellip;"), (r"\\bigl|\\bigr", ""), (r"\\,", "&thinsp;"),
     (r"\\\{", "{"), (r"\\\}", "}"), (r"\\mid", "|"),
@@ -119,7 +119,7 @@ def math(s):
 def inline(s):
     s = re.sub(r"\\verb\|([^|]*)\|", lambda m: '<span class="tt">' + m.group(1).replace("\\", "&#92;") + "</span>", s)
     s = re.sub(r"\\url\{([^}]*)\}", r'<a href="\1">\1</a>', s)
-    s = s.replace("\\\\[4pt]", "<br>").replace(" \\and ", ", ").replace("\\#", "#")
+    s = re.sub(r"\\\\\[\d+pt\]", "<br>", s).replace("\\medskip\\noindent", "<br><br>").replace(" \\and ", ", ").replace("\\#", "#")
     s = re.sub(r"\\ref\{([^}]*)\}", lambda m: labels.get(m.group(1), "??"), s)
     s = re.sub(r"\\cite[pt]?\{([^}]*)\}", cite, s)
     s = re.sub(r"\\todo\{([^}]*)\}", r'<span class="todo">[TODO: \1]</span>', s)
@@ -146,6 +146,9 @@ for m in re.finditer(r"\\(section|subsection)\{([^}]*)\}\s*(?:\\label\{([^}]*)\}
 tabn = 0
 for m in re.finditer(r"\\label\{(tab:[^}]*)\}", body):
     tabn += 1; labels[m.group(1)] = str(tabn)
+figs_n = 0
+for m in re.finditer(r"\\label\{(fig:[^}]*)\}", body):
+    figs_n += 1; labels[m.group(1)] = str(figs_n)
 labels["eq:lltm"] = "1"
 
 
@@ -218,6 +221,21 @@ def keep_table(m):
 
 
 body = re.sub(r"\\begin\{table\}.*?\\end\{table\}", keep_table, body, flags=re.S)
+
+
+def keep_figure(m):
+    block = m.group(0)
+    name = re.search(r"\\input\{figures/([^}.]*)(?:\.tex)?\}", block).group(1)
+    cap = re.search(r"\\caption\{(.*?)\}\n\\label", block, re.S).group(1)
+    lab = re.search(r"\\label\{([^}]*)\}", block).group(1)
+    svg = (src / "figures" / f"{name}.svg").read_text(encoding="utf-8")
+    k = f"@@TABLE{len(tables)}@@"
+    tables[k] = (f'<div class="fig figure">{svg}<p class="cap"><b>Figure {labels[lab]}.</b> '
+                 f'{inline(cap)}</p></div>')
+    return "\n\n" + k + "\n\n"
+
+
+body = re.sub(r"\\begin\{figure\}.*?\\end\{figure\}", keep_figure, body, flags=re.S)
 body = re.sub(r"\\begin\{equation\}(.*?)\\label\{([^}]*)\}\s*\\end\{equation\}|\\begin\{equation\}(.*?)\\end\{equation\}",
               lambda m: "\n\n@@EQ" + (m.group(1) or m.group(3)).strip().replace("\n", " ") + "@@EQEND\n\n", body, flags=re.S)
 eqn = [0]

@@ -1,6 +1,7 @@
-% DreamMachine -- journal draft v0.4 for review (2026-11-11). Single-weakness and multi-weakness studies.
+% DreamMachine -- journal draft v0.5 for review (2026-11-19). Single-weakness and multi-weakness studies.
 % Every number comes from the repository: docs/RUNNING.md sections 10-18 and the results.json files of the four paper
 % runs (80b37628b193, 409305f3e2f2, 76f2c9af5ea9, 4e6b61903c00). Items marked [TODO] need the authors.
+% Equivalence tests: paper/equivalence.py -> paper/equivalence.json. Figures: paper/make_figures.py -> paper/figures/.
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage[T1]{fontenc}
@@ -9,6 +10,7 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{xcolor}
+\usepackage{tikz}
 \usepackage[hidelinks]{hyperref}
 \usepackage[numbers,sort&compress]{natbib}
 
@@ -17,8 +19,9 @@
 \title{Targeting or Difficulty? Controlled Tests of Weakness-Targeted\\
 Synthetic Fine-Tuning for Small Language Models}
 \author{Attel Bhavani Prasad \and Atharv Dass \and Ajay Bhat \and Preet Hiteshkumar Patel\\[4pt]
-\small \todo{affiliation(s) and corresponding author's e-mail}}
-\date{Draft v0.4 for review, 11 November 2026}
+\small RV College of Engineering, Bengaluru, India\\[2pt]
+\small \todo{corresponding author and e-mail}}
+\date{Draft v0.5 for review, 19 November 2026}
 
 \begin{document}
 \maketitle
@@ -35,13 +38,19 @@ real-data training, untargeted generated data, data aimed at the weaknesses, and
 targeted data on predicted difficulty. We run two targeting rules: aiming at the single strongest weakness, and
 spreading the budget over all significant weaknesses in proportion to their effect. On Qwen3-0.6B and Qwen3-1.7B,
 fine-tuned with QLoRA on one 8\,GB laptop GPU, no targeted arm beats its difficulty-matched control on GSM8K or
-GSM-Symbolic (all four differences lie between $-0.023$ and $+0.011$, every interval includes zero). On held-out
+GSM-Symbolic: the four GSM8K differences lie between $-0.023$ and $+0.011$, the four GSM-Symbolic differences between
+$-0.028$ and $+0.015$, and every interval includes zero. One-sided tests rule out a targeting benefit larger than about
+4.5 points on either benchmark. On held-out
 generated problems, single-weakness targeting is worse than its control ($-0.158$ and $-0.047$), while targeting all
 weaknesses removes this deficit and gives a small gain for the smaller model ($+0.052$). Every fine-tuned arm,
-including one trained only on real problems, loses 15--24 points on GSM8K; answer-level analysis traces this to
-imitation of the terse training solutions, which leads to more planning errors, and it is largest on the longest real
-problems. The results suggest that, in this setting, difficulty and coverage explain the benefit of generated data
-better than targeting does.
+including one trained only on real problems, loses 15--24 points on GSM8K relative to the untrained model;
+answer-level analysis traces this to imitation of the terse training solutions, which leads to more planning errors,
+and it is largest on the longest real problems. The results suggest that, for supervised fine-tuning on terse
+solutions, difficulty and coverage explain the benefit of generated data better than targeting does; whether targeting
+helps under a recipe that preserves general accuracy remains open.
+
+\medskip\noindent\textbf{Keywords:} targeted data synthesis; difficulty-matched control; small language models;
+mathematical reasoning; item response theory; parameter-efficient fine-tuning
 \end{abstract}
 
 % =====================================================================================================================
@@ -232,7 +241,7 @@ model on the RTX~4060.
 \subsection{Diagnosis}
 Table~\ref{tab:diag} lists the weaknesses. For both models the number of steps has the largest effect; division is
 second. The 0.6B model answers 36\% of the probe problems correctly and the 1.7B model 64\%. Accuracy falls from 73\% at
-two steps to 14\% at seven for 0.6B, and from 89\% to 37\% for 1.7B. Carries have no significant effect once the other
+two steps to 14\% at seven for 0.6B, and from 89\% to 37\% for 1.7B (Figure~\ref{fig:steps}). Carries have no significant effect once the other
 factors are included, and magnitude matters only for the smaller model. McFadden's pseudo-$R^2$ \citep{mcfadden1974} is
 0.28 and 0.25. The single-weakness target is therefore \emph{more than four steps} for both models; the multi-weakness
 weights are $0.50/0.20/0.13/0.12/0.06$ (0.6B: steps, divisions, magnitude, multiplications, distractors) and
@@ -258,6 +267,15 @@ n\_distractors & 0.34 [0.18, 0.52] & 0.34 & 0.33 [0.15, 0.50] & 0.33 \\
 \end{tabular}
 \end{table}
 
+\begin{figure}[t]
+\centering
+\input{figures/fig_steps.tex}
+\caption{Accuracy of the untrained models on the 864 crossed probe problems by number of calculation steps (144
+problems and 432 answers per point; bars are 95\% bootstrap intervals over problems). The dashed line marks the
+single-weakness target, more than four steps.}
+\label{fig:steps}
+\end{figure}
+
 \paragraph{Match quality.} The single-weakness control for 0.6B matched all 9{,}977 targeted problems closely (mean
 $|\Delta\text{logit}| = 0.006$, KS $= 0.034$). For 1.7B the match was looser (mean $|\Delta\text{logit}| = 0.32$, KS $= 0.27$); this comparison is the weakest in the study (Section~\ref{sec:limits}). The
 multi-weakness controls, drawn from a larger pool without feature restriction, matched almost exactly for both models
@@ -269,9 +287,11 @@ study's question: does targeting beat difficulty-matched data?
 
 \begin{table}[t]
 \centering
-\caption{Accuracy, mean of three seeds; in brackets the change versus the untrained model on identical problems. All
-GSM8K and GSM-Symbolic changes have their 95\% interval below zero. Probes are generated problems from the training
-(train) or held-out families; ``$>4$'' is the held-out slice with more than four steps.}
+\caption{Accuracy, mean of three seeds; in brackets the change versus the untrained model, paired on the problems
+every fine-tuned model answered (300 GSM8K, 200 GSM-Symbolic). The untrained row gives accuracy on all problems it
+answered (1{,}319 and 500 for 0.6B; 660 and 300 for 1.7B), so it can differ slightly from fine-tuned accuracy plus the
+change. All GSM8K and GSM-Symbolic changes have their 95\% interval below zero. Probes are generated problems from the
+training (train) or held-out families; ``$>4$'' is the held-out slice with more than four steps.}
 \label{tab:main}
 \small
 \begin{tabular}{llccccc}
@@ -332,14 +352,58 @@ Comparison & Benchmark & Qwen3-0.6B & Qwen3-1.7B \\
 
 \paragraph{Result 1: no targeting benefit on real benchmarks.} For both models and both targeting rules, the targeted
 arm and its difficulty-matched control are indistinguishable on GSM8K and GSM-Symbolic: the four GSM8K differences lie
-between $-0.023$ and $+0.011$ and every interval includes zero. Targeted arms are also indistinguishable from
-untargeted generated data and from real-only training on these benchmarks (for example, 0.6B targeted minus untargeted
-on GSM8K: $-0.011$ [$-0.038$, $+0.017$]).
+between $-0.023$ and $+0.011$, the four GSM-Symbolic differences between $-0.028$ and $+0.015$, and every interval
+includes zero (Figure~\ref{fig:forest}). Targeted arms are also indistinguishable from untargeted generated data and
+from real-only training on these benchmarks (for example, 0.6B targeted minus untargeted on GSM8K: $-0.011$
+[$-0.038$, $+0.017$]).
+
+\paragraph{How large a benefit can be excluded?} A non-significant difference is not evidence of no effect, so we
+also ran two one-sided tests (TOST) on the same paired bootstrap, with 90\% intervals (Table~\ref{tab:equiv}). We
+took three accuracy points as the smallest effect of interest. This margin was set after the main results were known,
+so for every comparison we also report the smallest margin it would pass. Equivalence within $\pm3$ points is shown
+only for the 1.7B multi-weakness comparison on GSM8K; the other seven comparisons pass at margins of 3.0 to 5.7 points,
+so our data cannot exclude small effects in either direction. They do exclude a substantial benefit: the upper end of
+the 90\% interval, a one-sided 95\% bound on the gain from targeting, is at most $+0.034$ on GSM8K and $+0.045$ on
+GSM-Symbolic.
+
+\begin{table}[t]
+\centering
+\caption{Equivalence tests of targeted minus difficulty-matched control: 90\% paired bootstrap interval, the smallest
+margin $\delta$ for which the TOST at $\alpha=0.05$ would show equivalence, and the TOST $p$-value for $\delta=0.03$.
+Generated by \texttt{paper/equivalence.py} from the stored per-answer files; the 95\% intervals it recomputes match
+Table~\ref{tab:primary} exactly.}
+\label{tab:equiv}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{3}{c}{GSM8K} & \multicolumn{3}{c}{GSM-Symbolic} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Comparison & 90\% CI & $\delta$ & $p$ & 90\% CI & $\delta$ & $p$ \\
+\midrule
+Single weakness, 0.6B & [$-0.034$, $+0.011$] & 0.034 & 0.11 & [$-0.030$, $+0.027$] & 0.030 & 0.055 \\
+Single weakness, 1.7B & [$-0.012$, $+0.034$] & 0.034 & 0.10 & [$-0.013$, $+0.045$] & 0.045 & 0.21 \\
+Multi-weakness, 0.6B  & [$-0.047$, $+0.001$] & 0.047 & 0.34 & [$-0.057$, $+0.002$] & 0.057 & 0.47 \\
+Multi-weakness, 1.7B  & [$-0.016$, $+0.029$] & 0.029 & 0.048 & [$-0.022$, $+0.037$] & 0.037 & 0.12 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\input{figures/fig_forest.tex}
+\caption{Targeted minus difficulty-matched control for the four comparisons (mean of three seeds, 95\% paired
+bootstrap interval). The shaded band is the $\pm3$-point margin used in Table~\ref{tab:equiv}. Held-out probes are
+generated problems from story families not used in training.}
+\label{fig:forest}
+\end{figure}
 
 \paragraph{Result 2: single-weakness targeting loses to its control on held-out generated problems.} On problems from
 the two held-out families, the single-weakness arm is below its control for both models; for 0.6B it is below even on
 the slice it was aimed at (problems with more than four steps: 0.54 versus 0.65). More synthetic data (9:1) narrows but
-does not close the gap.
+does not close the gap. All probe results, here and below, need one caveat: probes come from the same generator as the
+generated training data. Holding out two story families removes shared wording, but not the shared problem structure
+and answer format, so part of every probe gain may be learning of the generator's format rather than of the skill. The
+real benchmarks carry no such bias, which is why we treat them as the primary outcome.
 
 \paragraph{Result 3: targeting all weaknesses removes this deficit.} For 0.6B, multi-weakness targeting is far better
 than single-weakness targeting on generated problems ($+0.168$ held-out) and slightly better than its own control
@@ -403,16 +467,21 @@ planning than on the arithmetic structure our generator controls.
 
 \subsection{The shared cost: imitation of terse solutions}
 \label{sec:cost}
-Every fine-tuned arm loses 14--24 points on GSM8K and GSM-Symbolic, including real\_only, which saw no generated data.
-Before the main runs, an exploratory development study on 0.6B (200 held-out GSM8K training problems, one seed) found
-that the loss did not depend on the settings we varied: a four-times lower learning rate, a single epoch or a larger
+Every fine-tuned arm loses 15--24 points on GSM8K relative to the untrained model (14--19 points on GSM-Symbolic),
+including real\_only, which saw no generated data ($-0.20$ for 0.6B, $-0.15$ for 1.7B). Because the loss is shared by
+every arm, it does not bias the comparison between targeted and control data; it does, however, define the scope of
+our conclusions, which hold for supervised fine-tuning on terse solutions.
+
+\paragraph{Exploratory ablation (not part of the paper runs).} Before the main runs, a development study on 0.6B (200
+held-out GSM8K training problems, one seed) found that the loss did not depend on the settings we varied: a four-times
+lower learning rate, a single epoch or a larger
 share of real data all left it between $-0.20$ and $-0.24$. A longer fixed solution template made it worse ($-0.28$),
 because the model repeated the template until the token limit. Only training on the base model's own verified solutions
 reduced it, to $-0.115$ with 65\% and $-0.08$ with 85\% model-written tokens, but this also removed most of the gain on
 generated problems ($+0.26$ fell to $+0.10$ and $+0.08$), consistent with self-distillation results on other tasks
 \citep{yang2024sdft}.
 
-To locate the loss we compared, answer by answer, each fine-tuned model with the untrained model on the same 300 GSM8K
+\paragraph{Answer-level analysis.} To locate the loss we compared, answer by answer, each fine-tuned model with the untrained model on the same 300 GSM8K
 problems (Table~\ref{tab:cost}). Answer extraction is not the cause: almost no answer from either model lacks an
 extractable final number. The fine-tuned models write about four lines instead of 25--30, in the format of the training
 solutions. The untrained model usually begins by listing every given quantity and then works through one step per
@@ -426,7 +495,9 @@ counts too many slips and too few plan errors, so the slip shares are best read 
 \begin{table}[t]
 \centering
 \caption{Answer-level comparison on the same 300 GSM8K test problems: untrained model versus the 15 fine-tuned models
-of each single-weakness run. ``Lost'' = correct before, wrong after. False-equation rates are approximate, since
+of each single-weakness run. Ranges for fine-tuned models span the 15 individual models (arm means, as in
+Table~\ref{tab:main}: 0.42--0.46 and 0.65--0.67). The untrained accuracy here is on these 300 problems, so it differs
+from Table~\ref{tab:main}. ``Lost'' = correct before, wrong after. False-equation rates are approximate, since
 \LaTeX\ equations of the untrained model are parsed less reliably. Error types are automatic labels
 (Section~\ref{sec:labelcheck}).}
 \label{tab:cost}
@@ -437,7 +508,7 @@ of each single-weakness run. ``Lost'' = correct before, wrong after. False-equat
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}
 & untrained & fine-tuned & untrained & fine-tuned \\
 \midrule
-Accuracy                       & 0.660 & 0.39--0.49 & 0.813 & 0.65--0.70 \\
+Accuracy (individual models)   & 0.660 & 0.39--0.49 & 0.813 & 0.65--0.70 \\
 Median answer length (chars)   & 728   & $\approx$215 & 808 & $\approx$210 \\
 Median non-empty lines         & 25    & 4 & 30 & 4 \\
 False equations per 100        & 5.8   & 6--14 & 5.0 & 4--9 \\
@@ -518,6 +589,16 @@ and the slip shares should be treated as upper bounds.
   synthetic content, drives the loss.
 \end{itemize}
 
+\paragraph{Finding: under an additive difficulty model, targeting every weakness converges to matching difficulty.}
+If difficulty is a weighted sum of factors, as in Eq.~\eqref{eq:lltm}, then data aimed at all significant factors in
+proportion to their effects is hard for the same reasons that make any equally hard data hard. A difficulty-matched
+control drawn without restriction then carries a similar factor mix, and the two arms converge by construction. What
+remains for targeting to change is the \emph{allocation} of the budget across factors, not the difficulty itself. Our
+data fit this reading: the only significant difference between the multi-weakness arms ($+0.052$ for 0.6B on held-out
+probes) appears where their factor mixes differ most (more long problems in the targeted arm), and for 1.7B, whose arms
+have almost the same mix and whose probes are near their ceiling, there is no difference. A direct test would build arms
+with equal predicted difficulty that differ only in factor mix.
+
 \paragraph{Implications for targeted synthesis.} Comparisons of targeted data with random data can overstate the value
 of targeting. In our controlled setting, the benefit of generated data is explained by difficulty and coverage rather
 than by aiming at diagnosed weaknesses. With an additive difficulty model, targeting all weaknesses and matching
@@ -542,8 +623,9 @@ asked again without the shared cost.
   \item \textbf{Ceiling effects.} Fine-tuned 1.7B models answer 87--97\% of generated probes, which limits how well arms
   can be separated on probes and makes post-training LLTM refits unreliable for that model.
   \item \textbf{Statistical power.} With 300 GSM8K and 200 GSM-Symbolic problems per model, paired intervals are about
-  $\pm3$ points; effects of one to two points would not be detected. The long-problem analysis uses only 50 problems
-  and is descriptive.
+  $\pm3$ points; effects of one to two points would not be detected, and equivalence within $\pm3$ points is shown for
+  only one of eight comparisons (Table~\ref{tab:equiv}). Re-evaluating the same adapters on the full GSM8K test set
+  would roughly halve the interval width. The long-problem analysis uses only 50 problems and is descriptive.
   \item \textbf{Error labels} agree only fairly with an independent LLM annotator ($\kappa = 0.33$, or 0.39 after the parser
   corrections;
   Section~\ref{sec:labelcheck}), and no human annotation was done. Error-type shares are therefore descriptive, and
@@ -552,8 +634,7 @@ asked again without the shared cost.
   \item \textbf{Scope.} One task family, one model family, one training recipe (QLoRA supervised fine-tuning on terse
   solutions) and three seeds per arm.
   \item \textbf{Synthetic text.} Generated problems read less naturally than human-written ones, and probes share the
-  generator with training data, so part of the probe gains may be format learning; held-out families reduce but do not
-  remove this.
+  generator with training data (see the caveat in the Results); human-written held-out probes would remove this doubt.
 \end{itemize}
 
 \section{Conclusion}
@@ -562,8 +643,11 @@ supplies harder data. With exact skill profiles, an LLTM diagnosis and a one-to-
 targeting rules on two Qwen3 models give a consistent answer: targeting did not improve real-benchmark accuracy over
 equally hard data. Aiming at a single weakness narrowed coverage and lost to its control on new generated problems;
 aiming at all weaknesses repaired this but, by construction, became nearly the same as matching difficulty. Separately,
-every supervised arm lost substantial real-benchmark accuracy by imitating terse solutions. We recommend that claims
-for targeted data synthesis be tested against difficulty-matched controls, together with a check of general accuracy.
+every supervised arm lost 15--24 points of GSM8K accuracy by imitating terse solutions, so our conclusion is scoped to
+supervised fine-tuning on terse solutions. The first open question is whether targeting helps under a recipe that
+keeps general accuracy, for example solutions written by a stronger teacher and filtered by the generator's exact
+answers, or reinforcement learning with the generator as reward. We recommend that claims for targeted data synthesis
+be tested against difficulty-matched controls, together with a check of general accuracy.
 
 \paragraph{Data and code availability.} Code, configurations, run records and per-answer outputs are available in the
 public project repository, \url{https://github.com/yorudamn12/EL-MAIN} (branch
@@ -579,10 +663,14 @@ not-for-profit sectors.
 
 \paragraph{Competing interests.} The authors declare no competing interests.
 
-\paragraph{Use of AI tools.} An AI assistant (Claude, Anthropic) was used to help write software, run analyses and
-draft and edit the text, and the same model served as the independent annotator for the error-label check
-(Section~\ref{sec:labelcheck}). All experimental numbers come from the logged runs, and the authors checked the
-results, the references and the text and take full responsibility for the content.
+\paragraph{Use of AI tools.} An AI assistant (Claude, Anthropic) was used in three roles. (i) Software: it helped
+write and test the code of the pipeline (problem generator, diagnosis, training and evaluation scripts) and the analysis
+scripts, including the equivalence tests and figures. (ii) Text: it helped draft and edit the manuscript and check
+references against their sources. (iii) Annotation: a separate instance (Claude Opus 5.5) labelled the 300 answers of
+the error-label check blind to the classifier (Section~\ref{sec:labelcheck}; \texttt{paper/annotation/}); it is an
+LLM, not a human annotator. The study design and all decisions were the authors'. All experimental numbers come from the
+logged runs on the authors' hardware; the authors checked the results, the references and the text, can
+explain every claim, and take full responsibility for the content.
 
 \bibliographystyle{plainnat}
 \bibliography{references}

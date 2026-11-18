@@ -24,12 +24,14 @@
   tr.sep td { border-top: 0.6pt solid #000; }
   .cap { font-size: 9.2pt; margin: 10pt 4% 2pt; text-align: justify; }
   .fig { break-inside: avoid; margin-bottom: 10pt; }
+  .figure svg { display: block; margin: 4pt auto; max-width: 100%; height: auto; }
   .refs p { font-size: 9.4pt; text-align: left; margin-bottom: 4pt; padding-left: 22pt; text-indent: -22pt; }
   .sc { font-variant: small-caps; }
 </style></head><body>
 <h1>Targeting or Difficulty? Controlled Tests of Weakness-Targeted<br>
 Synthetic Fine-Tuning for Small Language Models</h1><div class="meta">Attel Bhavani Prasad, Atharv Dass, Ajay Bhat, Preet Hiteshkumar Patel<br>
- <span class="todo">[TODO: affiliation(s) and corresponding author's e-mail]</span><br>Draft v0.4 for review, 11 November 2026</div>
+ RV College of Engineering, Bengaluru, India<br>
+ <span class="todo">[TODO: corresponding author and e-mail]</span><br>Draft v0.5 for review, 19 November 2026</div>
 <div class="abstract"><h3>Abstract</h3><p>Methods that diagnose a language model's weaknesses and then fine-tune it on data built around them usually compare
 the targeted data with random or untargeted data. Targeted data is harder for the model by construction, so such
 comparisons cannot say whether a gain comes from aiming at the right skill or simply from training on harder
@@ -41,13 +43,19 @@ real-data training, untargeted generated data, data aimed at the weaknesses, and
 targeted data on predicted difficulty. We run two targeting rules: aiming at the single strongest weakness, and
 spreading the budget over all significant weaknesses in proportion to their effect. On Qwen3-0.6B and Qwen3-1.7B,
 fine-tuned with QLoRA on one 8&thinsp;GB laptop GPU, no targeted arm beats its difficulty-matched control on GSM8K or
-GSM-Symbolic (all four differences lie between &minus;0.023 and +0.011, every interval includes zero). On held-out
+GSM-Symbolic: the four GSM8K differences lie between &minus;0.023 and +0.011, the four GSM-Symbolic differences between
+&minus;0.028 and +0.015, and every interval includes zero. One-sided tests rule out a targeting benefit larger than about
+4.5 points on either benchmark. On held-out
 generated problems, single-weakness targeting is worse than its control (&minus;0.158 and &minus;0.047), while targeting all
 weaknesses removes this deficit and gives a small gain for the smaller model (+0.052). Every fine-tuned arm,
-including one trained only on real problems, loses 15&ndash;24 points on GSM8K; answer-level analysis traces this to
-imitation of the terse training solutions, which leads to more planning errors, and it is largest on the longest real
-problems. The results suggest that, in this setting, difficulty and coverage explain the benefit of generated data
-better than targeting does.</p></div>
+including one trained only on real problems, loses 15&ndash;24 points on GSM8K relative to the untrained model;
+answer-level analysis traces this to imitation of the terse training solutions, which leads to more planning errors,
+and it is largest on the longest real problems. The results suggest that, for supervised fine-tuning on terse
+solutions, difficulty and coverage explain the benefit of generated data better than targeting does; whether targeting
+helps under a recipe that preserves general accuracy remains open.
+
+<br><br><b>Keywords:</b> targeted data synthesis; difficulty-matched control; small language models;
+mathematical reasoning; item response theory; parameter-efficient fine-tuning</p></div>
 
 <h2>1&nbsp;&nbsp;Introduction</h2>
 <p>Small open language models, with fewer than about two billion parameters, can be fine-tuned on a single consumer GPU.
@@ -178,7 +186,7 @@ model on the RTX&nbsp;4060.</p>
 <h2>5&nbsp;&nbsp;Results</h2>
 <h3 class="sub">5.1&nbsp;&nbsp;Diagnosis</h3><p>Table&nbsp;1 lists the weaknesses. For both models the number of steps has the largest effect; division is
 second. The 0.6B model answers 36% of the probe problems correctly and the 1.7B model 64%. Accuracy falls from 73% at
-two steps to 14% at seven for 0.6B, and from 89% to 37% for 1.7B. Carries have no significant effect once the other
+two steps to 14% at seven for 0.6B, and from 89% to 37% for 1.7B (Figure&nbsp;1). Carries have no significant effect once the other
 factors are included, and magnitude matters only for the smaller model. McFadden's pseudo-<i>R</i><sup>2</sup> [32] is
 0.28 and 0.25. The single-weakness target is therefore <em>more than four steps</em> for both models; the multi-weakness
 weights are 0.50/0.20/0.13/0.12/0.06 (0.6B: steps, divisions, magnitude, multiplications, distractors) and
@@ -195,15 +203,84 @@ range-normalised effect <i>E</i>. Only factors whose interval excludes zero are 
 <tr><td class="l">n_mul</td><td class="l">0.36 [0.15, 0.60]</td><td>0.72</td><td>0.27 [0.08, 0.48]</td><td>0.53</td></tr>
 <tr><td class="l">n_distractors</td><td class="l">0.34 [0.18, 0.52]</td><td>0.34</td><td>0.33 [0.15, 0.50]</td><td>0.33</td></tr>
 </tbody></table></div>
+<div class="fig figure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 190" width="400" height="253" font-family="Helvetica, Arial, sans-serif">
+<line x1="40.00" y1="158.00" x2="290.00" y2="158.00" stroke="rgb(215,215,215)" stroke-width="0.4"/>
+<text x="35.00" y="158.00" font-size="7" fill="rgb(0,0,0)" text-anchor="end" dominant-baseline="central">0.0</text>
+<line x1="40.00" y1="128.80" x2="290.00" y2="128.80" stroke="rgb(215,215,215)" stroke-width="0.4"/>
+<text x="35.00" y="128.80" font-size="7" fill="rgb(0,0,0)" text-anchor="end" dominant-baseline="central">0.2</text>
+<line x1="40.00" y1="99.60" x2="290.00" y2="99.60" stroke="rgb(215,215,215)" stroke-width="0.4"/>
+<text x="35.00" y="99.60" font-size="7" fill="rgb(0,0,0)" text-anchor="end" dominant-baseline="central">0.4</text>
+<line x1="40.00" y1="70.40" x2="290.00" y2="70.40" stroke="rgb(215,215,215)" stroke-width="0.4"/>
+<text x="35.00" y="70.40" font-size="7" fill="rgb(0,0,0)" text-anchor="end" dominant-baseline="central">0.6</text>
+<line x1="40.00" y1="41.20" x2="290.00" y2="41.20" stroke="rgb(215,215,215)" stroke-width="0.4"/>
+<text x="35.00" y="41.20" font-size="7" fill="rgb(0,0,0)" text-anchor="end" dominant-baseline="central">0.8</text>
+<line x1="40.00" y1="12.00" x2="290.00" y2="12.00" stroke="rgb(215,215,215)" stroke-width="0.4"/>
+<text x="35.00" y="12.00" font-size="7" fill="rgb(0,0,0)" text-anchor="end" dominant-baseline="central">1.0</text>
+<line x1="40.00" y1="158.00" x2="290.00" y2="158.00" stroke="rgb(0,0,0)" stroke-width="0.6"/>
+<line x1="40.00" y1="12.00" x2="40.00" y2="158.00" stroke="rgb(0,0,0)" stroke-width="0.6"/>
+<line x1="54.00" y1="158.00" x2="54.00" y2="161.00" stroke="rgb(0,0,0)" stroke-width="0.6"/>
+<text x="54.00" y="168.00" font-size="7" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central">2</text>
+<line x1="98.40" y1="158.00" x2="98.40" y2="161.00" stroke="rgb(0,0,0)" stroke-width="0.6"/>
+<text x="98.40" y="168.00" font-size="7" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central">3</text>
+<line x1="142.80" y1="158.00" x2="142.80" y2="161.00" stroke="rgb(0,0,0)" stroke-width="0.6"/>
+<text x="142.80" y="168.00" font-size="7" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central">4</text>
+<line x1="187.20" y1="158.00" x2="187.20" y2="161.00" stroke="rgb(0,0,0)" stroke-width="0.6"/>
+<text x="187.20" y="168.00" font-size="7" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central">5</text>
+<line x1="231.60" y1="158.00" x2="231.60" y2="161.00" stroke="rgb(0,0,0)" stroke-width="0.6"/>
+<text x="231.60" y="168.00" font-size="7" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central">6</text>
+<line x1="276.00" y1="158.00" x2="276.00" y2="161.00" stroke="rgb(0,0,0)" stroke-width="0.6"/>
+<text x="276.00" y="168.00" font-size="7" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central">7</text>
+<line x1="165.00" y1="12.00" x2="165.00" y2="158.00" stroke="rgb(110,110,110)" stroke-width="0.6" stroke-dasharray="3 2"/>
+<text x="168.00" y="17.00" font-size="6.5" fill="rgb(110,110,110)" text-anchor="start" dominant-baseline="central">target: &gt; 4 steps</text>
+<text x="165.00" y="182.00" font-size="7.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central">Number of calculation steps</text>
+<text x="12.00" y="85.00" font-size="7.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" transform="rotate(-90 12.00 85.00)">Accuracy (untrained model)</text>
+<polyline fill="none" stroke="rgb(43,108,176)" stroke-width="1.0" points="51.50,51.20 95.90,81.28 140.30,100.88 184.70,127.25 229.10,137.05 273.50,137.72"/>
+<line x1="51.50" y1="59.99" x2="51.50" y2="42.75" stroke="rgb(43,108,176)" stroke-width="0.7"/>
+<circle cx="51.50" cy="51.20" r="2.10" fill="rgb(43,108,176)"/>
+<line x1="95.90" y1="91.42" x2="95.90" y2="71.14" stroke="rgb(43,108,176)" stroke-width="0.7"/>
+<circle cx="95.90" cy="81.28" r="2.10" fill="rgb(43,108,176)"/>
+<line x1="140.30" y1="110.69" x2="140.30" y2="91.42" stroke="rgb(43,108,176)" stroke-width="0.7"/>
+<circle cx="140.30" cy="100.88" r="2.10" fill="rgb(43,108,176)"/>
+<line x1="184.70" y1="134.68" x2="184.70" y2="119.81" stroke="rgb(43,108,176)" stroke-width="0.7"/>
+<circle cx="184.70" cy="127.25" r="2.10" fill="rgb(43,108,176)"/>
+<line x1="229.10" y1="143.47" x2="229.10" y2="130.29" stroke="rgb(43,108,176)" stroke-width="0.7"/>
+<circle cx="229.10" cy="137.05" r="2.10" fill="rgb(43,108,176)"/>
+<line x1="273.50" y1="143.14" x2="273.50" y2="131.64" stroke="rgb(43,108,176)" stroke-width="0.7"/>
+<circle cx="273.50" cy="137.72" r="2.10" fill="rgb(43,108,176)"/>
+<line x1="218.00" y1="34.00" x2="232.00" y2="34.00" stroke="rgb(43,108,176)" stroke-width="1.0"/>
+<circle cx="225.00" cy="34.00" r="2.10" fill="rgb(43,108,176)"/>
+<text x="237.00" y="34.00" font-size="7" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central">Qwen3-0.6B</text>
+<polyline fill="none" stroke="rgb(192,86,33)" stroke-width="1.0" points="56.50,27.88 100.90,44.78 145.30,52.56 189.70,65.74 234.10,93.79 278.50,103.59"/>
+<line x1="56.50" y1="34.31" x2="56.50" y2="22.14" stroke="rgb(192,86,33)" stroke-width="0.7"/>
+<rect x="54.40" y="25.78" width="4.20" height="4.20" fill="rgb(192,86,33)"/>
+<line x1="100.90" y1="53.57" x2="100.90" y2="36.33" stroke="rgb(192,86,33)" stroke-width="0.7"/>
+<rect x="98.80" y="42.68" width="4.20" height="4.20" fill="rgb(192,86,33)"/>
+<line x1="145.30" y1="61.68" x2="145.30" y2="43.43" stroke="rgb(192,86,33)" stroke-width="0.7"/>
+<rect x="143.20" y="50.46" width="4.20" height="4.20" fill="rgb(192,86,33)"/>
+<line x1="189.70" y1="75.20" x2="189.70" y2="56.27" stroke="rgb(192,86,33)" stroke-width="0.7"/>
+<rect x="187.60" y="63.64" width="4.20" height="4.20" fill="rgb(192,86,33)"/>
+<line x1="234.10" y1="103.59" x2="234.10" y2="83.65" stroke="rgb(192,86,33)" stroke-width="0.7"/>
+<rect x="232.00" y="91.69" width="4.20" height="4.20" fill="rgb(192,86,33)"/>
+<line x1="278.50" y1="112.38" x2="278.50" y2="94.46" stroke="rgb(192,86,33)" stroke-width="0.7"/>
+<rect x="276.40" y="101.49" width="4.20" height="4.20" fill="rgb(192,86,33)"/>
+<line x1="218.00" y1="46.00" x2="232.00" y2="46.00" stroke="rgb(192,86,33)" stroke-width="1.0"/>
+<rect x="222.90" y="43.90" width="4.20" height="4.20" fill="rgb(192,86,33)"/>
+<text x="237.00" y="46.00" font-size="7" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central">Qwen3-1.7B</text>
+</svg>
+<p class="cap"><b>Figure 1.</b> Accuracy of the untrained models on the 864 crossed probe problems by number of calculation steps (144
+problems and 432 answers per point; bars are 95% bootstrap intervals over problems). The dashed line marks the
+single-weakness target, more than four steps.</p></div>
 <p><span class="para">Match quality.</span>  The single-weakness control for 0.6B matched all 9,977 targeted problems closely (mean
 |&Delta;logit| = 0.006, KS = 0.034). For 1.7B the match was looser (mean |&Delta;logit| = 0.32, KS = 0.27); this comparison is the weakest in the study (Section&nbsp;7). The
 multi-weakness controls, drawn from a larger pool without feature restriction, matched almost exactly for both models
 (mean |&Delta;logit| &le; 0.0002, KS &le; 0.002 for every seed).</p>
 <h3 class="sub">5.2&nbsp;&nbsp;Main comparison</h3><p>Table&nbsp;2 gives accuracy for every arm and Table&nbsp;3 the paired comparisons that answer the
 study's question: does targeting beat difficulty-matched data?</p>
-<div class="fig"><p class="cap"><b>Table 2.</b> Accuracy, mean of three seeds; in brackets the change versus the untrained model on identical problems. All
-GSM8K and GSM-Symbolic changes have their 95% interval below zero. Probes are generated problems from the training
-(train) or held-out families; &ldquo;>4&rdquo; is the held-out slice with more than four steps.</p><table>
+<div class="fig"><p class="cap"><b>Table 2.</b> Accuracy, mean of three seeds; in brackets the change versus the untrained model, paired on the problems
+every fine-tuned model answered (300 GSM8K, 200 GSM-Symbolic). The untrained row gives accuracy on all problems it
+answered (1,319 and 500 for 0.6B; 660 and 300 for 1.7B), so it can differ slightly from fine-tuned accuracy plus the
+change. All GSM8K and GSM-Symbolic changes have their 95% interval below zero. Probes are generated problems from the
+training (train) or held-out families; &ldquo;>4&rdquo; is the held-out slice with more than four steps.</p><table>
 <thead>
 <tr><th class="l">Model</th><th class="l">Arm</th><th>GSM8K</th><th>GSM-Sym.</th><th>Probes train</th><th>Probes held-out</th><th>Held-out >4</th></tr>
 </thead><tbody>
@@ -242,13 +319,94 @@ its difficulty-matched control. Row 3: multi-weakness minus single-weakness targ
 </tbody></table></div>
 <p><span class="para">Result 1: no targeting benefit on real benchmarks.</span>  For both models and both targeting rules, the targeted
 arm and its difficulty-matched control are indistinguishable on GSM8K and GSM-Symbolic: the four GSM8K differences lie
-between &minus;0.023 and +0.011 and every interval includes zero. Targeted arms are also indistinguishable from
-untargeted generated data and from real-only training on these benchmarks (for example, 0.6B targeted minus untargeted
-on GSM8K: &minus;0.011 [&minus;0.038, +0.017]).</p>
+between &minus;0.023 and +0.011, the four GSM-Symbolic differences between &minus;0.028 and +0.015, and every interval
+includes zero (Figure&nbsp;2). Targeted arms are also indistinguishable from untargeted generated data and
+from real-only training on these benchmarks (for example, 0.6B targeted minus untargeted on GSM8K: &minus;0.011
+[&minus;0.038, +0.017]).</p>
+<p><span class="para">How large a benefit can be excluded?</span>  A non-significant difference is not evidence of no effect, so we
+also ran two one-sided tests (TOST) on the same paired bootstrap, with 90% intervals (Table&nbsp;4). We
+took three accuracy points as the smallest effect of interest. This margin was set after the main results were known,
+so for every comparison we also report the smallest margin it would pass. Equivalence within &plusmn;3 points is shown
+only for the 1.7B multi-weakness comparison on GSM8K; the other seven comparisons pass at margins of 3.0 to 5.7 points,
+so our data cannot exclude small effects in either direction. They do exclude a substantial benefit: the upper end of
+the 90% interval, a one-sided 95% bound on the gain from targeting, is at most +0.034 on GSM8K and +0.045 on
+GSM-Symbolic.</p>
+<div class="fig"><p class="cap"><b>Table 4.</b> Equivalence tests of targeted minus difficulty-matched control: 90% paired bootstrap interval, the smallest
+margin &delta; for which the TOST at &alpha;=0.05 would show equivalence, and the TOST <i>p</i>-value for &delta;=0.03.
+Generated by <span class="tt">paper/equivalence.py</span> from the stored per-answer files; the 95% intervals it recomputes match
+Table&nbsp;3 exactly.</p><table>
+<thead>
+<tr><th class="l"></th><th colspan="3">GSM8K</th><th colspan="3">GSM-Symbolic</th></tr>
+<tr><th class="l">Comparison</th><th class="l">90% CI</th><th>&delta;</th><th><i>p</i></th><th>90% CI</th><th>&delta;</th><th><i>p</i></th></tr>
+</thead><tbody>
+<tr><td class="l">Single weakness, 0.6B</td><td class="l">[&minus;0.034, +0.011]</td><td>0.034</td><td>0.11</td><td>[&minus;0.030, +0.027]</td><td>0.030</td><td>0.055</td></tr>
+<tr><td class="l">Single weakness, 1.7B</td><td class="l">[&minus;0.012, +0.034]</td><td>0.034</td><td>0.10</td><td>[&minus;0.013, +0.045]</td><td>0.045</td><td>0.21</td></tr>
+<tr><td class="l">Multi-weakness, 0.6B</td><td class="l">[&minus;0.047, +0.001]</td><td>0.047</td><td>0.34</td><td>[&minus;0.057, +0.002]</td><td>0.057</td><td>0.47</td></tr>
+<tr><td class="l">Multi-weakness, 1.7B</td><td class="l">[&minus;0.016, +0.029]</td><td>0.029</td><td>0.048</td><td>[&minus;0.022, +0.037]</td><td>0.037</td><td>0.12</td></tr>
+</tbody></table></div>
+<div class="fig figure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 252" width="533" height="336" font-family="Helvetica, Arial, sans-serif">
+<rect x="282.00" y="14.00" width="36.00" height="208.00" fill="rgb(226,236,246)"/>
+<line x1="180.00" y1="14.00" x2="180.00" y2="222.00" stroke="rgb(215,215,215)" stroke-width="0.4" stroke-dasharray="3 2"/>
+<text x="180.00" y="231.00" font-size="7" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central">−0.2</text>
+<line x1="240.00" y1="14.00" x2="240.00" y2="222.00" stroke="rgb(215,215,215)" stroke-width="0.4" stroke-dasharray="3 2"/>
+<text x="240.00" y="231.00" font-size="7" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central">−0.1</text>
+<line x1="300.00" y1="14.00" x2="300.00" y2="222.00" stroke="rgb(110,110,110)" stroke-width="0.7"/>
+<text x="300.00" y="231.00" font-size="7" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central">0</text>
+<line x1="360.00" y1="14.00" x2="360.00" y2="222.00" stroke="rgb(215,215,215)" stroke-width="0.4" stroke-dasharray="3 2"/>
+<text x="360.00" y="231.00" font-size="7" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central">+0.1</text>
+<line x1="150.00" y1="222.00" x2="390.00" y2="222.00" stroke="rgb(0,0,0)" stroke-width="0.6"/>
+<text x="270.00" y="243.00" font-size="7.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central">Targeted − difficulty-matched control (accuracy, 95% CI)</text>
+<text x="6.00" y="22.00" font-size="7.5" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central" font-weight="bold">GSM8K</text>
+<text x="14.00" y="32.00" font-size="7" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central">Single weakness, 0.6B</text>
+<line x1="276.67" y1="32.00" x2="308.67" y2="32.00" stroke="rgb(43,108,176)" stroke-width="1.0"/>
+<circle cx="292.67" cy="32.00" r="2.20" fill="rgb(43,108,176)"/>
+<text x="14.00" y="45.00" font-size="7" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central">Single weakness, 1.7B</text>
+<line x1="290.00" y1="45.00" x2="323.33" y2="45.00" stroke="rgb(192,86,33)" stroke-width="1.0"/>
+<rect x="304.47" y="42.80" width="4.40" height="4.40" fill="rgb(192,86,33)"/>
+<text x="14.00" y="58.00" font-size="7" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central">Multi-weakness, 0.6B</text>
+<line x1="269.33" y1="58.00" x2="303.33" y2="58.00" stroke="rgb(43,108,176)" stroke-width="1.0"/>
+<circle cx="286.00" cy="58.00" r="2.20" fill="rgb(43,108,176)"/>
+<text x="14.00" y="71.00" font-size="7" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central">Multi-weakness, 1.7B</text>
+<line x1="288.00" y1="71.00" x2="320.00" y2="71.00" stroke="rgb(192,86,33)" stroke-width="1.0"/>
+<rect x="301.80" y="68.80" width="4.40" height="4.40" fill="rgb(192,86,33)"/>
+<text x="6.00" y="90.00" font-size="7.5" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central" font-weight="bold">GSM-Symbolic</text>
+<text x="14.00" y="100.00" font-size="7" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central">Single weakness, 0.6B</text>
+<line x1="278.00" y1="100.00" x2="319.00" y2="100.00" stroke="rgb(43,108,176)" stroke-width="1.0"/>
+<circle cx="299.00" cy="100.00" r="2.20" fill="rgb(43,108,176)"/>
+<text x="14.00" y="113.00" font-size="7" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central">Single weakness, 1.7B</text>
+<line x1="288.00" y1="113.00" x2="330.00" y2="113.00" stroke="rgb(192,86,33)" stroke-width="1.0"/>
+<rect x="306.80" y="110.80" width="4.40" height="4.40" fill="rgb(192,86,33)"/>
+<text x="14.00" y="126.00" font-size="7" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central">Multi-weakness, 0.6B</text>
+<line x1="262.00" y1="126.00" x2="304.00" y2="126.00" stroke="rgb(43,108,176)" stroke-width="1.0"/>
+<circle cx="283.00" cy="126.00" r="2.20" fill="rgb(43,108,176)"/>
+<text x="14.00" y="139.00" font-size="7" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central">Multi-weakness, 1.7B</text>
+<line x1="284.00" y1="139.00" x2="326.00" y2="139.00" stroke="rgb(192,86,33)" stroke-width="1.0"/>
+<rect x="302.80" y="136.80" width="4.40" height="4.40" fill="rgb(192,86,33)"/>
+<text x="6.00" y="158.00" font-size="7.5" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central" font-weight="bold">Held-out probes</text>
+<text x="14.00" y="168.00" font-size="7" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central">Single weakness, 0.6B</text>
+<line x1="165.19" y1="168.00" x2="246.67" y2="168.00" stroke="rgb(43,108,176)" stroke-width="1.0"/>
+<circle cx="205.19" cy="168.00" r="2.20" fill="rgb(43,108,176)"/>
+<text x="14.00" y="181.00" font-size="7" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central">Single weakness, 1.7B</text>
+<line x1="243.67" y1="181.00" x2="300.00" y2="181.00" stroke="rgb(192,86,33)" stroke-width="1.0"/>
+<rect x="269.65" y="178.80" width="4.40" height="4.40" fill="rgb(192,86,33)"/>
+<text x="14.00" y="194.00" font-size="7" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central">Multi-weakness, 0.6B</text>
+<line x1="305.93" y1="194.00" x2="356.30" y2="194.00" stroke="rgb(43,108,176)" stroke-width="1.0"/>
+<circle cx="331.11" cy="194.00" r="2.20" fill="rgb(43,108,176)"/>
+<text x="14.00" y="207.00" font-size="7" fill="rgb(0,0,0)" text-anchor="start" dominant-baseline="central">Multi-weakness, 1.7B</text>
+<line x1="268.89" y1="207.00" x2="304.44" y2="207.00" stroke="rgb(192,86,33)" stroke-width="1.0"/>
+<rect x="284.47" y="204.80" width="4.40" height="4.40" fill="rgb(192,86,33)"/>
+<text x="320.00" y="18.00" font-size="6.5" fill="rgb(110,110,110)" text-anchor="start" dominant-baseline="central">±3 points</text>
+</svg>
+<p class="cap"><b>Figure 2.</b> Targeted minus difficulty-matched control for the four comparisons (mean of three seeds, 95% paired
+bootstrap interval). The shaded band is the &plusmn;3-point margin used in Table&nbsp;4. Held-out probes are
+generated problems from story families not used in training.</p></div>
 <p><span class="para">Result 2: single-weakness targeting loses to its control on held-out generated problems.</span>  On problems from
 the two held-out families, the single-weakness arm is below its control for both models; for 0.6B it is below even on
 the slice it was aimed at (problems with more than four steps: 0.54 versus 0.65). More synthetic data (9:1) narrows but
-does not close the gap.</p>
+does not close the gap. All probe results, here and below, need one caveat: probes come from the same generator as the
+generated training data. Holding out two story families removes shared wording, but not the shared problem structure
+and answer format, so part of every probe gain may be learning of the generator's format rather than of the skill. The
+real benchmarks carry no such bias, which is why we treat them as the primary outcome.</p>
 <p><span class="para">Result 3: targeting all weaknesses removes this deficit.</span>  For 0.6B, multi-weakness targeting is far better
 than single-weakness targeting on generated problems (+0.168 held-out) and slightly better than its own control
 (+0.052, <i>p</i>=0.014). For 1.7B none of these differences is significant; generated probes are close to their ceiling for
@@ -259,11 +417,11 @@ Refitting the LLTM after training (0.6B) shows that the single-weakness arm lowe
 than any other arm (&Delta;&eta;<sub>steps</sub> = &minus;0.98, against +0.05 for untargeted and +0.23 for the matched
 control), so the intervention worked on its own terms. It barely changed the costs of multiplication and division
 (&minus;0.01 and &minus;0.14), which the other arms reduced substantially (&minus;0.90 to &minus;1.76). Long problems also contain
-multiplications and divisions, so the broader data produced higher accuracy even on long problems. Table&nbsp;4
+multiplications and divisions, so the broader data produced higher accuracy even on long problems. Table&nbsp;5
 shows the same pattern per weakness: the single-weakness arm left division almost unsolved for 0.6B (0.07 to 0.35),
 while multi-weakness targeting lifted every weakness to 0.70&ndash;0.77. For 1.7B the post-training refit is poorly
 identified because trained models answer 87&ndash;97% of probes correctly, so we do not interpret its &Delta;&eta;.</p>
-<div class="fig"><p class="cap"><b>Table 4.</b> Held-out probe accuracy above each weakness's threshold, before &rarr; after training (mean of three
+<div class="fig"><p class="cap"><b>Table 5.</b> Held-out probe accuracy above each weakness's threshold, before &rarr; after training (mean of three
 seeds; <i>n</i> = number of problems in the slice).</p><table>
 <thead>
 <tr><th class="l">Model</th><th class="l">Arm</th><th>steps</th><th>n_div</th><th>n_mul</th><th>n_distr.</th><th>log10_max</th></tr>
@@ -293,16 +451,20 @@ the most: for 0.6B accuracy drops from 0.50 to 0.16&ndash;0.21, for 1.7B from 0.
 no better than the others (0.6B: targeted 0.17, matched control 0.19, multi-weakness 0.19 versus 0.21; descriptive, 50
 problems). Gains on long generated problems did not carry over to long real problems, which depend more on reading and
 planning than on the arithmetic structure our generator controls.</p>
-<h3 class="sub">5.4&nbsp;&nbsp;The shared cost: imitation of terse solutions</h3><p>Every fine-tuned arm loses 14&ndash;24 points on GSM8K and GSM-Symbolic, including real_only, which saw no generated data.
-Before the main runs, an exploratory development study on 0.6B (200 held-out GSM8K training problems, one seed) found
-that the loss did not depend on the settings we varied: a four-times lower learning rate, a single epoch or a larger
+<h3 class="sub">5.4&nbsp;&nbsp;The shared cost: imitation of terse solutions</h3><p>Every fine-tuned arm loses 15&ndash;24 points on GSM8K relative to the untrained model (14&ndash;19 points on GSM-Symbolic),
+including real_only, which saw no generated data (&minus;0.20 for 0.6B, &minus;0.15 for 1.7B). Because the loss is shared by
+every arm, it does not bias the comparison between targeted and control data; it does, however, define the scope of
+our conclusions, which hold for supervised fine-tuning on terse solutions.</p>
+<p><span class="para">Exploratory ablation (not part of the paper runs).</span>  Before the main runs, a development study on 0.6B (200
+held-out GSM8K training problems, one seed) found that the loss did not depend on the settings we varied: a four-times
+lower learning rate, a single epoch or a larger
 share of real data all left it between &minus;0.20 and &minus;0.24. A longer fixed solution template made it worse (&minus;0.28),
 because the model repeated the template until the token limit. Only training on the base model's own verified solutions
 reduced it, to &minus;0.115 with 65% and &minus;0.08 with 85% model-written tokens, but this also removed most of the gain on
 generated problems (+0.26 fell to +0.10 and +0.08), consistent with self-distillation results on other tasks
 [27].</p>
-<p>To locate the loss we compared, answer by answer, each fine-tuned model with the untrained model on the same 300 GSM8K
-problems (Table&nbsp;5). Answer extraction is not the cause: almost no answer from either model lacks an
+<p><span class="para">Answer-level analysis.</span>  To locate the loss we compared, answer by answer, each fine-tuned model with the untrained model on the same 300 GSM8K
+problems (Table&nbsp;6). Answer extraction is not the cause: almost no answer from either model lacks an
 extractable final number. The fine-tuned models write about four lines instead of 25&ndash;30, in the format of the training
 solutions. The untrained model usually begins by listing every given quantity and then works through one step per
 heading; the fine-tuned models omit that list. On problems that changed from correct to wrong, most new errors are
@@ -311,15 +473,17 @@ slips in short inline sums. For 0.6B the rate of false equations rises; for 1.7B
 almost entirely in planning. The multi-weakness arms show the same pattern (plan errors 56&ndash;57% and arithmetic slips
 23&ndash;28% of lost answers). These shares come from the automatic classifier; the label check below suggests that it
 counts too many slips and too few plan errors, so the slip shares are best read as upper bounds.</p>
-<div class="fig"><p class="cap"><b>Table 5.</b> Answer-level comparison on the same 300 GSM8K test problems: untrained model versus the 15 fine-tuned models
-of each single-weakness run. &ldquo;Lost&rdquo; = correct before, wrong after. False-equation rates are approximate, since
+<div class="fig"><p class="cap"><b>Table 6.</b> Answer-level comparison on the same 300 GSM8K test problems: untrained model versus the 15 fine-tuned models
+of each single-weakness run. Ranges for fine-tuned models span the 15 individual models (arm means, as in
+Table&nbsp;2: 0.42&ndash;0.46 and 0.65&ndash;0.67). The untrained accuracy here is on these 300 problems, so it differs
+from Table&nbsp;2. &ldquo;Lost&rdquo; = correct before, wrong after. False-equation rates are approximate, since
 LaTeX equations of the untrained model are parsed less reliably. Error types are automatic labels
 (Section&nbsp;5.5).</p><table>
 <thead>
 <tr><th class="l"></th><th colspan="2">Qwen3-0.6B</th><th colspan="2">Qwen3-1.7B</th></tr>
 <tr><th class="l"></th><th class="l">untrained</th><th>fine-tuned</th><th>untrained</th><th>fine-tuned</th></tr>
 </thead><tbody>
-<tr><td class="l">Accuracy</td><td class="l">0.660</td><td>0.39&ndash;0.49</td><td>0.813</td><td>0.65&ndash;0.70</td></tr>
+<tr><td class="l">Accuracy (individual models)</td><td class="l">0.660</td><td>0.39&ndash;0.49</td><td>0.813</td><td>0.65&ndash;0.70</td></tr>
 <tr><td class="l">Median answer length (chars)</td><td class="l">728</td><td>&asymp;215</td><td>808</td><td>&asymp;210</td></tr>
 <tr><td class="l">Median non-empty lines</td><td class="l">25</td><td>4</td><td>30</td><td>4</td></tr>
 <tr><td class="l">False equations per 100</td><td class="l">5.8</td><td>6&ndash;14</td><td>5.0</td><td>4&ndash;9</td></tr>
@@ -364,7 +528,7 @@ every stored answer with <span class="tt">&#92;boxed{}</span> first changes 25 o
 training-family probes 0.625 to 0.630). No answer of any fine-tuned model changes, because those models do not write
 such headings. We report the numbers as logged.</p>
 <p>None of the accuracy comparisons depend on the error labels. The labels affect only the error-type shares in
-Table&nbsp;5. There, the check strengthens the main reading that planning errors dominate the lost answers,
+Table&nbsp;6. There, the check strengthens the main reading that planning errors dominate the lost answers,
 and the slip shares should be treated as upper bounds.</p>
 <h2>6&nbsp;&nbsp;Discussion</h2>
 <p><span class="para">Explaining each observed behaviour.</span> </p><ul><li><em>Targeted equals control on real benchmarks</em>: the shared style cost dominates real-benchmark accuracy, real
@@ -373,6 +537,15 @@ and the slip shares should be treated as upper bounds.</p>
   small edge over its control coincides with its higher share of long problems.</li><li><em>No difference for 1.7B</em>: generated probes are near the ceiling, and the two multi-weakness arms are almost
   the same data.</li><li><em>Every arm loses real accuracy, real_only included</em>: supervised imitation of terse solutions, not the
   synthetic content, drives the loss.</li></ul>
+<p><span class="para">Finding: under an additive difficulty model, targeting every weakness converges to matching difficulty.</span> 
+If difficulty is a weighted sum of factors, as in Eq.&nbsp;(1), then data aimed at all significant factors in
+proportion to their effects is hard for the same reasons that make any equally hard data hard. A difficulty-matched
+control drawn without restriction then carries a similar factor mix, and the two arms converge by construction. What
+remains for targeting to change is the <em>allocation</em> of the budget across factors, not the difficulty itself. Our
+data fit this reading: the only significant difference between the multi-weakness arms (+0.052 for 0.6B on held-out
+probes) appears where their factor mixes differ most (more long problems in the targeted arm), and for 1.7B, whose arms
+have almost the same mix and whose probes are near their ceiling, there is no difference. A direct test would build arms
+with equal predicted difficulty that differ only in factor mix.</p>
 <p><span class="para">Implications for targeted synthesis.</span>  Comparisons of targeted data with random data can overstate the value
 of targeting. In our controlled setting, the benefit of generated data is explained by difficulty and coverage rather
 than by aiming at diagnosed weaknesses. With an additive difficulty model, targeting all weaknesses and matching
@@ -390,22 +563,25 @@ asked again without the shared cost.</p>
   it; the 1.7B multi-weakness comparison, whose control is closely matched (KS &le;0.002), leads to the same
   conclusion.</li><li><b>Ceiling effects.</b> Fine-tuned 1.7B models answer 87&ndash;97% of generated probes, which limits how well arms
   can be separated on probes and makes post-training LLTM refits unreliable for that model.</li><li><b>Statistical power.</b> With 300 GSM8K and 200 GSM-Symbolic problems per model, paired intervals are about
-  &plusmn;3 points; effects of one to two points would not be detected. The long-problem analysis uses only 50 problems
-  and is descriptive.</li><li><b>Error labels</b> agree only fairly with an independent LLM annotator (&kappa; = 0.33, or 0.39 after the parser
+  &plusmn;3 points; effects of one to two points would not be detected, and equivalence within &plusmn;3 points is shown for
+  only one of eight comparisons (Table&nbsp;4). Re-evaluating the same adapters on the full GSM8K test set
+  would roughly halve the interval width. The long-problem analysis uses only 50 problems and is descriptive.</li><li><b>Error labels</b> agree only fairly with an independent LLM annotator (&kappa; = 0.33, or 0.39 after the parser
   corrections;
   Section&nbsp;5.5), and no human annotation was done. Error-type shares are therefore descriptive, and
   GSM-Symbolic error types are not reported. A small extraction fault inflates the untrained 1.7B model's error count
   by about one percentage point; it does not affect any fine-tuned model.</li><li><b>Scope.</b> One task family, one model family, one training recipe (QLoRA supervised fine-tuning on terse
   solutions) and three seeds per arm.</li><li><b>Synthetic text.</b> Generated problems read less naturally than human-written ones, and probes share the
-  generator with training data, so part of the probe gains may be format learning; held-out families reduce but do not
-  remove this.</li></ul>
+  generator with training data (see the caveat in the Results); human-written held-out probes would remove this doubt.</li></ul>
 <h2>8&nbsp;&nbsp;Conclusion</h2><p>We tested whether weakness-targeted synthetic fine-tuning helps because it targets the right skill or because it
 supplies harder data. With exact skill profiles, an LLTM diagnosis and a one-to-one difficulty-matched control, two
 targeting rules on two Qwen3 models give a consistent answer: targeting did not improve real-benchmark accuracy over
 equally hard data. Aiming at a single weakness narrowed coverage and lost to its control on new generated problems;
 aiming at all weaknesses repaired this but, by construction, became nearly the same as matching difficulty. Separately,
-every supervised arm lost substantial real-benchmark accuracy by imitating terse solutions. We recommend that claims
-for targeted data synthesis be tested against difficulty-matched controls, together with a check of general accuracy.</p>
+every supervised arm lost 15&ndash;24 points of GSM8K accuracy by imitating terse solutions, so our conclusion is scoped to
+supervised fine-tuning on terse solutions. The first open question is whether targeting helps under a recipe that
+keeps general accuracy, for example solutions written by a stronger teacher and filtered by the generator's exact
+answers, or reinforcement learning with the generator as reward. We recommend that claims for targeted data synthesis
+be tested against difficulty-matched controls, together with a check of general accuracy.</p>
 <p><span class="para">Data and code availability.</span>  Code, configurations, run records and per-answer outputs are available in the
 public project repository, <a href="https://github.com/yorudamn12/EL-MAIN">https://github.com/yorudamn12/EL-MAIN</a> (branch
 <span class="tt">claude/wonderful-hypatia-pqs6t9</span>); the outputs of the paper runs are in its <span class="tt">paper_runs/</span> folder and
@@ -416,10 +592,14 @@ analysis of the results and the writing of the manuscript, and all authors read 
 <p><span class="para">Funding.</span>  This research received no specific grant from any funding agency in the public, commercial or
 not-for-profit sectors.</p>
 <p><span class="para">Competing interests.</span>  The authors declare no competing interests.</p>
-<p><span class="para">Use of AI tools.</span>  An AI assistant (Claude, Anthropic) was used to help write software, run analyses and
-draft and edit the text, and the same model served as the independent annotator for the error-label check
-(Section&nbsp;5.5). All experimental numbers come from the logged runs, and the authors checked the
-results, the references and the text and take full responsibility for the content.</p>
+<p><span class="para">Use of AI tools.</span>  An AI assistant (Claude, Anthropic) was used in three roles. (i) Software: it helped
+write and test the code of the pipeline (problem generator, diagnosis, training and evaluation scripts) and the analysis
+scripts, including the equivalence tests and figures. (ii) Text: it helped draft and edit the manuscript and check
+references against their sources. (iii) Annotation: a separate instance (Claude Opus 5.5) labelled the 300 answers of
+the error-label check blind to the classifier (Section&nbsp;5.5; <span class="tt">paper/annotation/</span>); it is an
+LLM, not a human annotator. The study design and all decisions were the authors'. All experimental numbers come from the
+logged runs on the authors' hardware; the authors checked the results, the references and the text, can
+explain every claim, and take full responsibility for the content.</p>
 
 <h2>References</h2><div class="refs"><p>[1] V. Gupta, Z. Wang, R.-G. Dumitru, M. Rezaei, A. Sabharwal and Y. He. CRAFT: Clustering Rubrics to Diagnose Weak LLM Capabilities and Generate Targeted Fine-Tuning Data. arXiv:2607.16122, 2026.</p>
 <p>[2] H. Zhao, J. Han, J. Liang, Y. Xiao, X. Meng and J. Wei. CDS: Knowledge Component-Driven Data Synthesis Guided by Cognitive Diagnosis Theory. arXiv:2501.07674, 2025.</p>

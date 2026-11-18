@@ -176,6 +176,16 @@ the adapters (about 2.7 GB) are not.
 ## 6. Next steps
 
 **Claude:**
+- 2026-11-19: paper v0.5 from the team review "Suggestions Before Journal Submission" (Atharv, 2026-11-18), mentor-draft
+  items that need no GPU. Abstract now gives both ranges (GSM8K −0.023…+0.011, GSM-Symbolic −0.028…+0.015). The drop
+  is worded the same everywhere: 15–24 points on GSM8K (arm means), 14–19 on GSM-Symbolic. New: equivalence tests
+  (`paper/equivalence.py`, TOST, margin ±3 points chosen after the results; only 1.7B multi-weakness on GSM8K passes,
+  benefit of targeting > 3.4 points on GSM8K / 4.5 on GSM-Symbolic ruled out, one-sided 95%). Two figures
+  (`paper/make_figures.py`: accuracy by steps, forest plot). Also: keywords, affiliation, scope sentence, the named
+  multi-weakness finding, probe caveat moved into the Results, a longer AI-use statement, CRAFT/KITE refs re-verified.
+  No protocol, config or scorer change, so no new runs. The review's "Future improvements" list (A1 teacher-written
+  solutions, A2 full GSM8K re-evaluation, A3 rerun of the 1.7B control, ...) is for after the mentor draft and is not
+  started.
 - 2026-11-11: paper v0.3 (authors, statements, public repo link, verified references). Small outputs of the 4 paper
   runs are now in git under `paper_runs/` (no adapters). The 300-answer check of the error labels was done by an LLM
   annotator (RUNNING.md §19): κ = 0.33. It also found an answer-reading fault ("#### 7." headings); see §19. Fixing
