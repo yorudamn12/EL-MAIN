@@ -489,7 +489,7 @@ real benchmarks carry no such bias, which is why we treat them as the primary ou
 <p><span class="para">Result 3: targeting all weaknesses removes this deficit.</span>  For 0.6B, multi-weakness targeting is far better
 than single-weakness targeting on generated problems (+0.168 held-out) and slightly better than its own control
 (+0.052, <i>p</i>=0.014 over problems, but not significant once seed variation is included). For 1.7B none of these differences is significant; generated probes are close to their ceiling for
-every arm (0.87&ndash;0.98).</p>
+every arm trained on generated data (0.87&ndash;0.98).</p>
 <h3 class="sub">5.3&nbsp;&nbsp;Why targeting does not help: two mechanisms</h3>
 <p><span class="para">Single-factor targeting neglects co-occurring weaknesses.</span> 
 Refitting the LLTM after training (0.6B) shows that the single-weakness arm lowered the cost of an extra step far more
@@ -499,7 +499,7 @@ control), so the intervention worked on its own terms. It barely changed the cos
 multiplications and divisions, so the broader data produced higher accuracy even on long problems. Table&nbsp;6
 shows the same pattern per weakness: the single-weakness arm left division almost unsolved for 0.6B (0.07 to 0.35),
 while multi-weakness targeting lifted every weakness to 0.70&ndash;0.77. For 1.7B the post-training refit is poorly
-identified because trained models answer 87&ndash;97% of probes correctly, so we do not interpret its &Delta;&eta;.</p>
+identified because models trained on generated data answer 87&ndash;98% of probes correctly, so we do not interpret its &Delta;&eta;.</p>
 <div class="fig"><p class="cap"><b>Table 6.</b> Held-out probe accuracy above each weakness's threshold, before &rarr; after training (mean of three
 seeds; <i>n</i> = number of problems in the slice).</p><table>
 <thead>
@@ -644,7 +644,7 @@ asked again without the shared cost.</p>
   tokens, so the single-weakness targeted arm contains 22&ndash;26% fewer distinct generated problems than its control (seed
   0: 4,598 versus 5,930 for 0.6B, 3,857 versus 5,225 for 1.7B). This may add to its narrower coverage. The
   multi-weakness arms are balanced (5,321 versus 5,387 and 4,125 versus 4,104) and reach the same conclusion on
-  the real benchmarks.</li><li><b>Ceiling effects.</b> Fine-tuned 1.7B models answer 87&ndash;97% of generated probes, which limits how well arms
+  the real benchmarks.</li><li><b>Ceiling effects.</b> 1.7B models trained on generated data answer 87&ndash;98% of generated probes, which limits how well arms
   can be separated on probes and makes post-training LLTM refits unreliable for that model.</li><li><b>Statistical power.</b> With 300 GSM8K and 200 GSM-Symbolic problems per model, paired intervals are about
   &plusmn;3 points; effects of one to two points would not be detected, and equivalence within &plusmn;3 points is shown for
   only one of eight comparisons (Table&nbsp;5). With three seeds per arm, training-seed variation is
