@@ -3,7 +3,7 @@
   "info": {
     "title": "DreamMachine API",
     "description": "Backend API for DreamMachine. Contract: docs/API_CONTRACT.md.",
-    "version": "0.2.2"
+    "version": "0.3.0"
   },
   "paths": {
     "/api/v1/health": {
@@ -1743,7 +1743,9 @@
               "real_only",
               "untargeted",
               "matched_control",
-              "targeted"
+              "targeted",
+              "multi_targeted",
+              "multi_matched_control"
             ],
             "title": "Arm"
           },
@@ -1771,6 +1773,28 @@
             },
             "type": "object",
             "title": "Target Slice"
+          },
+          "weakness_slices": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "$ref": "#/components/schemas/TargetSlice"
+              },
+              "type": "object"
+            },
+            "type": "object",
+            "title": "Weakness Slices",
+            "default": {}
+          },
+          "source_job": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Job"
           },
           "eta_change": {
             "additionalProperties": {
@@ -2417,7 +2441,9 @@
               "real_only",
               "untargeted",
               "matched_control",
-              "targeted"
+              "targeted",
+              "multi_targeted",
+              "multi_matched_control"
             ],
             "title": "A"
           },
@@ -2427,7 +2453,9 @@
               "real_only",
               "untargeted",
               "matched_control",
-              "targeted"
+              "targeted",
+              "multi_targeted",
+              "multi_matched_control"
             ],
             "title": "B"
           },
@@ -2509,7 +2537,9 @@
               "real_only",
               "untargeted",
               "matched_control",
-              "targeted"
+              "targeted",
+              "multi_targeted",
+              "multi_matched_control"
             ],
             "title": "Arm"
           },
@@ -2701,7 +2731,8 @@
             "enum": [
               "auto",
               "feature",
-              "untargeted"
+              "untargeted",
+              "multi"
             ],
             "title": "Strategy"
           },
@@ -2735,6 +2766,20 @@
               }
             ],
             "title": "Threshold"
+          },
+          "targets": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/MultiTarget"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Targets"
           },
           "significant": {
             "type": "boolean",
@@ -2837,7 +2882,9 @@
                 "real_only",
                 "untargeted",
                 "matched_control",
-                "targeted"
+                "targeted",
+                "multi_targeted",
+                "multi_matched_control"
               ]
             },
             "type": "array",
@@ -3489,6 +3536,38 @@
         ],
         "title": "ModelInfo"
       },
+      "MultiTarget": {
+        "properties": {
+          "feature": {
+            "type": "string",
+            "enum": [
+              "steps",
+              "log10_max",
+              "n_mul",
+              "n_div",
+              "n_carry",
+              "n_distractors",
+              "has_merge"
+            ],
+            "title": "Feature"
+          },
+          "threshold": {
+            "type": "number",
+            "title": "Threshold"
+          },
+          "weight": {
+            "type": "number",
+            "title": "Weight"
+          }
+        },
+        "type": "object",
+        "required": [
+          "feature",
+          "threshold",
+          "weight"
+        ],
+        "title": "MultiTarget"
+      },
       "NamedLabel": {
         "properties": {
           "name": {
@@ -3676,7 +3755,9 @@
                 "real_only",
                 "untargeted",
                 "matched_control",
-                "targeted"
+                "targeted",
+                "multi_targeted",
+                "multi_matched_control"
               ]
             },
             "type": "array",
@@ -3970,6 +4051,17 @@
               }
             ]
           },
+          "reference_job": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference Job"
+          },
           "benchmarks": {
             "items": {
               "$ref": "#/components/schemas/BenchmarkRef"
@@ -4167,12 +4259,18 @@
           },
           "a": {
             "type": "string",
-            "const": "targeted",
+            "enum": [
+              "targeted",
+              "multi_targeted"
+            ],
             "title": "A"
           },
           "b": {
             "type": "string",
-            "const": "matched_control",
+            "enum": [
+              "matched_control",
+              "multi_matched_control"
+            ],
             "title": "B"
           },
           "benchmarks": {
@@ -4383,7 +4481,9 @@
               "real_only",
               "untargeted",
               "matched_control",
-              "targeted"
+              "targeted",
+              "multi_targeted",
+              "multi_matched_control"
             ],
             "title": "Arm"
           },
@@ -4450,7 +4550,9 @@
                 "real_only",
                 "untargeted",
                 "matched_control",
-                "targeted"
+                "targeted",
+                "multi_targeted",
+                "multi_matched_control"
               ]
             },
             "type": "array",
@@ -4492,6 +4594,32 @@
               }
             ],
             "title": "Diagnosis Hash"
+          },
+          "protocol": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "single_weakness",
+                  "multi_weakness"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Protocol"
+          },
+          "reference_job": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference Job"
           }
         },
         "type": "object",
@@ -5239,7 +5367,8 @@
             "enum": [
               "auto",
               "feature",
-              "untargeted"
+              "untargeted",
+              "multi"
             ],
             "title": "Strategy"
           },
@@ -5273,6 +5402,20 @@
               }
             ],
             "title": "Threshold"
+          },
+          "targets": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/MultiTarget"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Targets"
           }
         },
         "type": "object",
@@ -5325,7 +5468,9 @@
               "real_only",
               "untargeted",
               "matched_control",
-              "targeted"
+              "targeted",
+              "multi_targeted",
+              "multi_matched_control"
             ],
             "title": "Arm"
           },
@@ -5735,7 +5880,9 @@
                     "real_only",
                     "untargeted",
                     "matched_control",
-                    "targeted"
+                    "targeted",
+                    "multi_targeted",
+                    "multi_matched_control"
                   ],
                   "type": "string"
                 },
@@ -5822,6 +5969,22 @@
             ],
             "default": null,
             "title": "Name"
+          },
+          "protocol": {
+            "anyOf": [
+              {
+                "enum": [
+                  "single_weakness",
+                  "multi_weakness"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Protocol"
           }
         },
         "required": [

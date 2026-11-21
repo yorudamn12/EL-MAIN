@@ -1,0 +1,349 @@
+{
+  "ratio": 3.0,
+  "arms": {
+    "targeted": {
+      "gsm8k": {
+        "mean": 0.43555555555555553,
+        "sd": 0.029122983160180367,
+        "n_seeds": 3
+      },
+      "gsm8k:truncated_share": {
+        "mean": 0.03666666666666667,
+        "sd": 0.015275252316519468,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main": {
+        "mean": 0.40666666666666673,
+        "sd": 0.01755942292142122,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main:truncated_share": {
+        "mean": 0.03333333333333333,
+        "sd": 0.011547005383792516,
+        "n_seeds": 3
+      },
+      "probes_train_families": {
+        "mean": 0.7950617283950617,
+        "sd": 0.030839496288387135,
+        "n_seeds": 3
+      },
+      "probes_train_families:truncated_share": {
+        "mean": 0.007407407407407408,
+        "sd": 0.007407407407407408,
+        "n_seeds": 3
+      },
+      "probes_heldout_families": {
+        "mean": 0.6024691358024691,
+        "sd": 0.03500604167594523,
+        "n_seeds": 3
+      },
+      "probes_heldout_families:truncated_share": {
+        "mean": 0.007407407407407408,
+        "sd": 0.007407407407407408,
+        "n_seeds": 3
+      }
+    },
+    "matched_control": {
+      "gsm8k": {
+        "mean": 0.4477777777777778,
+        "sd": 0.0337199797899856,
+        "n_seeds": 3
+      },
+      "gsm8k:truncated_share": {
+        "mean": 0.04222222222222222,
+        "sd": 0.02036700308869262,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main": {
+        "mean": 0.4083333333333334,
+        "sd": 0.03403429642777023,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main:truncated_share": {
+        "mean": 0.036666666666666674,
+        "sd": 0.012583057392117916,
+        "n_seeds": 3
+      },
+      "probes_train_families": {
+        "mean": 0.8814814814814814,
+        "sd": 0.01959815785973767,
+        "n_seeds": 3
+      },
+      "probes_train_families:truncated_share": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n_seeds": 3
+      },
+      "probes_heldout_families": {
+        "mean": 0.7604938271604939,
+        "sd": 0.030839496288387135,
+        "n_seeds": 3
+      },
+      "probes_heldout_families:truncated_share": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n_seeds": 3
+      }
+    },
+    "untargeted": {
+      "gsm8k": {
+        "mean": 0.4466666666666667,
+        "sd": 0.018559214542766746,
+        "n_seeds": 3
+      },
+      "gsm8k:truncated_share": {
+        "mean": 0.03333333333333333,
+        "sd": 0.014529663145135579,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main": {
+        "mean": 0.4183333333333334,
+        "sd": 0.027537852736430505,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main:truncated_share": {
+        "mean": 0.03666666666666667,
+        "sd": 0.007637626158259732,
+        "n_seeds": 3
+      },
+      "probes_train_families": {
+        "mean": 0.9407407407407408,
+        "sd": 0.019598157859737734,
+        "n_seeds": 3
+      },
+      "probes_train_families:truncated_share": {
+        "mean": 0.0049382716049382715,
+        "sd": 0.00855333732132779,
+        "n_seeds": 3
+      },
+      "probes_heldout_families": {
+        "mean": 0.7604938271604939,
+        "sd": 0.03728313301368272,
+        "n_seeds": 3
+      },
+      "probes_heldout_families:truncated_share": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n_seeds": 3
+      }
+    },
+    "real_only": {
+      "gsm8k": {
+        "mean": 0.4577777777777778,
+        "sd": 0.01071516751221438,
+        "n_seeds": 3
+      },
+      "gsm8k:truncated_share": {
+        "mean": 0.04111111111111112,
+        "sd": 0.0019245008972987529,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main": {
+        "mean": 0.41500000000000004,
+        "sd": 0.01802775637731993,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main:truncated_share": {
+        "mean": 0.035,
+        "sd": 0.005000000000000001,
+        "n_seeds": 3
+      },
+      "probes_train_families": {
+        "mean": 0.23703703703703702,
+        "sd": 0.019598157859737706,
+        "n_seeds": 3
+      },
+      "probes_train_families:truncated_share": {
+        "mean": 0.0419753086419753,
+        "sd": 0.008553337321327788,
+        "n_seeds": 3
+      },
+      "probes_heldout_families": {
+        "mean": 0.24691358024691357,
+        "sd": 0.022630003431880694,
+        "n_seeds": 3
+      },
+      "probes_heldout_families:truncated_share": {
+        "mean": 0.08148148148148147,
+        "sd": 0.019598157859737706,
+        "n_seeds": 3
+      }
+    },
+    "base": {
+      "gsm8k": {
+        "mean": 0.6383623957543594,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm8k:truncated_share": {
+        "mean": 0.029567854435178165,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm_symbolic:main": {
+        "mean": 0.57,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm_symbolic:main:truncated_share": {
+        "mean": 0.03,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm_symbolic:p1": {
+        "mean": 0.4,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm_symbolic:p1:truncated_share": {
+        "mean": 0.072,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm_symbolic:p2": {
+        "mean": 0.138,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm_symbolic:p2:truncated_share": {
+        "mean": 0.168,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "probes_train_families": {
+        "mean": 0.38425925925925924,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "probes_train_families:truncated_share": {
+        "mean": 0.05787037037037037,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "probes_heldout_families": {
+        "mean": 0.32407407407407407,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "probes_heldout_families:truncated_share": {
+        "mean": 0.05092592592592592,
+        "sd": 0.0,
+        "n_seeds": 1
+      }
+    }
+  },
+  "comparisons": {
+    "targeted - matched_control | gsm8k": {
+      "mean_diff": -0.01222222222222222,
+      "ci_low": -0.03888888888888889,
+      "ci_high": 0.014444444444444447,
+      "p_value": 0.3934,
+      "n": 300
+    },
+    "targeted - matched_control | gsm_symbolic:main": {
+      "mean_diff": -0.0016666666666666674,
+      "ci_low": -0.03666666666666666,
+      "ci_high": 0.03166666666666667,
+      "p_value": 0.9342,
+      "n": 200
+    },
+    "targeted - matched_control | probes_heldout_families": {
+      "mean_diff": -0.15802469135802472,
+      "ci_low": -0.22469135802469134,
+      "ci_high": -0.08888888888888889,
+      "p_value": 0.0,
+      "n": 135
+    },
+    "targeted - matched_control | probes_train_families": {
+      "mean_diff": -0.08641975308641976,
+      "ci_low": -0.1432098765432099,
+      "ci_high": -0.02962962962962964,
+      "p_value": 0.0026,
+      "n": 135
+    },
+    "targeted - untargeted | gsm8k": {
+      "mean_diff": -0.011111111111111113,
+      "ci_low": -0.03777777777777778,
+      "ci_high": 0.01666666666666666,
+      "p_value": 0.4312,
+      "n": 300
+    },
+    "targeted - untargeted | gsm_symbolic:main": {
+      "mean_diff": -0.011666666666666665,
+      "ci_low": -0.04499999999999999,
+      "ci_high": 0.02166666666666667,
+      "p_value": 0.5168,
+      "n": 200
+    },
+    "targeted - untargeted | probes_heldout_families": {
+      "mean_diff": -0.15802469135802472,
+      "ci_low": -0.22962962962962968,
+      "ci_high": -0.08641975308641976,
+      "p_value": 0.0,
+      "n": 135
+    },
+    "targeted - untargeted | probes_train_families": {
+      "mean_diff": -0.145679012345679,
+      "ci_low": -0.2,
+      "ci_high": -0.09135802469135804,
+      "p_value": 0.0,
+      "n": 135
+    },
+    "matched_control - untargeted | gsm8k": {
+      "mean_diff": 0.00111111111111111,
+      "ci_low": -0.025555555555555554,
+      "ci_high": 0.02666666666666667,
+      "p_value": 0.9278,
+      "n": 300
+    },
+    "matched_control - untargeted | gsm_symbolic:main": {
+      "mean_diff": -0.01,
+      "ci_low": -0.04333333333333334,
+      "ci_high": 0.023333333333333338,
+      "p_value": 0.5942,
+      "n": 200
+    },
+    "matched_control - untargeted | probes_heldout_families": {
+      "mean_diff": 2.4671622769447924e-18,
+      "ci_low": -0.04938271604938273,
+      "ci_high": 0.05185185185185184,
+      "p_value": 1.0,
+      "n": 135
+    },
+    "matched_control - untargeted | probes_train_families": {
+      "mean_diff": -0.059259259259259275,
+      "ci_low": -0.09876543209876545,
+      "ci_high": -0.022222222222222227,
+      "p_value": 0.0004,
+      "n": 135
+    },
+    "targeted - real_only | gsm8k": {
+      "mean_diff": -0.02222222222222222,
+      "ci_low": -0.05888888888888889,
+      "ci_high": 0.013333333333333334,
+      "p_value": 0.2274,
+      "n": 300
+    },
+    "targeted - real_only | gsm_symbolic:main": {
+      "mean_diff": -0.008333333333333335,
+      "ci_low": -0.04833333333333332,
+      "ci_high": 0.03,
+      "p_value": 0.6704,
+      "n": 200
+    },
+    "targeted - real_only | probes_heldout_families": {
+      "mean_diff": 0.35555555555555557,
+      "ci_low": 0.2987654320987654,
+      "ci_high": 0.4148148148148148,
+      "p_value": 0.0,
+      "n": 135
+    },
+    "targeted - real_only | probes_train_families": {
+      "mean_diff": 0.5580246913580248,
+      "ci_low": 0.48641975308641977,
+      "ci_high": 0.6246913580246914,
+      "p_value": 0.0,
+      "n": 135
+    }
+  }
+}

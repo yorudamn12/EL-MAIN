@@ -103,11 +103,15 @@ Merging the trained add-on (LoRA adapter) into the model before testing: **1.84x
   straight to training. 1.7B has no earlier baseline on the test sets, so it runs its own once.
 - Total GPU time for both models went from about 8.8 days to **about 4 days**.
 
-### 5.3 Status (updated 2026-10-10 04:30) — both paper runs are done
-| Job | Model | State | Finish |
-|---|---|---|---|
-| `80b37628b193` | Qwen3-0.6B | **done**, paper-eligible | finished 2026-10-09 01:19 |
-| `409305f3e2f2` | Qwen3-1.7B | **done**, paper-eligible | finished 2026-10-10 04:04 |
+### 5.3 Status (updated 2026-11-18) — all four paper runs are done
+| Job | Model | Protocol | State | Finish |
+|---|---|---|---|---|
+| `80b37628b193` | Qwen3-0.6B | single weakness | **done**, paper-eligible | finished 2026-10-09 01:19 |
+| `409305f3e2f2` | Qwen3-1.7B | single weakness | **done**, paper-eligible | finished 2026-10-10 04:04 |
+| `76f2c9af5ea9` | Qwen3-0.6B | multi-weakness | **done**, paper-eligible | finished 2026-11-10 08:11 |
+| `4e6b61903c00` | Qwen3-1.7B | multi-weakness | **done**, paper-eligible | finished 2026-11-10 18:43 (one OOM at step 16, resumed) |
+
+Every number of the four runs: `docs/RESULTS.md`. Copies of their outputs (no adapters) are in git under `paper_runs/`.
 
 The 0.6B run was stopped once (2026-10-08 ~02:30) because the laptop ran low on memory; it was resumed from its
 last checkpoint, nothing finished was lost, ~9 hours were lost. Since then the worker runs in its own minimized
@@ -131,6 +135,15 @@ Doc edits during a run are committed at once (a run checks for a clean repo when
 - The diagnosis found the same main weakness (many steps), but milder; training on any generated data made long
   problems easy (41% → 86-89%), so the arms are almost equal on the probes.
 
+### 5.3c Multi-weakness runs (numbers in `docs/RUNNING.md` §16 and §18)
+- Both models were trained on all their significant weaknesses at once (0.6B: 5, 1.7B: 4), against a control that is
+  exactly as hard (2026-11-09/10; jobs `76f2c9af5ea9`, `4e6b61903c00`; both paper-eligible).
+- **Real test problems: again no difference** from the control (GSM8K −0.023 for 0.6B, +0.007 for 1.7B; both CIs
+  include 0). Every trained model still loses ~15-23 points on GSM8K (the solution-style cost, RUNNING.md §17).
+- **Generated problems:** for 0.6B, aiming at all weaknesses fixes the single-weakness flaw (+0.17 over single
+  targeting on new problem families) and is slightly better than the control (+0.05). For 1.7B there is no difference:
+  its probes are near the top and the control carries almost the same weaknesses.
+
 ### 5.4 How the diagnosis (and everything else) is saved on this laptop
 Yes — when a model is weak at, for example, multi-step problems, that is written down, in three places:
 
@@ -153,14 +166,42 @@ Yes — when a model is weak at, for example, multi-step problems, that is writt
    model. Updated by Claude after each model's diagnosis and again after training.
 
 Where to look now: Qwen3-0.6B → `runs/pipelines/04f319d1cca7/` (diagnosis made there, reused by
-`80b37628b193`); Qwen3-1.7B → `runs/pipelines/409305f3e2f2/`.
-**`runs/` is not in git** (too big; it stays only on this laptop) — copy it somewhere safe after the runs.
+`80b37628b193` and `76f2c9af5ea9`); Qwen3-1.7B → `runs/pipelines/409305f3e2f2/` (reused by `4e6b61903c00`).
+**`runs/` is not in git** (too big; it stays only on this laptop) — copy it somewhere safe after the runs. Since
+2026-11-11 the small outputs of the four paper runs (results, configs, every answer) are in git under `paper_runs/`;
+the adapters (about 2.7 GB) are not.
 
 ---
 
 ## 6. Next steps
 
 **Claude:**
+- 2026-11-19: paper v0.5 from the team review "Suggestions Before Journal Submission" (Atharv, 2026-11-18), mentor-draft
+  items that need no GPU. Abstract now gives both ranges (GSM8K −0.023…+0.011, GSM-Symbolic −0.028…+0.015). The drop
+  is worded the same everywhere: 15–24 points on GSM8K (arm means), 14–19 on GSM-Symbolic. New: equivalence tests
+  (`paper/equivalence.py`, TOST, margin ±3 points chosen after the results; only 1.7B multi-weakness on GSM8K passes,
+  benefit of targeting > 3.4 points on GSM8K / 4.5 on GSM-Symbolic ruled out, one-sided 95%). Two figures
+  (`paper/make_figures.py`: accuracy by steps, forest plot). Also: keywords, affiliation, scope sentence, the named
+  multi-weakness finding, probe caveat moved into the Results, a longer AI-use statement, CRAFT/KITE refs re-verified.
+  No protocol, config or scorer change, so no new runs. The review's "Future improvements" list (A1 teacher-written
+  solutions, A2 full GSM8K re-evaluation, A3 rerun of the 1.7B control, ...) is for after the mentor draft and is not
+  started.
+- 2026-11-19 (later): three verification passes of v0.5 against the stored outputs. Fixed: per-seed match quality
+  (0.6B KS ≤ 0.042, 1.7B 0.27–0.28; the 1.7B control is easier, predicted accuracy 0.59 vs 0.53), one table cell
+  (0.93 → 0.92), "targeted ≈ real-only" narrowed (1.7B 9:1 is worse on GSM-Symbolic), "9:1 narrows the gap" (no 9:1
+  control exists). New: a seed+problem bootstrap. The 1.7B single-weakness probe deficit and the 0.6B multi-weakness
+  probe gain are **not robust to seed variation**; the paper now calls them suggestive. Also new: limitations for
+  unequal problem counts (the targeted arm has 22–26% fewer problems) and thinking mode off. Holes and the plan to journal
+  level: `paper/JOURNAL_NOTES.md` (second part).
+- 2026-11-11: paper v0.3 (authors, statements, public repo link, verified references). Small outputs of the 4 paper
+  runs are now in git under `paper_runs/` (no adapters). The 300-answer check of the error labels was done by an LLM
+  annotator (RUNNING.md §19): κ = 0.33. It also found an answer-reading fault ("#### 7." headings); see §19. Fixing
+  the parser and extractor needs the team's OK, because it changes how future runs are scored.
+- 2026-11-10: both multi-weakness paper runs done and written up (RUNNING.md §16, §18, §17 for the GSM8K
+  drop); paper draft in `paper/`.
+- 2026-11-09: multi-weakness protocol built (PLAN.md §16, D17; contract 0.3.0): train on all significant
+  weaknesses at once (0.6B: 5, 1.7B: 4) and compare with the existing paper runs; CPU-verified (205 tests) and a CPU
+  dry run of the real data building. GPU runs not started yet.
 - Done: both paper runs finished and written up — 0.6B on 2026-10-09 (`docs/RUNNING.md` §14), 1.7B on
   2026-10-10 (§15), both in `docs/weakness.md` (diagnosis and "did training fix it?"). Nothing is left for Claude
   until the team decides how to read the result (PLAN.md question 10). A changed targeting rule would be a new

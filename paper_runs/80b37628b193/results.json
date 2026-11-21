@@ -1,0 +1,946 @@
+{
+  "pipeline_id": "80b37628b193",
+  "complete": true,
+  "mode": "paper",
+  "paper_eligible": true,
+  "model": "Qwen/Qwen3-0.6B",
+  "target": {
+    "strategy": "auto",
+    "feature": "steps",
+    "threshold": 4.0
+  },
+  "benchmarks": [
+    {
+      "name": "gsm8k",
+      "kind": "external"
+    },
+    {
+      "name": "gsm_symbolic:main",
+      "kind": "external"
+    },
+    {
+      "name": "probes_train_families",
+      "kind": "synthetic"
+    },
+    {
+      "name": "probes_heldout_families",
+      "kind": "synthetic"
+    }
+  ],
+  "baseline": {
+    "gsm8k": {
+      "accuracy": 0.6383623957543594,
+      "n": 1319
+    },
+    "gsm_symbolic:main": {
+      "accuracy": 0.57,
+      "n": 500
+    },
+    "probes_train_families": {
+      "accuracy": 0.38425925925925924,
+      "n": 432
+    },
+    "probes_heldout_families": {
+      "accuracy": 0.32407407407407407,
+      "n": 432
+    }
+  },
+  "arms": [
+    {
+      "arm": "real_only",
+      "ratio": 0,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "benchmarks": {
+        "gsm8k": {
+          "accuracy_mean": 0.4577777777777778,
+          "accuracy_sd": 0.01071516751221438,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": -0.20222222222222225,
+            "ci_low": -0.2544444444444445,
+            "ci_high": -0.15000000000000002,
+            "p_value": 0.0,
+            "n": 300
+          },
+          "regression": true
+        },
+        "gsm_symbolic:main": {
+          "accuracy_mean": 0.415,
+          "accuracy_sd": 0.01802775637731993,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": -0.16,
+            "ci_low": -0.23000000000000004,
+            "ci_high": -0.09,
+            "p_value": 0.0,
+            "n": 200
+          },
+          "regression": true
+        },
+        "probes_train_families": {
+          "accuracy_mean": 0.23703703703703702,
+          "accuracy_sd": 0.019598157859737706,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": -0.1259259259259259,
+            "ci_low": -0.2049382716049383,
+            "ci_high": -0.04938271604938273,
+            "p_value": 0.0012,
+            "n": 135
+          },
+          "regression": true
+        },
+        "probes_heldout_families": {
+          "accuracy_mean": 0.24691358024691357,
+          "accuracy_sd": 0.022630003431880694,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": -0.10123456790123458,
+            "ci_low": -0.17283950617283952,
+            "ci_high": -0.02962962962962964,
+            "p_value": 0.0056,
+            "n": 135
+          },
+          "regression": true
+        }
+      },
+      "target_slice": {
+        "probes_train_families": {
+          "above": {
+            "before": 0.16176470588235295,
+            "after": 0.1372549019607843,
+            "n": 68
+          },
+          "at_or_below": {
+            "before": 0.5671641791044776,
+            "after": 0.33830845771144274,
+            "n": 67
+          }
+        },
+        "probes_heldout_families": {
+          "above": {
+            "before": 0.17647058823529413,
+            "after": 0.08823529411764705,
+            "n": 68
+          },
+          "at_or_below": {
+            "before": 0.5223880597014925,
+            "after": 0.4079601990049751,
+            "n": 67
+          }
+        }
+      },
+      "eta_change": {
+        "steps": -0.314263,
+        "log10_max": 0.262794,
+        "n_mul": -0.326568,
+        "n_div": 0.03773,
+        "n_carry": 0.108853,
+        "n_distractors": 0.447956,
+        "has_merge": null
+      },
+      "error_type_shift": {
+        "FORMAT_ERROR": -0.002845,
+        "ARITHMETIC_SLIP": 0.142106,
+        "DISTRACTOR_USE": -0.02487,
+        "PLAN_ERROR": -0.022588,
+        "UNVERIFIABLE": -0.091803
+      }
+    },
+    {
+      "arm": "untargeted",
+      "ratio": 3,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "benchmarks": {
+        "gsm8k": {
+          "accuracy_mean": 0.4466666666666667,
+          "accuracy_sd": 0.018559214542766746,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": -0.21333333333333335,
+            "ci_low": -0.26555555555555554,
+            "ci_high": -0.16111111111111115,
+            "p_value": 0.0,
+            "n": 300
+          },
+          "regression": true
+        },
+        "gsm_symbolic:main": {
+          "accuracy_mean": 0.4183333333333334,
+          "accuracy_sd": 0.027537852736430505,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": -0.15666666666666668,
+            "ci_low": -0.22166666666666668,
+            "ci_high": -0.09333333333333335,
+            "p_value": 0.0,
+            "n": 200
+          },
+          "regression": true
+        },
+        "probes_train_families": {
+          "accuracy_mean": 0.9407407407407408,
+          "accuracy_sd": 0.019598157859737734,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": 0.5777777777777777,
+            "ci_low": 0.491358024691358,
+            "ci_high": 0.6592592592592592,
+            "p_value": 0.0,
+            "n": 135
+          },
+          "regression": false
+        },
+        "probes_heldout_families": {
+          "accuracy_mean": 0.7604938271604939,
+          "accuracy_sd": 0.03728313301368272,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": 0.4123456790123456,
+            "ci_low": 0.328395061728395,
+            "ci_high": 0.4962962962962962,
+            "p_value": 0.0,
+            "n": 135
+          },
+          "regression": false
+        }
+      },
+      "target_slice": {
+        "probes_train_families": {
+          "above": {
+            "before": 0.16176470588235295,
+            "after": 0.9068627450980392,
+            "n": 68
+          },
+          "at_or_below": {
+            "before": 0.5671641791044776,
+            "after": 0.9751243781094526,
+            "n": 67
+          }
+        },
+        "probes_heldout_families": {
+          "above": {
+            "before": 0.17647058823529413,
+            "after": 0.7058823529411764,
+            "n": 68
+          },
+          "at_or_below": {
+            "before": 0.5223880597014925,
+            "after": 0.8159203980099502,
+            "n": 67
+          }
+        }
+      },
+      "eta_change": {
+        "steps": 0.049228,
+        "log10_max": 1.818326,
+        "n_mul": -1.760709,
+        "n_div": -1.507897,
+        "n_carry": -0.085187,
+        "n_distractors": -0.888166,
+        "has_merge": null
+      },
+      "error_type_shift": {
+        "FORMAT_ERROR": -0.003534,
+        "ARITHMETIC_SLIP": 0.123401,
+        "DISTRACTOR_USE": -0.018164,
+        "PLAN_ERROR": 0.003448,
+        "UNVERIFIABLE": -0.105151
+      }
+    },
+    {
+      "arm": "matched_control",
+      "ratio": 3,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "benchmarks": {
+        "gsm8k": {
+          "accuracy_mean": 0.44777777777777783,
+          "accuracy_sd": 0.0337199797899856,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": -0.21222222222222223,
+            "ci_low": -0.2644444444444445,
+            "ci_high": -0.16111111111111115,
+            "p_value": 0.0,
+            "n": 300
+          },
+          "regression": true
+        },
+        "gsm_symbolic:main": {
+          "accuracy_mean": 0.40833333333333327,
+          "accuracy_sd": 0.03403429642777023,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": -0.16666666666666669,
+            "ci_low": -0.235,
+            "ci_high": -0.09995833333333394,
+            "p_value": 0.0,
+            "n": 200
+          },
+          "regression": true
+        },
+        "probes_train_families": {
+          "accuracy_mean": 0.8814814814814814,
+          "accuracy_sd": 0.01959815785973767,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": 0.5185185185185184,
+            "ci_low": 0.43456790123456795,
+            "ci_high": 0.5975308641975308,
+            "p_value": 0.0,
+            "n": 135
+          },
+          "regression": false
+        },
+        "probes_heldout_families": {
+          "accuracy_mean": 0.7604938271604939,
+          "accuracy_sd": 0.030839496288387135,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": 0.41234567901234565,
+            "ci_low": 0.3308641975308641,
+            "ci_high": 0.4938271604938271,
+            "p_value": 0.0,
+            "n": 135
+          },
+          "regression": false
+        }
+      },
+      "target_slice": {
+        "probes_train_families": {
+          "above": {
+            "before": 0.16176470588235295,
+            "after": 0.7941176470588235,
+            "n": 68
+          },
+          "at_or_below": {
+            "before": 0.5671641791044776,
+            "after": 0.9701492537313433,
+            "n": 67
+          }
+        },
+        "probes_heldout_families": {
+          "above": {
+            "before": 0.17647058823529413,
+            "after": 0.6519607843137254,
+            "n": 68
+          },
+          "at_or_below": {
+            "before": 0.5223880597014925,
+            "after": 0.8706467661691542,
+            "n": 67
+          }
+        }
+      },
+      "eta_change": {
+        "steps": 0.228201,
+        "log10_max": 0.255445,
+        "n_mul": -0.898841,
+        "n_div": -1.010041,
+        "n_carry": -0.028586,
+        "n_distractors": -0.500762,
+        "has_merge": null
+      },
+      "error_type_shift": {
+        "FORMAT_ERROR": -0.002531,
+        "ARITHMETIC_SLIP": 0.119071,
+        "DISTRACTOR_USE": -0.008234,
+        "PLAN_ERROR": 0.02997,
+        "UNVERIFIABLE": -0.138277
+      }
+    },
+    {
+      "arm": "targeted",
+      "ratio": 3,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "benchmarks": {
+        "gsm8k": {
+          "accuracy_mean": 0.43555555555555553,
+          "accuracy_sd": 0.029122983160180367,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": -0.22444444444444447,
+            "ci_low": -0.2744444444444445,
+            "ci_high": -0.1755277777777782,
+            "p_value": 0.0,
+            "n": 300
+          },
+          "regression": true
+        },
+        "gsm_symbolic:main": {
+          "accuracy_mean": 0.4066666666666667,
+          "accuracy_sd": 0.01755942292142122,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": -0.16833333333333336,
+            "ci_low": -0.23333333333333336,
+            "ci_high": -0.10333333333333336,
+            "p_value": 0.0,
+            "n": 200
+          },
+          "regression": true
+        },
+        "probes_train_families": {
+          "accuracy_mean": 0.7950617283950617,
+          "accuracy_sd": 0.030839496288387135,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": 0.43209876543209874,
+            "ci_low": 0.34074074074074073,
+            "ci_high": 0.5160493827160493,
+            "p_value": 0.0,
+            "n": 135
+          },
+          "regression": false
+        },
+        "probes_heldout_families": {
+          "accuracy_mean": 0.6024691358024691,
+          "accuracy_sd": 0.03500604167594523,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": 0.25432098765432093,
+            "ci_low": 0.17530864197530863,
+            "ci_high": 0.3333333333333333,
+            "p_value": 0.0,
+            "n": 135
+          },
+          "regression": false
+        }
+      },
+      "target_slice": {
+        "probes_train_families": {
+          "above": {
+            "before": 0.16176470588235295,
+            "after": 0.7892156862745098,
+            "n": 68
+          },
+          "at_or_below": {
+            "before": 0.5671641791044776,
+            "after": 0.8009950248756219,
+            "n": 67
+          }
+        },
+        "probes_heldout_families": {
+          "above": {
+            "before": 0.17647058823529413,
+            "after": 0.5441176470588235,
+            "n": 68
+          },
+          "at_or_below": {
+            "before": 0.5223880597014925,
+            "after": 0.6616915422885572,
+            "n": 67
+          }
+        }
+      },
+      "eta_change": {
+        "steps": -0.977208,
+        "log10_max": 0.270451,
+        "n_mul": -0.009736,
+        "n_div": -0.142417,
+        "n_carry": 0.166126,
+        "n_distractors": -0.205473,
+        "has_merge": null
+      },
+      "error_type_shift": {
+        "FORMAT_ERROR": -0.003534,
+        "ARITHMETIC_SLIP": 0.103564,
+        "DISTRACTOR_USE": -0.031049,
+        "PLAN_ERROR": 0.049353,
+        "UNVERIFIABLE": -0.118335
+      }
+    },
+    {
+      "arm": "targeted",
+      "ratio": 9,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "benchmarks": {
+        "gsm8k": {
+          "accuracy_mean": 0.4222222222222222,
+          "accuracy_sd": 0.034210676262979245,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": -0.2377777777777778,
+            "ci_low": -0.2877777777777778,
+            "ci_high": -0.1866666666666667,
+            "p_value": 0.0,
+            "n": 300
+          },
+          "regression": true
+        },
+        "gsm_symbolic:main": {
+          "accuracy_mean": 0.38166666666666665,
+          "accuracy_sd": 0.03055050463303893,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": -0.19333333333333336,
+            "ci_low": -0.265,
+            "ci_high": -0.125,
+            "p_value": 0.0,
+            "n": 200
+          },
+          "regression": true
+        },
+        "probes_train_families": {
+          "accuracy_mean": 0.8691358024691359,
+          "accuracy_sd": 0.011315001715940362,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": 0.5061728395061728,
+            "ci_low": 0.4246913580246913,
+            "ci_high": 0.5851851851851851,
+            "p_value": 0.0,
+            "n": 135
+          },
+          "regression": false
+        },
+        "probes_heldout_families": {
+          "accuracy_mean": 0.7037037037037037,
+          "accuracy_sd": 0.07066216306792189,
+          "n_seeds": 3,
+          "vs_base": {
+            "mean_diff": 0.35555555555555557,
+            "ci_low": 0.27401234567901234,
+            "ci_high": 0.43703703703703706,
+            "p_value": 0.0,
+            "n": 135
+          },
+          "regression": false
+        }
+      },
+      "target_slice": {
+        "probes_train_families": {
+          "above": {
+            "before": 0.16176470588235295,
+            "after": 0.8480392156862745,
+            "n": 68
+          },
+          "at_or_below": {
+            "before": 0.5671641791044776,
+            "after": 0.890547263681592,
+            "n": 67
+          }
+        },
+        "probes_heldout_families": {
+          "above": {
+            "before": 0.17647058823529413,
+            "after": 0.6568627450980392,
+            "n": 68
+          },
+          "at_or_below": {
+            "before": 0.5223880597014925,
+            "after": 0.7512437810945273,
+            "n": 67
+          }
+        }
+      },
+      "eta_change": {
+        "steps": -0.724198,
+        "log10_max": 0.495059,
+        "n_mul": -0.294306,
+        "n_div": -0.481159,
+        "n_carry": 0.141823,
+        "n_distractors": -0.538527,
+        "has_merge": null
+      },
+      "error_type_shift": {
+        "FORMAT_ERROR": -0.002594,
+        "ARITHMETIC_SLIP": 0.11697,
+        "DISTRACTOR_USE": -0.044953,
+        "PLAN_ERROR": 0.040443,
+        "UNVERIFIABLE": -0.109866
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "a": "targeted",
+      "b": "matched_control",
+      "ratio": 3,
+      "benchmark": "gsm8k",
+      "mean_diff": -0.01222222222222222,
+      "ci_low": -0.03888888888888889,
+      "ci_high": 0.014444444444444447,
+      "p_value": 0.3934,
+      "n": 300,
+      "significant": false
+    },
+    {
+      "a": "targeted",
+      "b": "matched_control",
+      "ratio": 3,
+      "benchmark": "gsm_symbolic:main",
+      "mean_diff": -0.0016666666666666674,
+      "ci_low": -0.03666666666666666,
+      "ci_high": 0.03166666666666667,
+      "p_value": 0.9342,
+      "n": 200,
+      "significant": false
+    },
+    {
+      "a": "targeted",
+      "b": "matched_control",
+      "ratio": 3,
+      "benchmark": "probes_train_families",
+      "mean_diff": -0.08641975308641976,
+      "ci_low": -0.1432098765432099,
+      "ci_high": -0.02962962962962964,
+      "p_value": 0.0026,
+      "n": 135,
+      "significant": true
+    },
+    {
+      "a": "targeted",
+      "b": "matched_control",
+      "ratio": 3,
+      "benchmark": "probes_heldout_families",
+      "mean_diff": -0.15802469135802472,
+      "ci_low": -0.22469135802469134,
+      "ci_high": -0.08888888888888889,
+      "p_value": 0.0,
+      "n": 135,
+      "significant": true
+    },
+    {
+      "a": "targeted",
+      "b": "untargeted",
+      "ratio": 3,
+      "benchmark": "gsm8k",
+      "mean_diff": -0.011111111111111113,
+      "ci_low": -0.03777777777777778,
+      "ci_high": 0.01666666666666666,
+      "p_value": 0.4312,
+      "n": 300,
+      "significant": false
+    },
+    {
+      "a": "targeted",
+      "b": "untargeted",
+      "ratio": 3,
+      "benchmark": "gsm_symbolic:main",
+      "mean_diff": -0.011666666666666665,
+      "ci_low": -0.04499999999999999,
+      "ci_high": 0.02166666666666667,
+      "p_value": 0.5168,
+      "n": 200,
+      "significant": false
+    },
+    {
+      "a": "targeted",
+      "b": "untargeted",
+      "ratio": 3,
+      "benchmark": "probes_train_families",
+      "mean_diff": -0.145679012345679,
+      "ci_low": -0.2,
+      "ci_high": -0.09135802469135804,
+      "p_value": 0.0,
+      "n": 135,
+      "significant": true
+    },
+    {
+      "a": "targeted",
+      "b": "untargeted",
+      "ratio": 3,
+      "benchmark": "probes_heldout_families",
+      "mean_diff": -0.15802469135802472,
+      "ci_low": -0.22962962962962968,
+      "ci_high": -0.08641975308641976,
+      "p_value": 0.0,
+      "n": 135,
+      "significant": true
+    },
+    {
+      "a": "matched_control",
+      "b": "untargeted",
+      "ratio": 3,
+      "benchmark": "gsm8k",
+      "mean_diff": 0.00111111111111111,
+      "ci_low": -0.025555555555555554,
+      "ci_high": 0.02666666666666667,
+      "p_value": 0.9278,
+      "n": 300,
+      "significant": false
+    },
+    {
+      "a": "matched_control",
+      "b": "untargeted",
+      "ratio": 3,
+      "benchmark": "gsm_symbolic:main",
+      "mean_diff": -0.01,
+      "ci_low": -0.04333333333333334,
+      "ci_high": 0.023333333333333338,
+      "p_value": 0.5942,
+      "n": 200,
+      "significant": false
+    },
+    {
+      "a": "matched_control",
+      "b": "untargeted",
+      "ratio": 3,
+      "benchmark": "probes_train_families",
+      "mean_diff": -0.059259259259259275,
+      "ci_low": -0.09876543209876545,
+      "ci_high": -0.022222222222222227,
+      "p_value": 0.0004,
+      "n": 135,
+      "significant": true
+    },
+    {
+      "a": "matched_control",
+      "b": "untargeted",
+      "ratio": 3,
+      "benchmark": "probes_heldout_families",
+      "mean_diff": 2.4671622769447924e-18,
+      "ci_low": -0.04938271604938273,
+      "ci_high": 0.05185185185185184,
+      "p_value": 1.0,
+      "n": 135,
+      "significant": false
+    },
+    {
+      "a": "targeted",
+      "b": "real_only",
+      "ratio": 3,
+      "benchmark": "gsm8k",
+      "mean_diff": -0.02222222222222222,
+      "ci_low": -0.05888888888888889,
+      "ci_high": 0.013333333333333334,
+      "p_value": 0.2274,
+      "n": 300,
+      "significant": false
+    },
+    {
+      "a": "targeted",
+      "b": "real_only",
+      "ratio": 3,
+      "benchmark": "gsm_symbolic:main",
+      "mean_diff": -0.008333333333333335,
+      "ci_low": -0.04833333333333332,
+      "ci_high": 0.03,
+      "p_value": 0.6704,
+      "n": 200,
+      "significant": false
+    },
+    {
+      "a": "targeted",
+      "b": "real_only",
+      "ratio": 3,
+      "benchmark": "probes_train_families",
+      "mean_diff": 0.5580246913580248,
+      "ci_low": 0.48641975308641977,
+      "ci_high": 0.6246913580246914,
+      "p_value": 0.0,
+      "n": 135,
+      "significant": true
+    },
+    {
+      "a": "targeted",
+      "b": "real_only",
+      "ratio": 3,
+      "benchmark": "probes_heldout_families",
+      "mean_diff": 0.35555555555555557,
+      "ci_low": 0.2987654320987654,
+      "ci_high": 0.4148148148148148,
+      "p_value": 0.0,
+      "n": 135,
+      "significant": true
+    },
+    {
+      "a": "targeted",
+      "b": "real_only",
+      "ratio": 9,
+      "benchmark": "gsm8k",
+      "mean_diff": -0.03555555555555555,
+      "ci_low": -0.07333333333333333,
+      "ci_high": 0.00111111111111111,
+      "p_value": 0.054,
+      "n": 300,
+      "significant": false
+    },
+    {
+      "a": "targeted",
+      "b": "real_only",
+      "ratio": 9,
+      "benchmark": "gsm_symbolic:main",
+      "mean_diff": -0.03333333333333334,
+      "ci_low": -0.07666666666666667,
+      "ci_high": 0.00833333333333333,
+      "p_value": 0.1152,
+      "n": 200,
+      "significant": false
+    },
+    {
+      "a": "targeted",
+      "b": "real_only",
+      "ratio": 9,
+      "benchmark": "probes_train_families",
+      "mean_diff": 0.6320987654320989,
+      "ci_low": 0.562962962962963,
+      "ci_high": 0.6962962962962963,
+      "p_value": 0.0,
+      "n": 135,
+      "significant": true
+    },
+    {
+      "a": "targeted",
+      "b": "real_only",
+      "ratio": 9,
+      "benchmark": "probes_heldout_families",
+      "mean_diff": 0.4567901234567901,
+      "ci_low": 0.3925925925925926,
+      "ci_high": 0.5209876543209876,
+      "p_value": 0.0,
+      "n": 135,
+      "significant": true
+    }
+  ],
+  "primary": {
+    "status": "proposed",
+    "question": "Does aiming at the weakness help beyond difficulty?",
+    "a": "targeted",
+    "b": "matched_control",
+    "benchmarks": [
+      "gsm8k",
+      "gsm_symbolic:main"
+    ],
+    "results": [
+      {
+        "benchmark": "gsm8k",
+        "mean_diff": -0.01222222222222222,
+        "ci_low": -0.03888888888888889,
+        "ci_high": 0.014444444444444447,
+        "p_value": 0.3934,
+        "n": 300,
+        "significant": false
+      },
+      {
+        "benchmark": "gsm_symbolic:main",
+        "mean_diff": -0.0016666666666666674,
+        "ci_low": -0.03666666666666666,
+        "ci_high": 0.03166666666666667,
+        "p_value": 0.9342,
+        "n": 200,
+        "significant": false
+      }
+    ]
+  },
+  "regressions": [
+    {
+      "arm": "real_only",
+      "ratio": 0,
+      "benchmark": "gsm8k",
+      "mean_diff": -0.20222222222222225,
+      "ci_low": -0.2544444444444445,
+      "ci_high": -0.15000000000000002
+    },
+    {
+      "arm": "real_only",
+      "ratio": 0,
+      "benchmark": "gsm_symbolic:main",
+      "mean_diff": -0.16,
+      "ci_low": -0.23000000000000004,
+      "ci_high": -0.09
+    },
+    {
+      "arm": "real_only",
+      "ratio": 0,
+      "benchmark": "probes_train_families",
+      "mean_diff": -0.1259259259259259,
+      "ci_low": -0.2049382716049383,
+      "ci_high": -0.04938271604938273
+    },
+    {
+      "arm": "real_only",
+      "ratio": 0,
+      "benchmark": "probes_heldout_families",
+      "mean_diff": -0.10123456790123458,
+      "ci_low": -0.17283950617283952,
+      "ci_high": -0.02962962962962964
+    },
+    {
+      "arm": "untargeted",
+      "ratio": 3,
+      "benchmark": "gsm8k",
+      "mean_diff": -0.21333333333333335,
+      "ci_low": -0.26555555555555554,
+      "ci_high": -0.16111111111111115
+    },
+    {
+      "arm": "untargeted",
+      "ratio": 3,
+      "benchmark": "gsm_symbolic:main",
+      "mean_diff": -0.15666666666666668,
+      "ci_low": -0.22166666666666668,
+      "ci_high": -0.09333333333333335
+    },
+    {
+      "arm": "matched_control",
+      "ratio": 3,
+      "benchmark": "gsm8k",
+      "mean_diff": -0.21222222222222223,
+      "ci_low": -0.2644444444444445,
+      "ci_high": -0.16111111111111115
+    },
+    {
+      "arm": "matched_control",
+      "ratio": 3,
+      "benchmark": "gsm_symbolic:main",
+      "mean_diff": -0.16666666666666669,
+      "ci_low": -0.235,
+      "ci_high": -0.09995833333333394
+    },
+    {
+      "arm": "targeted",
+      "ratio": 3,
+      "benchmark": "gsm8k",
+      "mean_diff": -0.22444444444444447,
+      "ci_low": -0.2744444444444445,
+      "ci_high": -0.1755277777777782
+    },
+    {
+      "arm": "targeted",
+      "ratio": 3,
+      "benchmark": "gsm_symbolic:main",
+      "mean_diff": -0.16833333333333336,
+      "ci_low": -0.23333333333333336,
+      "ci_high": -0.10333333333333336
+    },
+    {
+      "arm": "targeted",
+      "ratio": 9,
+      "benchmark": "gsm8k",
+      "mean_diff": -0.2377777777777778,
+      "ci_low": -0.2877777777777778,
+      "ci_high": -0.1866666666666667
+    },
+    {
+      "arm": "targeted",
+      "ratio": 9,
+      "benchmark": "gsm_symbolic:main",
+      "mean_diff": -0.19333333333333336,
+      "ci_low": -0.265,
+      "ci_high": -0.125
+    }
+  ],
+  "warnings": []
+}

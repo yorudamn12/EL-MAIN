@@ -9,6 +9,7 @@ dist/
 
 # local Claude Code settings
 .claude/settings.local.json
+.claude/worktrees/
 
 # experiment outputs (large; keep out of git)
 runs/

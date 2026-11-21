@@ -1,0 +1,47 @@
+{
+  "run_id": "2afa3eeaed87",
+  "arm": "targeted",
+  "ratio": 9.0,
+  "seed": 1,
+  "gsm8k": 0.41333333333333333,
+  "gsm8k:truncated_share": 0.05333333333333334,
+  "gsm_symbolic:main": 0.375,
+  "gsm_symbolic:main:truncated_share": 0.03,
+  "probes_train_families": 0.8666666666666667,
+  "probes_train_families:truncated_share": 0.007407407407407408,
+  "probes_train_families:target_slice": {
+    "feature": "steps",
+    "threshold": 4.0,
+    "above": {
+      "n": 68,
+      "accuracy": 0.8235294117647058
+    },
+    "at_or_below": {
+      "n": 67,
+      "accuracy": 0.9104477611940298
+    }
+  },
+  "probes_heldout_families": 0.7703703703703704,
+  "probes_heldout_families:truncated_share": 0.0,
+  "probes_heldout_families:target_slice": {
+    "feature": "steps",
+    "threshold": 4.0,
+    "above": {
+      "n": 68,
+      "accuracy": 0.75
+    },
+    "at_or_below": {
+      "n": 67,
+      "accuracy": 0.7910447761194029
+    }
+  },
+  "eta": {
+    "steps": -0.046690701975575594,
+    "log10_max": 0.5414635026121508,
+    "n_mul": 0.344415289280102,
+    "n_div": 0.556663068672007,
+    "n_carry": 0.1580868076794068,
+    "n_distractors": -0.224408830222498,
+    "has_merge": null
+  }
+}

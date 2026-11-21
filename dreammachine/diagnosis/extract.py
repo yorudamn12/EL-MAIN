@@ -7,7 +7,9 @@ from fractions import Fraction
 
 _NUM = r"-?\$?\s?\d[\d,]*(?:\.\d+)?"
 _THINK = re.compile(r"<think>.*?</think>", re.S)
-_HASH = re.compile(rf"####\s*({_NUM})")
+# '#### n' must end its line: a Markdown heading such as '#### 7. **Spends $2437**' is a step title, not the
+# answer (found in the 2026-11-11 label check, docs/RUNNING.md section 19).
+_HASH = re.compile(rf"####[ 	]*({_NUM})[ 	]*\.?[ 	]*$", re.M)
 _BOXED = re.compile(rf"\\boxed\{{\s*({_NUM})\s*\}}")
 _ANSWER_IS = re.compile(rf"answer\s*(?:is|:|=)\s*[:\s]*\**\s*({_NUM})", re.I)
 _ANY_NUM = re.compile(_NUM)

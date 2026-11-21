@@ -1,0 +1,296 @@
+{
+  "margin": 0.03,
+  "alpha": 0.05,
+  "n_boot": 10000,
+  "seed": 0,
+  "rows": [
+    {
+      "job": "80b37628b193",
+      "label": "Single weakness, 0.6B",
+      "a": "targeted",
+      "b": "matched_control",
+      "benchmark": "gsm8k",
+      "mean_diff": -0.01222222222222222,
+      "ci95": [
+        -0.03888888888888889,
+        0.014444444444444447
+      ],
+      "ci90": [
+        -0.03444444444444445,
+        0.011111111111111108
+      ],
+      "bound": 0.03444444444444445,
+      "p_tost": 0.1082,
+      "equivalent": false,
+      "n": 300,
+      "ci95_seed_problem": [
+        -0.07,
+        0.04333333333333328
+      ]
+    },
+    {
+      "job": "80b37628b193",
+      "label": "Single weakness, 0.6B",
+      "a": "targeted",
+      "b": "matched_control",
+      "benchmark": "gsm_symbolic:main",
+      "mean_diff": -0.0016666666666666674,
+      "ci95": [
+        -0.03666666666666666,
+        0.03166666666666667
+      ],
+      "ci90": [
+        -0.03,
+        0.02666666666666667
+      ],
+      "bound": 0.03,
+      "p_tost": 0.0549,
+      "equivalent": false,
+      "n": 200,
+      "ci95_seed_problem": [
+        -0.05833333333333335,
+        0.0566666666666667
+      ]
+    },
+    {
+      "job": "80b37628b193",
+      "label": "Single weakness, 0.6B",
+      "a": "targeted",
+      "b": "matched_control",
+      "benchmark": "probes_heldout_families",
+      "mean_diff": -0.15802469135802472,
+      "ci95": [
+        -0.22469135802469134,
+        -0.08888888888888889
+      ],
+      "ci90": [
+        -0.21481481481481482,
+        -0.10123456790123456
+      ],
+      "bound": 0.21481481481481482,
+      "p_tost": 0.9999,
+      "equivalent": false,
+      "n": 135,
+      "ci95_seed_problem": [
+        -0.24691358024691357,
+        -0.06913580246913587
+      ]
+    },
+    {
+      "job": "409305f3e2f2",
+      "label": "Single weakness, 1.7B",
+      "a": "targeted",
+      "b": "matched_control",
+      "benchmark": "gsm8k",
+      "mean_diff": 0.01111111111111111,
+      "ci95": [
+        -0.016666666666666666,
+        0.03888888888888889
+      ],
+      "ci90": [
+        -0.012222222222222221,
+        0.034444444444444444
+      ],
+      "bound": 0.034444444444444444,
+      "p_tost": 0.1009,
+      "equivalent": false,
+      "n": 300,
+      "ci95_seed_problem": [
+        -0.03444444444444439,
+        0.05888888888888888
+      ]
+    },
+    {
+      "job": "409305f3e2f2",
+      "label": "Single weakness, 1.7B",
+      "a": "targeted",
+      "b": "matched_control",
+      "benchmark": "gsm_symbolic:main",
+      "mean_diff": 0.014999999999999998,
+      "ci95": [
+        -0.02,
+        0.05
+      ],
+      "ci90": [
+        -0.013333333333333338,
+        0.045
+      ],
+      "bound": 0.045,
+      "p_tost": 0.2072,
+      "equivalent": false,
+      "n": 200,
+      "ci95_seed_problem": [
+        -0.036666666666666625,
+        0.06666666666666665
+      ]
+    },
+    {
+      "job": "409305f3e2f2",
+      "label": "Single weakness, 1.7B",
+      "a": "targeted",
+      "b": "matched_control",
+      "benchmark": "probes_heldout_families",
+      "mean_diff": -0.04691358024691358,
+      "ci95": [
+        -0.09388888888888886,
+        -6.548259876724752e-18
+      ],
+      "ci90": [
+        -0.08641975308641976,
+        -0.00740740740740741
+      ],
+      "bound": 0.08641975308641976,
+      "p_tost": 0.7416,
+      "equivalent": false,
+      "n": 135,
+      "ci95_seed_problem": [
+        -0.11111111111111116,
+        0.01728395061728394
+      ]
+    },
+    {
+      "job": "76f2c9af5ea9",
+      "label": "Multi-weakness, 0.6B",
+      "a": "multi_targeted",
+      "b": "multi_matched_control",
+      "benchmark": "gsm8k",
+      "mean_diff": -0.023333333333333338,
+      "ci95": [
+        -0.05111111111111112,
+        0.005555555555555558
+      ],
+      "ci90": [
+        -0.046666666666666676,
+        0.0011111111111111087
+      ],
+      "bound": 0.046666666666666676,
+      "p_tost": 0.3354,
+      "equivalent": false,
+      "n": 300,
+      "ci95_seed_problem": [
+        -0.07,
+        0.021111111111111136
+      ]
+    },
+    {
+      "job": "76f2c9af5ea9",
+      "label": "Multi-weakness, 0.6B",
+      "a": "multi_targeted",
+      "b": "multi_matched_control",
+      "benchmark": "gsm_symbolic:main",
+      "mean_diff": -0.028333333333333332,
+      "ci95": [
+        -0.06333333333333332,
+        0.006666666666666665
+      ],
+      "ci90": [
+        -0.05666666666666667,
+        0.0016666666666666642
+      ],
+      "bound": 0.05666666666666667,
+      "p_tost": 0.4686,
+      "equivalent": false,
+      "n": 200,
+      "ci95_seed_problem": [
+        -0.07666666666666666,
+        0.020000000000000018
+      ]
+    },
+    {
+      "job": "76f2c9af5ea9",
+      "label": "Multi-weakness, 0.6B",
+      "a": "multi_targeted",
+      "b": "multi_matched_control",
+      "benchmark": "probes_heldout_families",
+      "mean_diff": 0.05185185185185185,
+      "ci95": [
+        0.009876543209876545,
+        0.09382716049382715
+      ],
+      "ci90": [
+        0.017283950617283952,
+        0.08641975308641975
+      ],
+      "bound": 0.08641975308641975,
+      "p_tost": 0.8377,
+      "equivalent": false,
+      "n": 135,
+      "ci95_seed_problem": [
+        -0.03456790123456788,
+        0.1333333333333333
+      ]
+    },
+    {
+      "job": "4e6b61903c00",
+      "label": "Multi-weakness, 1.7B",
+      "a": "multi_targeted",
+      "b": "multi_matched_control",
+      "benchmark": "gsm8k",
+      "mean_diff": 0.006666666666666667,
+      "ci95": [
+        -0.02,
+        0.03333333333333333
+      ],
+      "ci90": [
+        -0.015555555555555557,
+        0.028888888888888895
+      ],
+      "bound": 0.028888888888888895,
+      "p_tost": 0.0481,
+      "equivalent": true,
+      "n": 300,
+      "ci95_seed_problem": [
+        -0.04444444444444451,
+        0.05555555555555558
+      ]
+    },
+    {
+      "job": "4e6b61903c00",
+      "label": "Multi-weakness, 1.7B",
+      "a": "multi_targeted",
+      "b": "multi_matched_control",
+      "benchmark": "gsm_symbolic:main",
+      "mean_diff": 0.008333333333333333,
+      "ci95": [
+        -0.02666666666666667,
+        0.04333333333333333
+      ],
+      "ci90": [
+        -0.021666666666666664,
+        0.036666666666666674
+      ],
+      "bound": 0.036666666666666674,
+      "p_tost": 0.1163,
+      "equivalent": false,
+      "n": 200,
+      "ci95_seed_problem": [
+        -0.05500000000000005,
+        0.06833333333333336
+      ]
+    },
+    {
+      "job": "4e6b61903c00",
+      "label": "Multi-weakness, 1.7B",
+      "a": "multi_targeted",
+      "b": "multi_matched_control",
+      "benchmark": "probes_heldout_families",
+      "mean_diff": -0.022222222222222223,
+      "ci95": [
+        -0.05185185185185186,
+        0.007407407407407405
+      ],
+      "ci90": [
+        -0.04691358024691358,
+        0.0024691358024691353
+      ],
+      "bound": 0.04691358024691358,
+      "p_tost": 0.2771,
+      "equivalent": false,
+      "n": 135,
+      "ci95_seed_problem": [
+        -0.08148148148148149,
+        0.03950617283950619
+      ]
+    }
+  ]
+}

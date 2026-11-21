@@ -9,6 +9,9 @@ partially while a pipeline runs (`complete: false`) and finally by the compare s
     9.3 eta change        eta_after - eta_before per feature (negative = the feature hurts less after training);
                           error-type shift (shares among wrong answers, after - before); target slice;
                           primary block (targeted - matched_control on GSM8K / GSM-Symbolic; status "proposed")
+    multi-weakness        (PLAN.md §16) the job trains only multi_targeted + multi_matched_control; the arms of the
+                          reference single-weakness paper run are added from that run (source_job), so every arm sits
+                          in one table; primary = multi_targeted - multi_matched_control; per-weakness probe slices
     compare_runs          any two eval runs (GET /compare)
 """
 
@@ -29,10 +32,14 @@ from .errors import JobError
 
 ERROR_TYPES = [e.value for e in ErrorType if e is not ErrorType.CORRECT]
 PAIRS = [("targeted", "matched_control"), ("targeted", "untargeted"), ("matched_control", "untargeted"),
-         ("targeted", "real_only")]
+         ("targeted", "real_only"),
+         ("multi_targeted", "multi_matched_control"), ("multi_targeted", "targeted"), ("multi_targeted", "untargeted"),
+         ("multi_targeted", "matched_control"), ("multi_targeted", "real_only"),
+         ("multi_matched_control", "matched_control"), ("multi_matched_control", "untargeted")]
 PRIMARY_BENCHMARKS = ["gsm8k", "gsm_symbolic:main", "gsm_symbolic:p1", "gsm_symbolic:p2"]
 PRIMARY_QUESTION = "Does aiming at the weakness help beyond difficulty?"
-PAPER_REQUEST_KEYS = {"mode", "name", "model"}
+PRIMARY_QUESTION_MULTI = "Does aiming at all significant weaknesses help beyond difficulty?"
+PAPER_REQUEST_KEYS = {"mode", "name", "model", "protocol"}
 
 
 def _num(x: float | int | None) -> float | int | None:
@@ -51,6 +58,7 @@ class RunData:
         if self.run is None:
             raise JobError("not_found", f"no run {run_id!r}")
         self.id = run_id
+        self.source_job = self.run.get("job_id")
         cfg, metrics = self.run["config"], self.run["metrics"] or {}
         self.arm, self.ratio, self.seed = cfg.get("arm"), cfg.get("ratio"), cfg.get("seed")
         self.eta = metrics.get("eta")
@@ -166,10 +174,18 @@ def build_results(store: Store, job_id: str, complete: bool | None = None) -> di
         raise JobError("not_ready", "results need the baseline and at least one finished evaluate step")
     complete = compare_done if complete is None else complete
     resolved = job["resolved"]
+    reference = resolved.get("reference") or None
+    own = {(r.arm, float(r.ratio)) for r in arm_runs}
+    if reference:   # multi-weakness: the earlier single-weakness run's arms, as trained there (not retrained)
+        arm_runs += [r for r in (RunData(store, rid) for rid in reference["eval_run_ids"])
+                     if (r.arm, float(r.ratio)) not in own]
     benchmarks = list(resolved["benchmarks"])
     tgt_path = Path(job["output_dir"]) / "target.json"
     tgt = json.loads(tgt_path.read_text(encoding="utf-8")) if tgt_path.exists() else None
     target = {"strategy": tgt["strategy"], "feature": tgt["feature"], "threshold": tgt["threshold"]} if tgt else None
+    multi = (tgt or {}).get("targets")
+    if target and multi:
+        target["targets"] = [{k: t[k] for k in ("feature", "threshold", "weight")} for t in multi]
 
     groups: dict[tuple[str, float], list[RunData]] = defaultdict(list)
     for r in arm_runs:
@@ -191,7 +207,7 @@ def build_results(store: Store, job_id: str, complete: bool | None = None) -> di
             bench_out[b] = {"accuracy_mean": float(np.mean(accs)),
                             "accuracy_sd": float(np.std(accs, ddof=1)) if len(accs) > 1 else 0.0,
                             "n_seeds": len(accs), "vs_base": bs, "regression": reg}
-            if reg:
+            if reg and (arm, ratio) in own:   # reference arms report their regressions in their own run
                 regressions.append({"arm": arm, "ratio": _num(ratio), "benchmark": b, "mean_diff": bs["mean_diff"],
                                     "ci_low": bs["ci_low"], "ci_high": bs["ci_high"]})
         slices = {}
@@ -206,9 +222,24 @@ def build_results(store: Store, job_id: str, complete: bool | None = None) -> di
                 slices[b] = {k: {"before": float(np.mean(gb[k])) if gb[k] else None,
                                  "after": float(np.mean(ga[k])) if ga[k] else None, "n": n[k]}
                              for k in ("above", "at_or_below")}
+        weakness_slices = {}
+        for t in multi or []:
+            weakness_slices[t["feature"]] = {}
+            for b in [x for x in benchmarks if x.startswith("probes")]:
+                after = _mean_over_seeds(runs, b)
+                ga, n = _slice(after, {**base.features, **{k: v for r in runs for k, v in r.features.items()}},
+                               b, t["feature"], t["threshold"])
+                gb, _ = _slice({k: v for k, v in base_items[b].items() if k in after}, base.features, b,
+                               t["feature"], t["threshold"])
+                weakness_slices[t["feature"]][b] = {k: {"before": float(np.mean(gb[k])) if gb[k] else None,
+                                                        "after": float(np.mean(ga[k])) if ga[k] else None, "n": n[k]}
+                                                    for k in ("above", "at_or_below")}
         wrong_after = sum((r.wrong for r in runs), Counter())
+        sources = {r.source_job for r in runs}
         arms_out.append({"arm": arm, "ratio": _num(ratio), "seeds": [r.seed for r in runs], "benchmarks": bench_out,
-                         "target_slice": slices, "eta_change": eta_change([r.eta for r in runs], base.eta),
+                         "target_slice": slices, "weakness_slices": weakness_slices,
+                         "source_job": sources.pop() if len(sources) == 1 else None,
+                         "eta_change": eta_change([r.eta for r in runs], base.eta),
                          "error_type_shift": error_shift(wrong_after, base.wrong)})
 
     comparisons = []
@@ -225,18 +256,26 @@ def build_results(store: Store, job_id: str, complete: bool | None = None) -> di
                                             "significant": _significant(bs)})
 
     main_ratio = resolved.get("main_ratio")
-    prim_rows = [c for c in comparisons if c["a"] == "targeted" and c["b"] == "matched_control"
+    pa, pb, question = (("multi_targeted", "multi_matched_control", PRIMARY_QUESTION_MULTI) if reference
+                        else ("targeted", "matched_control", PRIMARY_QUESTION))
+    prim_rows = [c for c in comparisons if c["a"] == pa and c["b"] == pb
                  and c["ratio"] == _num(main_ratio) and c["benchmark"] in PRIMARY_BENCHMARKS]
-    has_pair = any(k[0] == "targeted" for k in keys) and any(k[0] == "matched_control" for k in keys)
+    has_pair = any(k[0] == pa for k in keys) and any(k[0] == pb for k in keys)
     primary = None
     if has_pair:
-        primary = {"status": "proposed", "question": PRIMARY_QUESTION, "a": "targeted", "b": "matched_control",
+        primary = {"status": "proposed", "question": question, "a": pa, "b": pb,
                    "benchmarks": [b for b in PRIMARY_BENCHMARKS if b in benchmarks],
                    "results": [{k: c[k] for k in ("benchmark", "mean_diff", "ci_low", "ci_high", "p_value", "n",
                                                   "significant")} for c in prim_rows]}
 
     eligible, warn = paper_eligibility(store, job, treat_compare_done=complete)
     warnings = list(job["warnings"] or []) + warn
+    if reference:
+        mine = ((job.get("provenance") or {}).get("git") or {}).get("commit")
+        if reference.get("git_commit") and mine and reference["git_commit"] != mine:
+            warnings.append(f"comparison arms come from paper run {reference['job_id']} (code {reference['git_commit'][:7]}); "
+                            f"this run used code {mine[:7]}: training and evaluation settings are identical "
+                            "(checked when the run was created)")
     requested = resolved.get("seeds") or []
     for arm, ratio in keys:
         got = {r.seed for r in groups[(arm, ratio)]}
@@ -245,7 +284,7 @@ def build_results(store: Store, job_id: str, complete: bool | None = None) -> di
 
     return {
         "pipeline_id": job_id, "complete": bool(complete), "mode": job["mode"], "paper_eligible": eligible,
-        "model": resolved["model"], "target": target,
+        "model": resolved["model"], "target": target, "reference_job": reference["job_id"] if reference else None,
         "benchmarks": [{"name": b, "kind": registry.get(b).kind} for b in benchmarks],
         "baseline": {b: {"accuracy": base.accuracy(b), "n": len(base_items[b])} for b in benchmarks
                      if base.accuracy(b) is not None},
@@ -293,7 +332,11 @@ def results_markdown(res: dict, job: dict) -> str:
              f"**Complete:** {'yes' if res['complete'] else 'no (partial)'}", "",
              f"**Model:** `{res['model']}`  ·  **Prompt:** `{job['resolved'].get('prompt_version')}`  ·  "
              f"**Target:** " + (f"`{t['feature']}` (threshold {t['threshold']}, {t['strategy']})" if t and t["feature"]
-                                else (t["strategy"] if t else "—")), "",
+                                else (", ".join(f"`{x['feature']}` {x['weight']:.2f}" for x in t["targets"])
+                                      + " (multi, weight = share of effect)" if t and t.get("targets")
+                                      else (t["strategy"] if t else "—"))), "",
+             *([f"**Comparison arms** (real_only, untargeted, matched_control, targeted) were trained in paper run "
+                f"`{res['reference_job']}` and are not retrained here.", ""] if res.get("reference_job") else []),
              "## Baseline (untrained model)", "", "| benchmark | accuracy | n |", "|---|---|---|"]
     for b, v in res["baseline"].items():
         lines.append(f"| {b} | {_f(v['accuracy'])} | {v['n']} |")
@@ -320,6 +363,16 @@ def results_markdown(res: dict, job: dict) -> str:
         lines.append(f"| {c['a']} − {c['b']} | {c['ratio']} | {c['benchmark']} | {_f(c['mean_diff'], True)} | "
                      f"[{_f(c['ci_low'], True)}, {_f(c['ci_high'], True)}] | {c['p_value']:.3f} | "
                      f"{'yes' if c['significant'] else 'no'} |")
+    multi = [x["feature"] for x in (t or {}).get("targets") or []]
+    if multi:
+        lines += ["", "## Each targeted weakness: held-out probes above the threshold (before → after)", "",
+                  "| arm | ratio | trained in | " + " | ".join(multi) + " |", "|---|---|---|" + "---|" * len(multi)]
+        for a in res["arms"]:
+            cells = []
+            for f in multi:
+                c = (a.get("weakness_slices") or {}).get(f, {}).get("probes_heldout_families", {}).get("above")
+                cells.append("—" if not c or c["after"] is None else f"{_f(c['before'])} → {_f(c['after'])} (n {c['n']})")
+            lines.append(f"| {a['arm']} | {a['ratio']} | {a.get('source_job') or '—'} | " + " | ".join(cells) + " |")
     lines += ["", "## Change in weaknesses (η after − before; negative = hurts less)", "",
               "| arm | ratio | " + " | ".join(FEATURES) + " |", "|---|---|" + "---|" * len(FEATURES)]
     for a in res["arms"]:

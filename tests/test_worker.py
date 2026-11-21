@@ -161,6 +161,19 @@ def test_recovery_marks_stale_running_steps_interrupted(env):
     assert worker().run_once() == "done" and _statuses(store, jid) == ["done", "done", "done"]
 
 
+def test_auto_resume_queues_interrupted_jobs_again(env):
+    """--auto-resume (power cut): the interrupted job is queued again; its finished step is not run again."""
+    store, make_job, worker, calls, _ = env
+    jid = make_job()
+    store.update_job(jid, status="running", started_at=time.time())
+    store.update_step(jid, 0, status="done")
+    store.update_step(jid, 1, status="running", started_at=time.time())
+    assert worker().recover(auto_resume=True) == 1
+    assert store.get_job(jid)["status"] == "queued" and _statuses(store, jid) == ["done", "pending", "pending"]
+    assert worker().run_once() == "done" and _statuses(store, jid) == ["done", "done", "done"]
+    assert calls() == [jid, "1", jid, "2"]          # step 0 was not repeated
+
+
 def test_second_worker_is_refused_while_the_first_is_alive(env):
     store, _, worker, _, _ = env
     first = worker()

@@ -1,0 +1,23 @@
+{
+  "run_id": "dcad68b73395",
+  "arm": "multi_matched_control",
+  "ratio": 3.0,
+  "seed": 2,
+  "gsm8k": 0.44333333333333336,
+  "gsm8k:truncated_share": 0.04,
+  "gsm_symbolic:main": 0.445,
+  "gsm_symbolic:main:truncated_share": 0.035,
+  "probes_train_families": 0.9037037037037037,
+  "probes_train_families:truncated_share": 0.0,
+  "probes_heldout_families": 0.725925925925926,
+  "probes_heldout_families:truncated_share": 0.0,
+  "eta": {
+    "steps": 0.30040753334963843,
+    "log10_max": 0.6430103971560891,
+    "n_mul": -0.2448098111874825,
+    "n_div": 0.9665655480054214,
+    "n_carry": 0.05988121152156485,
+    "n_distractors": -0.7732050737503083,
+    "has_merge": null
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "strategy": "auto",
+  "feature": "steps",
+  "threshold": 4.0,
+  "eta": 0.5985314412010255,
+  "ci_low": 0.4923427446484766,
+  "ci_high": 0.7100117586801458,
+  "significant": true,
+  "warnings": []
+}

@@ -29,8 +29,8 @@ from ..data.style import restyle
 from ..diagnosis.agreement import stratified_sample
 from ..diagnosis.lltm import LLTMResult, bootstrap_lltm, fit_lltm
 from ..diagnosis.targeting import (
-    baseline_threshold, choose_target, design_matrix, rank_weaknesses, select_matched_control,
-    select_targeted, select_untargeted,
+    baseline_threshold, choose_target, composition, design_matrix, multi_targets, rank_weaknesses,
+    select_difficulty_matched, select_matched_control, select_multi_targeted, select_targeted, select_untargeted,
 )
 from ..generator.features import FEATURES
 from ..generator.probes import ProbeGrid, build_pool, factorial_probe_set
@@ -40,7 +40,9 @@ from ..models.runner import GenConfig, Runner
 from ..store.db import Store
 from .evaluate import ResponseRecord, evaluate, item_counts, slice_accuracy, summarize
 
-ARMS = ("real_only", "untargeted", "matched_control", "targeted")
+CORE_ARMS = ("real_only", "untargeted", "matched_control", "targeted")
+MULTI_ARMS = ("multi_targeted", "multi_matched_control")   # multi-weakness protocol (PLAN.md §16)
+ARMS = CORE_ARMS + MULTI_ARMS
 
 RunnerFactory = Callable[[str, "str | None", GenConfig], Runner]
 
@@ -232,7 +234,14 @@ def _arm_path(cfg: Config, arm: str, ratio: float, seed: int) -> Path:
     return cfg.out / "data" / f"{arm}_r{ratio:g}_s{seed}.jsonl"
 
 
-TARGET_STRATEGIES = ("auto", "feature", "untargeted")
+TARGET_STRATEGIES = ("auto", "feature", "untargeted", "multi")
+
+
+def _natural_thresholds(cfg: Config) -> dict[str, float]:
+    """Each feature's 'elevated' threshold: its median on the same natural pool diagnose() uses."""
+    d = cfg.diagnose
+    nat_Q = design_matrix(build_pool(d.get("natural_pool", 5000), seed=d.get("seed", 0) + 1), FEATURES)
+    return {f: baseline_threshold(nat_Q, list(FEATURES), f) for f in FEATURES}
 
 
 def resolve_target(cfg: Config, strategy: str = "auto", feature: str | None = None) -> dict:
@@ -241,6 +250,8 @@ def resolve_target(cfg: Config, strategy: str = "auto", feature: str | None = No
     auto        diagnosis.json["target"] (raises NoSignificantWeakness if there is none)
     feature     a named feature; threshold from the same natural pool diagnose uses; warns if not significant
     untargeted  no target (only the untargeted and real_only arms can be built)
+    multi       every significant weakness, weighted by effect (PLAN.md §16); feature/threshold stay null and the
+                list is in `targets`
     """
     if strategy not in TARGET_STRATEGIES:
         raise ValueError(f"target strategy must be one of {TARGET_STRATEGIES}")
@@ -262,6 +273,14 @@ def resolve_target(cfg: Config, strategy: str = "auto", feature: str | None = No
         threshold = baseline_threshold(design_matrix(natural, FEATURES), list(FEATURES), feature)
         if not weaknesses.get(feature, {}).get("significant"):
             warnings.append(f"{feature} is not a significant weakness in the diagnosis; aiming at it anyway")
+    elif strategy == "multi":
+        targets = multi_targets(diag.get("weaknesses", []), _natural_thresholds(cfg))
+        if not targets:
+            raise NoSignificantWeakness("diagnosis found no significant weakness; nothing to target")
+        result = {"strategy": strategy, "feature": None, "threshold": None, "targets": targets, "eta": None,
+                  "ci_low": None, "ci_high": None, "significant": True, "warnings": warnings}
+        (cfg.out / "target.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
+        return result
     else:
         feature = None
     w = weaknesses.get(feature, {}) if feature else {}
@@ -288,6 +307,9 @@ def load_target(cfg: Config) -> dict:
 
 def _all_arm_keys(cfg: Config, has_target: bool) -> list[tuple[str, float]]:
     ratios = [float(r) for r in cfg.data.get("ratios", [3])]
+    if cfg.data.get("arms"):   # a protocol that names its arms (configs/main_multi.yaml)
+        return [(a, 0.0) if a == "real_only" else (a, r) for a in cfg.data["arms"]
+                for r in ([0.0] if a == "real_only" else ratios)]
     syn = ("targeted", "matched_control", "untargeted") if has_target else ("untargeted",)
     return [("real_only", 0.0)] + [(arm, r) for arm in syn for r in ratios]
 
@@ -312,9 +334,11 @@ def synthetic_need(pool: list, max_syn_tokens: float, target: str | None, thresh
 
 
 def _select_synthetic(cfg: Config, seed: int, lltm: LLTMResult | None, target: str | None,
-                      threshold: float | None, exclude: set[str], arms: set[str]) -> dict:
+                      threshold: float | None, exclude: set[str], arms: set[str],
+                      multi: list[dict] | None = None) -> dict:
     """Synthetic selections for one seed: {arm: [TrainExample]}, plus the match report and a shortfall warning.
-    matched_control needs the targeted selection, so targeted is selected whenever either is requested."""
+    matched_control needs the targeted selection, so targeted is selected whenever either is requested
+    (the same for multi_matched_control and multi_targeted)."""
     dz = cfg.data
     budget = int(dz.get("token_budget", 600_000))
     ratios = [float(r) for r in dz.get("ratios", [3])]
@@ -342,11 +366,49 @@ def _select_synthetic(cfg: Config, seed: int, lltm: LLTMResult | None, target: s
         out["syn"]["matched_control"] = [to_train(e) for e in from_items(control)]
         out["match"] = match.to_dict()
         out["features"].update({it.id: dict(it.features) for it in [*targeted, *control]})
+    if set(MULTI_ARMS) & arms:
+        _select_multi(cfg, seed, lltm, multi, pool, exclude, max_syn_tokens, out)
     if "untargeted" in arms:
         untargeted = select_untargeted(natural, need, seed=seed)
         out["syn"]["untargeted"] = [to_train(e) for e in from_items(untargeted)]
         out["features"].update({it.id: dict(it.features) for it in untargeted})
     return out
+
+
+def _select_multi(cfg: Config, seed: int, lltm: LLTMResult, multi: list[dict], pool: list, exclude: set[str],
+                  max_syn_tokens: float, out: dict) -> None:
+    """multi_targeted + multi_matched_control for one seed (PLAN.md §16), written into `out`."""
+    dz = cfg.data
+    p_band = tuple(dz.get("p_band", [0.3, 0.7]))
+    pool_size = int(dz.get("pool_size", 40_000))
+    sample = pool[:2000]
+    plain = [it for it in sample if all(it.features[t["feature"]] <= t["threshold"] for t in multi)]
+    lengths = [np.mean([_tokens(it) for it in sample])] + ([np.mean([_tokens(it) for it in plain])] if plain else [])
+    need = int(math.ceil(1.3 * max_syn_tokens / min(lengths)))   # sized by the shorter side, as synthetic_need()
+    targeted, counts = select_multi_targeted(pool, lltm, multi, n=need, p_band=p_band, seed=seed)
+    pool_max, extra = int(dz.get("pool_max", 4 * pool_size)), 1
+    while len(targeted) < need and len(pool) < pool_max:
+        more = build_pool(min(pool_size, pool_max - len(pool)), seed=100 + seed + 1000 * extra,
+                          grid=cfg.grid(dz), exclude_ids=exclude | {it.id for it in pool})
+        pool, extra = pool + more, extra + 1
+        targeted, counts = select_multi_targeted(pool, lltm, multi, n=need, p_band=p_band, seed=seed)
+    # The control is matched from the pool plus one more pool of the same size: the targeted arm takes most of the
+    # pool's items in the difficulty band, and without fresh candidates the control came out easier (1.7B dry run,
+    # 2026-11-09: KS 0.46 on predicted success; with the extra pool KS < 0.01). Seeded, so reproducible.
+    fresh = build_pool(pool_size, seed=100 + seed + 1000 * extra, grid=cfg.grid(dz),
+                       exclude_ids=exclude | {it.id for it in pool})
+    control, match = select_difficulty_matched(pool + fresh, lltm, targeted, seed=seed)
+    short = [f"{f} {c['taken']}/{c['quota']}" for f, c in counts.items() if c["taken"] < c["quota"]]
+    if short:
+        msg = (f"seed {seed}: multi_targeted quotas not filled ({', '.join(short)}) from a pool of {len(pool)}; "
+               "increase data.pool_size or data.pool_max")
+        out["warning"] = f"{out['warning']}; {msg}" if out["warning"] else msg
+    out["syn"]["multi_targeted"] = [to_train(e) for e in from_items(targeted)]
+    out["syn"]["multi_matched_control"] = [to_train(e) for e in from_items(control)]
+    out["multi_match"] = match.to_dict()
+    out["multi_composition"] = {"quotas": counts, "multi_targeted": composition(targeted, lltm, multi),
+                                "multi_matched_control": composition(control, lltm, multi)}
+    out["features"].update({it.id: dict(it.features) for it in [*targeted, *control]})
 
 
 def _write_features(cfg: Config, seed: int, features: dict[str, dict]) -> None:
@@ -376,7 +438,10 @@ def build_arm(cfg: Config, arm: str, ratio: float, seed: int, target: str | None
     real = real if real is not None else [to_train(e) for e in _real_train(cfg)]
     if arm == "real_only":
         return _write_arm(cfg, real, [], arm, 0.0, seed)[1]
-    sel = _select_synthetic(cfg, seed, lltm, target, threshold, set(diag["probe_ids"]), {arm})
+    multi = load_target(cfg).get("targets") if arm in MULTI_ARMS else None
+    if arm in MULTI_ARMS and not multi:
+        raise ValueError(f"{arm} needs the multi target (strategy multi)")
+    sel = _select_synthetic(cfg, seed, lltm, target, threshold, set(diag["probe_ids"]), {arm}, multi=multi)
     _write_features(cfg, seed, sel["features"])
     return _write_arm(cfg, real, sel["syn"][arm], arm, ratio, seed)[1]
 
@@ -388,26 +453,33 @@ def build_data(cfg: Config, store: Store, arms: list[tuple[str, float]] | None =
     dz = cfg.data
     diag = json.loads((cfg.out / "diagnosis.json").read_text(encoding="utf-8"))
     tgt = load_target(cfg)
-    target, threshold = tgt["feature"], tgt["threshold"]
-    if not target and tgt.get("strategy") != "untargeted":
+    target, threshold, multi = tgt["feature"], tgt["threshold"], tgt.get("targets")
+    if not target and not multi and tgt.get("strategy") != "untargeted":
         raise NoSignificantWeakness("diagnosis found no significant weakness; nothing to target")
     keys = [(a, float(r)) for a, r in arms] if arms is not None else _all_arm_keys(cfg, bool(target))
     wanted = {a for a, _ in keys}
     if not target and wanted & {"targeted", "matched_control"}:
         raise ValueError("targeted / matched_control needs a target (strategy auto or feature)")
-    lltm = LLTMResult.from_dict(diag["lltm"]) if target else None
+    if not multi and wanted & set(MULTI_ARMS):
+        raise ValueError("multi_targeted / multi_matched_control need the multi target (strategy multi)")
+    lltm = LLTMResult.from_dict(diag["lltm"]) if (target or multi) else None
     budget = int(dz.get("token_budget", 600_000))
     exclude = set(diag["probe_ids"])
     real = [to_train(e) for e in _real_train(cfg)]
     manifest: dict[str, Any] = {"target": target, "threshold": threshold, "budget_tokens": budget, "arms": {}}
+    if multi:
+        manifest["targets"] = multi
 
     for seed in cfg.seeds:
-        sel = _select_synthetic(cfg, seed, lltm, target, threshold, exclude, wanted - {"real_only"})
+        sel = _select_synthetic(cfg, seed, lltm, target, threshold, exclude, wanted - {"real_only"}, multi=multi)
         _write_features(cfg, seed, sel["features"])
         if sel["warning"]:
             manifest.setdefault("warnings", []).append(sel["warning"])
         if sel["match"] is not None:
             manifest["arms"][f"match_s{seed}"] = sel["match"]
+        if sel.get("multi_match") is not None:
+            manifest["arms"][f"match_s{seed}"] = sel["multi_match"]
+            manifest.setdefault("multi_composition", {})[f"s{seed}"] = sel["multi_composition"]
         for arm, ratio in keys:
             data = [] if arm == "real_only" else sel["syn"][arm]
             path, stats = _write_arm(cfg, real, data, arm, 0.0 if arm == "real_only" else ratio, seed)
@@ -443,6 +515,11 @@ def adapter_dir(cfg: Config, arm: str, ratio: float, seed: int) -> Path:
     return cfg.out / "adapters" / f"{arm}_r{ratio:g}_s{seed}"
 
 
+def finished_adapter(out: Path) -> bool:
+    """A training that already completed: the adapter and its manifest (written last) are both there."""
+    return (out / "train_manifest.json").exists() and (out / "adapter" / "adapter_config.json").exists()
+
+
 def train_arm(cfg: Config, store: Store, arm: str, ratio: float, seed: int,
               on_progress: Callable[[int, int, float | None], None] | None = None,
               should_cancel: Callable[[], bool] | None = None) -> Path:
@@ -455,6 +532,12 @@ def train_arm(cfg: Config, store: Store, arm: str, ratio: float, seed: int,
     tcfg = TrainConfig(base_model=cfg.model, output_dir=str(out), seed=seed, prompt_version=cfg.prompt_version, **cfg.train)
     run = _new_run(store, cfg, f"{cfg.name}:train:{out.name}", "train",
                    {"arm": arm, "ratio": ratio, "seed": seed, "n": len(rows), "prompt_version": cfg.prompt_version})
+    if finished_adapter(out):
+        # Finished before (e.g. the laptop lost power after the adapter was saved but before the step was marked
+        # done): keep it. train() writes train_manifest.json only after the adapter is saved.
+        manifest = json.loads((out / "train_manifest.json").read_text(encoding="utf-8"))
+        store.finish_run(run, metrics={**manifest["train_metrics"], "reused_finished_adapter": True})
+        return out / "adapter"
     try:
         path = train(tcfg, rows, on_progress=on_progress, should_cancel=should_cancel)
     except Exception as e:
@@ -589,7 +672,7 @@ def report(cfg: Config, store: Store, ratio: float | None = None, include_run_id
                          "n_seeds": len(v)} for k, v in m.items()} for arm, m in table.items()}
     comparisons: dict[str, dict] = {}
     pairs = [("targeted", "matched_control"), ("targeted", "untargeted"), ("matched_control", "untargeted"),
-             ("targeted", "real_only")]
+             ("targeted", "real_only"), ("multi_targeted", "multi_matched_control")]
     for a, b in pairs:
         if a not in per_arm_item or b not in per_arm_item:
             continue

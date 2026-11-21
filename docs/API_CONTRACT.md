@@ -1,6 +1,6 @@
 # DreamMachine — API Contract (backend ⇄ frontend)
 
-**Contract version: `0.2.2`** · Status: **IMPLEMENTED** (designed 2026-10-04, revised after review; implemented
+**Contract version: `0.3.0`** · Status: **IMPLEMENTED** (designed 2026-10-04, revised after review; implemented
 at backend milestone B7 on 2026-10-05; `tests/test_api_contract.py` keeps the app and this file in step).
 
 This file is the **only** thing the frontend may rely on. The frontend (to be built by Manus AI) talks to the
@@ -109,10 +109,12 @@ type JobKind      = "pipeline" | "benchmark_run";
 type JobStatus    = "queued" | "running" | "done" | "failed" | "cancelled";
 type StepStatus   = "pending" | "running" | "done" | "failed" | "skipped" | "cancelled";
 type Stage        = "preflight" | "baseline" | "diagnose" | "choose_target" | "build_data" | "train" | "evaluate" | "compare";
-type Arm          = "real_only" | "untargeted" | "matched_control" | "targeted";      // "base" = untrained model, results only
+type Arm          = "real_only" | "untargeted" | "matched_control" | "targeted"      // "base" = untrained model, results only
+                   | "multi_targeted" | "multi_matched_control";                       // 0.3.0: multi-weakness paper protocol only
+type Protocol     = "single_weakness" | "multi_weakness";                              // 0.3.0: paper runs
 type Feature      = "steps" | "log10_max" | "n_mul" | "n_div" | "n_carry" | "n_distractors" | "has_merge";
 type ErrorType    = "CORRECT" | "FORMAT_ERROR" | "ARITHMETIC_SLIP" | "DISTRACTOR_USE" | "PLAN_ERROR" | "UNVERIFIABLE";
-type TargetStrategy = "auto" | "feature" | "untargeted";
+type TargetStrategy = "auto" | "feature" | "untargeted" | "multi";                   // 0.3.0: "multi" (paper multi_weakness only)
 type BenchmarkKind  = "external" | "synthetic";
 type ProgressUnit   = "examples" | "steps" | "items";
 ```
@@ -179,7 +181,7 @@ Example values below are **made up** to show the shape. They are not real result
 
 ### 6.1 System and catalog
 
-**`GET /health`** → `{ "status": "ok", "version": "0.1.0", "api_version": "0.2.2" }` (`version` = the Python package version; `api_version` = this contract's version).
+**`GET /health`** → `{ "status": "ok", "version": "0.1.0", "api_version": "0.3.0" }` (`version` = the Python package version; `api_version` = this contract's version).
 
 **`GET /system`** →
 ```json
@@ -228,7 +230,7 @@ Source: `configs/models.yaml`. `params_b` is approximate. Gated models need `hug
   "paper": {
     "description": "Fixed protocol: 4 arms incl. matched control, 3 seeds, ratios 3/9 for targeted, equal token budget.",
     "fixed": { "arms": ["real_only", "untargeted", "matched_control", "targeted"], "seeds": [0, 1, 2], "main_ratio": 3, "targeted_ratios": [3, 9] },
-    "settable": ["name", "model"],
+    "settable": ["name", "model", "protocol"],
     "n_steps": 36
   },
   "prompt_versions": ["dm_v1", "qwen_boxed", "v2_700"],
@@ -272,9 +274,23 @@ Paper request (nothing else allowed):
 ```json
 { "mode": "paper", "name": "paper-qwen17", "model": "Qwen/Qwen3-1.7B" }
 ```
+Multi-weakness paper request (0.3.0):
+```json
+{ "mode": "paper", "name": "multi-qwen17", "model": "Qwen/Qwen3-1.7B", "protocol": "multi_weakness" }
+```
+`protocol` (0.3.0) picks the locked protocol; default `"single_weakness"` (the original one, `configs/main.yaml`).
+`"multi_weakness"` (`configs/main_multi.yaml`) trains only two arms, `multi_targeted` and `multi_matched_control`
+(3 seeds, ratio 3), aimed at **every** significant weakness of the diagnosis at once (target strategy `"multi"`,
+weights = each weakness's share of the summed effect). Its other four arms are **not retrained**: they come from the
+newest finished single-weakness paper run of the same model (`resolved.reference_job`), whose training and
+evaluation settings must be identical; if there is none, or its settings differ → `422 reuse_mismatch`.
+Its baseline and diagnosis are reused from an earlier paper run as usual (`skipped`). Its step list:
+5 setup steps + 2 × 6 train/evaluate + compare = 18 steps.
 Validation rules:
 - `mode` required. `model` required and must be in `GET /models` (else `unknown_model`).
-- Paper mode: any field other than `mode`, `name`, `model` → `422 paper_mode_locked`.
+- Paper mode: any field other than `mode`, `name`, `model`, `protocol` → `422 paper_mode_locked`;
+  an unknown `protocol` → `422 validation_error`.
+- Explore mode does not accept the `multi_*` arms (paper `multi_weakness` only).
 - `name` optional, 1–80 chars; default `"<model short name>-<yyyymmdd-hhmm>"`.
 - `benchmarks`: non-empty, each in `GET /benchmarks` (else `unknown_benchmark`).
 - `benchmark_limit`: integer ≥ 10, or `null` for the full sets.
@@ -546,7 +562,7 @@ interface CreateExplorePipeline {
   seeds?: number[];               // 1-3 values from {0,1,2}
   reuse_from?: string | null;     // job id of an explore pipeline or a benchmark run
 }
-interface CreatePaperPipeline { mode: "paper"; model: string; name?: string; }   // nothing else allowed
+interface CreatePaperPipeline { mode: "paper"; model: string; name?: string; protocol?: Protocol; }   // nothing else allowed
 type CreatePipeline = CreateExplorePipeline | CreatePaperPipeline;
 
 interface CreateBenchmarkRun {
@@ -565,6 +581,8 @@ interface ResolvedConfig {
   config_hash: string;
   baseline_hash: string;
   diagnosis_hash: string | null;  // null for benchmark runs without diagnosis
+  protocol?: Protocol | null;     // 0.3.0: paper runs; null for explore runs and benchmark runs
+  reference_job?: string | null;  // 0.3.0: multi_weakness: the paper run whose four arms it is compared with
 }
 
 interface StepMetrics {
@@ -655,6 +673,11 @@ interface ArmResult {
   arm: Arm; ratio: number; seeds: number[];
   benchmarks: Record<string, ArmBenchmarkResult>;            // key = benchmark name
   target_slice: Record<string, { above: SliceResult; at_or_below: SliceResult }>;   // probe benchmarks only; {} if no target
+  // 0.3.0: multi target only ({} otherwise): feature -> probe benchmark -> problems above / at or below that
+  // weakness's threshold, before vs after. One table per targeted weakness, for every arm.
+  weakness_slices?: Record<Feature, Record<string, { above: SliceResult; at_or_below: SliceResult }>>;
+  source_job?: string | null;     // 0.3.0: the job that trained this arm (in a multi_weakness run: the reference
+                                  // run for real_only/untargeted/matched_control/targeted, this run for multi_*)
   eta_change: Record<Feature, number | null>;               // negative = feature hurts less after training
   error_type_shift: ErrorShares;                             // after minus before
 }
@@ -667,7 +690,9 @@ interface PipelineResults {
   mode: Mode;
   paper_eligible: boolean;
   model: string;
-  target: { strategy: TargetStrategy; feature: Feature | null; threshold: number | null } | null;
+  target: { strategy: TargetStrategy; feature: Feature | null; threshold: number | null;
+            targets?: { feature: Feature; threshold: number; weight: number }[] | null } | null;   // 0.3.0: "multi"
+  reference_job?: string | null;                             // 0.3.0: multi_weakness runs
   benchmarks: { name: string; kind: BenchmarkKind }[];
   baseline: Record<string, { accuracy: number; n: number }>;
   arms: ArmResult[];
@@ -675,7 +700,7 @@ interface PipelineResults {
   primary: {
     status: "proposed" | "confirmed";
     question: string;
-    a: "targeted"; b: "matched_control";
+    a: "targeted" | "multi_targeted"; b: "matched_control" | "multi_matched_control";   // 0.3.0: multi pair in multi_weakness runs
     benchmarks: string[];
     results: (Bootstrap & { benchmark: string; significant: boolean })[];
   } | null;                                                  // null without a targeted + matched_control pair
@@ -765,3 +790,4 @@ step:  pending -> running -> done | failed | cancelled
 | 0.2.1 | 2026-10-05 | Additive: `ResponseRecord.diagnosis` gains `lastline`, `lastline_v0`, `format_ok`, `truncated`; `GET /presets` gains `prompt_versions` and `default_prompt_version`. |
 | 0.2.1 | 2026-10-07 | Examples only, no shape change: the `GET /presets` paper example now shows the trimmed protocol (targeted ratios 3/9, 36 steps); paper runs may show `baseline`/`diagnose` as `skipped` (reused). |
 | 0.2.2 | 2026-10-29 | Additive: `GET /models` items gain `cached: boolean` (model is in the local Hugging Face cache). |
+| 0.3.0 | 2026-11-09 | Multi-weakness paper protocol (PLAN.md §16). New `Arm` values `multi_targeted`, `multi_matched_control`; new `TargetStrategy` `multi`; paper requests accept `protocol` (`single_weakness` default, `multi_weakness`); `ResolvedConfig` gains `protocol`, `reference_job`; `PipelineResults` gains `reference_job` and `target.targets`; `ArmResult` gains `weakness_slices`, `source_job`; `primary.a/b` may be the multi pair; `/presets` paper `settable` includes `protocol`; `/meta` lists the two new arms. Older clients keep working except where they assume exactly four arms. |

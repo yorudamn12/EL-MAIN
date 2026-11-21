@@ -12,6 +12,8 @@ Popen.terminate() is the same instant TerminateProcess, so there is no "terminat
 
 Heartbeat every ~5 s in worker_state; the API reports the worker as down after 30 s without one.
 On start, steps left `running` by a dead worker become `failed` (code `interrupted`) so the user can resume.
+With --auto-resume (e.g. after a power cut) those interrupted jobs are queued again at once: finished steps are
+kept, a training continues from its last checkpoint, and a finished training/evaluation is reused (PLAN.md §16).
 While a step runs, nvidia-smi is sampled every 30 s into logs/gpu.csv (skipped if nvidia-smi is missing).
 """
 
@@ -103,10 +105,13 @@ class Worker:
             raise WorkerBusy(f"another worker (pid {st['pid']}) is running; stop it first")
         self.heartbeat(force=True)
 
-    def recover(self) -> int:
-        """Steps left `running` by a worker that died: mark them failed (`interrupted`) and fail their job."""
+    def recover(self, auto_resume: bool = False) -> int:
+        """Steps left `running` by a worker that died: mark them failed (`interrupted`) and fail their job.
+        auto_resume: queue those jobs again (control.resume_job) instead of leaving them failed."""
         n = 0
+        interrupted = []
         for job in self.store.list_jobs(status="running"):
+            interrupted.append(job["id"])
             for s in self.store.get_steps(job["id"]):
                 if s["status"] == "running":
                     self.store.update_step(job["id"], s["idx"], status="failed", finished_at=time.time(),
@@ -118,6 +123,12 @@ class Worker:
                 self.store.update_job(job["id"], status="failed", finished_at=time.time(),
                                       error={"code": "interrupted", "message": "the worker stopped",
                                              "details": None, "step_key": None})
+        if auto_resume:
+            from .control import resume_job
+
+            for jid in interrupted:
+                resume_job(self.store, jid)
+                self.log(f"auto-resume: job {jid} queued again")
         return n
 
     def next_job(self) -> dict | None:
@@ -242,9 +253,9 @@ class Worker:
         return self.run_job(job) if job else None
 
     def serve_forever(self, idle_s: float = 2.0, should_stop: Callable[[], bool] | None = None,
-                      until_empty: bool = False) -> None:
+                      until_empty: bool = False, auto_resume: bool = False) -> None:
         self.claim()
-        n = self.recover()
+        n = self.recover(auto_resume=auto_resume)
         self.log(f"worker pid {self.pid} ready (db {self.db}); {n} interrupted step(s) marked failed")
         try:
             while not (should_stop and should_stop()):
@@ -263,10 +274,12 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--db", default="runs/dreammachine.db")
     p.add_argument("--cancel-grace-s", type=float, default=120.0)
     p.add_argument("--until-empty", action="store_true", help="exit when the queue is empty (scripts, checks)")
+    p.add_argument("--auto-resume", action="store_true",
+                   help="queue jobs that a dead worker (crash, power cut) left interrupted again at start")
     args = p.parse_args(argv)
     worker = Worker(Store(args.db), cancel_grace_s=args.cancel_grace_s, log=lambda s: print(s, flush=True))
     try:
-        worker.serve_forever(until_empty=args.until_empty)
+        worker.serve_forever(until_empty=args.until_empty, auto_resume=args.auto_resume)
     except KeyboardInterrupt:
         print("worker stopped", flush=True)
     except WorkerBusy as e:

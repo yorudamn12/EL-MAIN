@@ -229,8 +229,23 @@ def train(ctx: StepContext) -> None:
                     if r["name"] == f"{ctx.cfg.name}:train:{key}"][:1]
 
 
+def _finished_eval(ctx: StepContext, tag: str) -> str | None:
+    """The id of a finished eval run of this job for `tag` (evals/<tag>.json is written after the run is stored),
+    e.g. when the laptop lost power after the evaluation but before the step was marked done."""
+    path = ctx.cfg.out / "evals" / f"{tag}.json"
+    if not path.exists():
+        return None
+    run = ctx.store.get_run(json.loads(path.read_text(encoding="utf-8")).get("run_id", ""))
+    return run["id"] if run and run["status"] == "done" and run.get("job_id") == ctx.job_id else None
+
+
 def evaluate(ctx: StepContext) -> None:
     p = ctx.step["params"]
+    done = _finished_eval(ctx, P.adapter_dir(ctx.cfg, p["arm"], p["ratio"], p["seed"]).name)
+    if done:
+        ctx.log(f"evaluate: reusing finished eval run {done}")
+        ctx.run_ids.append(done)
+        return
     out = P.evaluate_model(ctx.cfg, ctx.store, ctx.timed_factory(), p["arm"], p["ratio"], p["seed"],
                            progress=ctx.progress)
     ctx.run_ids.append(out["run_id"])

@@ -1,0 +1,28 @@
+  @page { size: A4; margin: 22mm 20mm 22mm 20mm; }
+  body { font-family: "Cambria", "Times New Roman", serif; font-size: 10.8pt; line-height: 1.42; color: #111; margin: 0; }
+  h1 { font-size: 17pt; text-align: center; margin: 0 0 6pt; line-height: 1.25; }
+  .meta { text-align: center; margin-bottom: 14pt; font-size: 10.5pt; }
+  .todo { color: #c00000; font-weight: 600; }
+  .abstract { margin: 0 8% 16pt; font-size: 10pt; }
+  .abstract h3 { text-align: center; font-size: 10.5pt; margin: 0 0 4pt; }
+  h2 { font-size: 12.5pt; margin: 16pt 0 5pt; }
+  h3.sub { font-size: 11pt; margin: 12pt 0 4pt; }
+  p { margin: 0 0 7pt; text-align: justify; hyphens: auto; }
+  .para { font-weight: 700; }
+  ol, ul { margin: 0 0 7pt 18pt; padding: 0; }
+  li { margin-bottom: 3pt; text-align: justify; }
+  .tt { font-family: Consolas, "Courier New", monospace; font-size: 9.6pt; }
+  .eq { text-align: center; margin: 7pt 0; font-style: italic; }
+  .eq .n { float: right; font-style: normal; }
+  table { border-collapse: collapse; margin: 6pt auto 4pt; font-size: 9.2pt; }
+  th, td { padding: 2.2pt 6pt; text-align: center; }
+  td.l, th.l { text-align: left; }
+  thead tr:first-child th { border-top: 1.4pt solid #000; }
+  thead tr:last-child th { border-bottom: 0.8pt solid #000; }
+  tbody tr:last-child td { border-bottom: 1.4pt solid #000; }
+  tr.sep td { border-top: 0.6pt solid #000; }
+  .cap { font-size: 9.2pt; margin: 10pt 4% 2pt; text-align: justify; }
+  .fig { break-inside: avoid; margin-bottom: 10pt; }
+  .figure svg { display: block; margin: 4pt auto; max-width: 100%; height: auto; }
+  .refs p { font-size: 9.4pt; text-align: left; margin-bottom: 4pt; padding-left: 22pt; text-indent: -22pt; }
+  .sc { font-variant: small-caps; }

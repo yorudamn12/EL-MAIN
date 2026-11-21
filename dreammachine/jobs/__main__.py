@@ -3,6 +3,7 @@
     python -m dreammachine.jobs run --preset explore --model Qwen/Qwen3-0.6B --limit 50
     python -m dreammachine.jobs run --preset explore --model Qwen/Qwen3-0.6B --target feature:n_carry --reuse-from <id>
     python -m dreammachine.jobs run --preset paper --model Qwen/Qwen3-1.7B
+    python -m dreammachine.jobs enqueue --preset paper --protocol multi_weakness --model Qwen/Qwen3-1.7B
     python -m dreammachine.jobs run --kind benchmark_run --model Qwen/Qwen3-0.6B --limit 300 --no-diagnosis
     python -m dreammachine.jobs enqueue ...   (same flags; only queues the job for the worker)
     python -m dreammachine.jobs list | show <id> | cancel <id> | resume <id> | delete <id>
@@ -27,6 +28,8 @@ def _request(args) -> dict:
         req = {"model": args.model, "include_diagnosis": not args.no_diagnosis}
     elif args.preset == "paper":
         req = {"mode": "paper", "model": args.model}
+        if args.protocol:
+            req["protocol"] = args.protocol
     else:
         req = {"mode": "explore", "model": args.model}
         if args.target:
@@ -70,6 +73,8 @@ def _parser() -> argparse.ArgumentParser:
         s.add_argument("--seeds", type=int, nargs="+")
         s.add_argument("--reuse-from")
         s.add_argument("--no-diagnosis", action="store_true", help="benchmark_run only")
+        s.add_argument("--protocol", choices=["single_weakness", "multi_weakness"],
+                       help="paper only (default single_weakness; PLAN.md §16)")
         s.add_argument("--db", default="runs/dreammachine.db")
         s.add_argument("--runs-root", default="runs/pipelines")
     for name, help_ in (("cancel", "cancel a queued or running job"), ("resume", "resume a failed or cancelled job"),

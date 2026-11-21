@@ -1,0 +1,161 @@
+{
+  "ratio": 3.0,
+  "arms": {
+    "multi_matched_control": {
+      "gsm8k": {
+        "mean": 0.6588888888888889,
+        "sd": 0.03595264374969651,
+        "n_seeds": 3
+      },
+      "gsm8k:truncated_share": {
+        "mean": 0.007777777777777778,
+        "sd": 0.005091750772173156,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main": {
+        "mean": 0.5916666666666667,
+        "sd": 0.025166114784235853,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main:truncated_share": {
+        "mean": 0.005,
+        "sd": 0.005,
+        "n_seeds": 3
+      },
+      "probes_train_families": {
+        "mean": 0.9629629629629629,
+        "sd": 0.01481481481481478,
+        "n_seeds": 3
+      },
+      "probes_train_families:truncated_share": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n_seeds": 3
+      },
+      "probes_heldout_families": {
+        "mean": 0.9061728395061728,
+        "sd": 0.04464973165438303,
+        "n_seeds": 3
+      },
+      "probes_heldout_families:truncated_share": {
+        "mean": 0.0024691358024691358,
+        "sd": 0.004276668660663895,
+        "n_seeds": 3
+      }
+    },
+    "multi_targeted": {
+      "gsm8k": {
+        "mean": 0.6655555555555556,
+        "sd": 0.006938886664887101,
+        "n_seeds": 3
+      },
+      "gsm8k:truncated_share": {
+        "mean": 0.006666666666666667,
+        "sd": 0.006666666666666667,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main": {
+        "mean": 0.6,
+        "sd": 0.03774917217635378,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main:truncated_share": {
+        "mean": 0.011666666666666667,
+        "sd": 0.012583057392117916,
+        "n_seeds": 3
+      },
+      "probes_train_families": {
+        "mean": 0.9802469135802468,
+        "sd": 0.011315001715940362,
+        "n_seeds": 3
+      },
+      "probes_train_families:truncated_share": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n_seeds": 3
+      },
+      "probes_heldout_families": {
+        "mean": 0.8839506172839506,
+        "sd": 0.022630003431880662,
+        "n_seeds": 3
+      },
+      "probes_heldout_families:truncated_share": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n_seeds": 3
+      }
+    },
+    "base": {
+      "gsm8k": {
+        "mean": 0.8151515151515152,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm8k:truncated_share": {
+        "mean": 0.045454545454545456,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm_symbolic:main": {
+        "mean": 0.7733333333333333,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm_symbolic:main:truncated_share": {
+        "mean": 0.06333333333333334,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "probes_train_families": {
+        "mean": 0.625,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "probes_train_families:truncated_share": {
+        "mean": 0.09722222222222222,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "probes_heldout_families": {
+        "mean": 0.5833333333333334,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "probes_heldout_families:truncated_share": {
+        "mean": 0.09259259259259259,
+        "sd": 0.0,
+        "n_seeds": 1
+      }
+    }
+  },
+  "comparisons": {
+    "multi_targeted - multi_matched_control | gsm8k": {
+      "mean_diff": 0.006666666666666667,
+      "ci_low": -0.02,
+      "ci_high": 0.03333333333333333,
+      "p_value": 0.6452,
+      "n": 300
+    },
+    "multi_targeted - multi_matched_control | gsm_symbolic:main": {
+      "mean_diff": 0.008333333333333333,
+      "ci_low": -0.02666666666666667,
+      "ci_high": 0.04333333333333333,
+      "p_value": 0.66,
+      "n": 200
+    },
+    "multi_targeted - multi_matched_control | probes_heldout_families": {
+      "mean_diff": -0.022222222222222223,
+      "ci_low": -0.05185185185185186,
+      "ci_high": 0.007407407407407405,
+      "p_value": 0.1378,
+      "n": 135
+    },
+    "multi_targeted - multi_matched_control | probes_train_families": {
+      "mean_diff": 0.017283950617283952,
+      "ci_low": 0.0,
+      "ci_high": 0.037037037037037035,
+      "p_value": 0.0638,
+      "n": 135
+    }
+  }
+}

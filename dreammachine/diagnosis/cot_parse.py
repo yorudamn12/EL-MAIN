@@ -18,6 +18,9 @@ _ANNOT = re.compile(r"<<[^<>]*>>")
 _EQ = re.compile(r"([0-9.\s+\-*/()]*[0-9][0-9.\s+\-*/()]*)=\s*(-?\d+(?:\.\d+)?)")
 _HAS_OP = re.compile(r"\d\s*\)?\s*[-+*/]\s*\(?\s*-?\d")
 _NUM = re.compile(r"\d+(?:\.\d+)?")
+# The rest of a right-hand side on the same line, so that a chained 'a - b - c = a - d = e' is checked as
+# (a - b - c) == (a - d), not against the bare first number 'a'.
+_RHS_TAIL = re.compile(r"[0-9. 	+\-*/()]*")
 
 
 @dataclass
@@ -34,6 +37,7 @@ class Equation:
 def normalise(text: str) -> str:
     t = strip_reasoning_tags(text)
     t = _ANNOT.sub("", t)                               # GSM8K calculator annotations
+    t = re.sub(r"\*\*|__", " ", t)                      # Markdown bold: **6 - 2 = 4** -> 6 - 2 = 4
     t = t.replace("×", "*").replace("·", "*").replace("÷", "/").replace("−", "-").replace("–", "-")
     t = re.sub(r"\\times", "*", t)
     t = re.sub(r"\\div", "/", t)
@@ -123,13 +127,25 @@ def parse_equations(text: str) -> list[Equation]:
         lhs, lhs_val = parsed
         rhs_text = m.group(2)
         rhs_val = Fraction(rhs_text)
+        tail = _RHS_TAIL.match(t, m.start(2)).group(0)
+        rhs_expr = _balance(tail.rstrip(" 	.").rstrip(" 	"))
+        correct = _close_enough(lhs_val, rhs_val, rhs_text)
+        # Two chaining styles: a running total '25 * 9 = 225 + 5 = 230' (lhs equals the first number) and an
+        # expression chain '17265 - 6469 - 3447 = 17265 - 9916 = 7349' (lhs equals the whole next expression).
+        if not correct and rhs_expr != rhs_text and _HAS_OP.search(rhs_expr):
+            try:
+                expr_val = safe_eval(rhs_expr)
+            except (SyntaxError, ValueError, ZeroDivisionError, RecursionError):
+                expr_val = None
+            if expr_val is not None and lhs_val == expr_val:
+                rhs_val, correct = expr_val, True
         out.append(Equation(
             lhs=lhs,
             lhs_value=lhs_val,
             rhs_value=rhs_val,
             operands=[Fraction(x) for x in _NUM.findall(lhs)],
             ops=re.findall(r"(?<=[\d)\s])[-+*/](?=[\s(\d])", lhs),
-            correct=_close_enough(lhs_val, rhs_val, rhs_text),
+            correct=correct,
             position=m.start(),
         ))
     return out

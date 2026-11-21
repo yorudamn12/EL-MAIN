@@ -1,0 +1,181 @@
+{
+  "ratio": 3.0,
+  "arms": {
+    "multi_matched_control": {
+      "gsm8k": {
+        "mean": 0.45555555555555555,
+        "sd": 0.024113927126900782,
+        "n_seeds": 3
+      },
+      "gsm8k:truncated_share": {
+        "mean": 0.03777777777777778,
+        "sd": 0.0038490017945975057,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main": {
+        "mean": 0.4283333333333333,
+        "sd": 0.017559422921421246,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main:truncated_share": {
+        "mean": 0.035,
+        "sd": 0.015000000000000001,
+        "n_seeds": 3
+      },
+      "probes_train_families": {
+        "mean": 0.9234567901234567,
+        "sd": 0.018641566506841383,
+        "n_seeds": 3
+      },
+      "probes_train_families:truncated_share": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n_seeds": 3
+      },
+      "probes_heldout_families": {
+        "mean": 0.7185185185185187,
+        "sd": 0.007407407407407418,
+        "n_seeds": 3
+      },
+      "probes_heldout_families:truncated_share": {
+        "mean": 0.0024691358024691358,
+        "sd": 0.004276668660663895,
+        "n_seeds": 3
+      }
+    },
+    "multi_targeted": {
+      "gsm8k": {
+        "mean": 0.43222222222222223,
+        "sd": 0.007698003589194996,
+        "n_seeds": 3
+      },
+      "gsm8k:truncated_share": {
+        "mean": 0.03777777777777778,
+        "sd": 0.0019245008972987529,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main": {
+        "mean": 0.4000000000000001,
+        "sd": 0.0050000000000000044,
+        "n_seeds": 3
+      },
+      "gsm_symbolic:main:truncated_share": {
+        "mean": 0.05000000000000001,
+        "sd": 0.005000000000000001,
+        "n_seeds": 3
+      },
+      "probes_train_families": {
+        "mean": 0.9185185185185185,
+        "sd": 0.019598157859737734,
+        "n_seeds": 3
+      },
+      "probes_train_families:truncated_share": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n_seeds": 3
+      },
+      "probes_heldout_families": {
+        "mean": 0.7703703703703705,
+        "sd": 0.06583847716530065,
+        "n_seeds": 3
+      },
+      "probes_heldout_families:truncated_share": {
+        "mean": 0.0,
+        "sd": 0.0,
+        "n_seeds": 3
+      }
+    },
+    "base": {
+      "gsm8k": {
+        "mean": 0.6383623957543594,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm8k:truncated_share": {
+        "mean": 0.029567854435178165,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm_symbolic:main": {
+        "mean": 0.57,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm_symbolic:main:truncated_share": {
+        "mean": 0.03,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm_symbolic:p1": {
+        "mean": 0.4,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm_symbolic:p1:truncated_share": {
+        "mean": 0.072,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm_symbolic:p2": {
+        "mean": 0.138,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "gsm_symbolic:p2:truncated_share": {
+        "mean": 0.168,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "probes_train_families": {
+        "mean": 0.38425925925925924,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "probes_train_families:truncated_share": {
+        "mean": 0.05787037037037037,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "probes_heldout_families": {
+        "mean": 0.32407407407407407,
+        "sd": 0.0,
+        "n_seeds": 1
+      },
+      "probes_heldout_families:truncated_share": {
+        "mean": 0.05092592592592592,
+        "sd": 0.0,
+        "n_seeds": 1
+      }
+    }
+  },
+  "comparisons": {
+    "multi_targeted - multi_matched_control | gsm8k": {
+      "mean_diff": -0.023333333333333338,
+      "ci_low": -0.05111111111111112,
+      "ci_high": 0.005555555555555558,
+      "p_value": 0.1126,
+      "n": 300
+    },
+    "multi_targeted - multi_matched_control | gsm_symbolic:main": {
+      "mean_diff": -0.028333333333333332,
+      "ci_low": -0.06333333333333332,
+      "ci_high": 0.006666666666666665,
+      "p_value": 0.1166,
+      "n": 200
+    },
+    "multi_targeted - multi_matched_control | probes_heldout_families": {
+      "mean_diff": 0.05185185185185185,
+      "ci_low": 0.009876543209876545,
+      "ci_high": 0.09382716049382715,
+      "p_value": 0.0142,
+      "n": 135
+    },
+    "multi_targeted - multi_matched_control | probes_train_families": {
+      "mean_diff": -0.004938271604938274,
+      "ci_low": -0.037037037037037035,
+      "ci_high": 0.027160493827160497,
+      "p_value": 0.7508,
+      "n": 135
+    }
+  }
+}

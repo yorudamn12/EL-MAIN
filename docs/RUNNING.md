@@ -518,3 +518,154 @@ train-family numbers of the two targeted arms were checked: different adapters, 
 4. η changes are unreliable here: with 87-97% of probes right the LLTM is poorly identified (changes up to ±4).
 5. The diagnosis found the same main weakness as for 0.6B (`steps`), but weaker (effect 1.87 vs 2.99).
 Interpretation for the paper: PLAN.md open question 10.
+
+## 16. Multi-weakness paper run, Qwen3-0.6B — GPU-verified, PAPER, paper-eligible, 2026-11-09/10
+Job `76f2c9af5ea9` (commit `21439f9`, clean tree), protocol `configs/main_multi.yaml` (PLAN.md §16 / D17): trains only
+`multi_targeted` and `multi_matched_control` (3:1, 3 seeds, 600k tokens each), from the base model. Baseline and
+diagnosis reused; the 4 old arms come from the single-weakness paper run `80b37628b193` (§14), settings checked identical.
+Targets (all significant weaknesses, weight = share of effect): `steps` 0.50, `n_div` 0.20, `log10_max` 0.13,
+`n_mul` 0.12, `n_distractors` 0.06. Full tables: `runs/pipelines/76f2c9af5ea9/report.md` and `results.json`.
+**Timing:** training ~1.7 h, evaluation ~25 min per arm; whole run ~12.6 h. The worker was killed once (2026-11-09
+19:46, Claude session restart) and resumed from checkpoint-200 (~7 min lost); start it with `Win32_Process Create` and
+`--auto-resume` (memory note).
+
+| Arm (mean of 3 seeds) | GSM8K | GSM-Symbolic | probes train fam. | probes held-out fam. |
+|---|---|---|---|---|
+| untrained | 0.638 | 0.570 | 0.384 | 0.324 |
+| targeted 3:1 (§14, `steps` only) | 0.436 (−0.22) | 0.407 (−0.17) | 0.795 (+0.43) | 0.602 (+0.25) |
+| matched_control 3:1 (§14) | 0.448 (−0.21) | 0.408 (−0.17) | 0.881 (+0.52) | 0.760 (+0.41) |
+| untargeted 3:1 (§14) | 0.447 (−0.21) | 0.418 (−0.16) | 0.941 (+0.58) | 0.760 (+0.41) |
+| **multi_targeted 3:1** | 0.432 (−0.23) | 0.400 (−0.18) | 0.919 (+0.56) | **0.770 (+0.42)** |
+| **multi_matched_control 3:1** | 0.456 (−0.20) | 0.428 (−0.15) | 0.923 (+0.56) | 0.719 (+0.37) |
+
+**Primary (multi_targeted − multi_matched_control):** GSM8K −0.023 [−0.051, +0.006], p 0.11; GSM-Symbolic −0.028
+[−0.063, +0.007], p 0.12 — **no difference on real problems.** Held-out probes +0.052 [+0.010, +0.094], p 0.014;
+train-family probes −0.005 (n.s.).
+
+Held-out probes above each weakness's threshold (before → after):
+
+| arm | steps | n_div | log10_max | n_mul | n_distractors |
+|---|---|---|---|---|---|
+| targeted 3:1 (`steps` only) | 0.18 → 0.54 | 0.07 → 0.35 | 0.39 → 0.58 | 0.29 → 0.54 | 0.30 → 0.55 |
+| multi_targeted 3:1 | 0.18 → 0.70 | 0.07 → 0.72 | 0.39 → 0.77 | 0.29 → 0.74 | 0.30 → 0.73 |
+| multi_matched_control 3:1 | 0.18 → 0.66 | 0.07 → 0.65 | 0.39 → 0.74 | 0.29 → 0.68 | 0.30 → 0.68 |
+
+**Findings**
+1. **Real problems: still no targeting benefit.** All arms, the new ones included, lose ~0.20-0.23 on GSM8K (§17).
+2. **Multi-targeting fixes the single-weakness arm's flaw on probes:** multi_targeted − targeted = +0.17 [+0.11, +0.23]
+   held-out, +0.12 train families. Aiming only at `steps` left `n_div` almost unfixed (0.35); aiming at all of them
+   lifts every weakness to 0.70-0.77.
+3. **A small edge over the difficulty-matched control, only on new probe families** (+0.05, significant), and equal to
+   untargeted / matched_control from §14 (+0.01, n.s.). The multi control is close in composition to multi_targeted
+   (known before the run), so a small difference was expected.
+4. Error-type shift is the same as every other trained arm (more arithmetic slips, fewer UNVERIFIABLE).
+Qwen3-1.7B multi run: job `4e6b61903c00`, started 2026-11-10 08:11 (preflight passed).
+
+## 17. Why every trained model loses GSM8K accuracy — CPU analysis of stored GPU outputs, 2026-11-10
+Paired, answer by answer: the untrained model vs each of the 15 trained models of the paper runs §14 / §15, on the same
+300 GSM8K test problems (stored responses; script not in the repo). It is not answer extraction: FORMAT_ERROR is ~0 before
+and after.
+
+| | 0.6B base | 0.6B trained (15) | 1.7B base | 1.7B trained (15) |
+|---|---|---|---|---|
+| accuracy | 0.660 | 0.39-0.49 | 0.813 | 0.65-0.70 |
+| median answer | 728 chars, 25 lines | ~215 chars, 4 lines | 808 chars, 30 lines | ~210 chars, 4 lines |
+| right → wrong / wrong → right | | 1,222 / 241 | | 915 / 222 |
+| lost answers: PLAN_ERROR / ARITHMETIC_SLIP / DISTRACTOR_USE / UNVERIFIABLE | | 50% / 32% / 9% / 9% | | 55% / 24% / 12% / 9% |
+| slips per 100 written equations (rough: base LaTeX is parsed less well) | 5.8 | 6-14 | 5.0 | 4-9 |
+
+**Reading**
+1. **The model drops its own reasoning format and copies the training answers' terse style.** Base Qwen3 first lists
+   every given fact ("We are given: …") and then solves one step per heading; trained models write 3-5 one-line sums
+   (GSM8K reference style, also used by the code-written solutions).
+2. **Without the fact list it misses or misreads facts → plan errors** (half of the lost answers). Examples: forgets the
+   $12 item in a total; reads "10 times more than 60" as 10/4·60; mixes pages read and pages left. The base model got
+   all of these right.
+3. **On 0.6B it also makes more arithmetic slips** on easy sums written inline (e.g. 100 + 125 + 175 = 399); on 1.7B
+   the slip rate hardly changes, so its loss is almost all plan errors.
+4. This matches §10-13: not hyper-parameters, not the synthetic data (real_only loses as much); only training on the
+   model's own solutions shrinks the loss, at the cost of the targeted gain. All arms share the cost, so arm-vs-arm
+   comparisons stay fair.
+
+## 18. Multi-weakness paper run, Qwen3-1.7B — GPU-verified, PAPER, paper-eligible, 2026-11-10
+Job `4e6b61903c00` (commit `21439f9`, clean tree), same protocol as §16; reference run `409305f3e2f2` (§15). Targets:
+`steps` 0.49, `n_div` 0.29, `n_mul` 0.14, `n_distractors` 0.09. Full tables: `runs/pipelines/4e6b61903c00/report.md`.
+**Timing:** training ~1.5 h, evaluation ~15 min per arm; whole run ~10.5 h. The last evaluation failed once at 18:28
+with a CUDA out-of-memory error while loading the adapter, 36 s after the previous training ended (the GPU was free
+again a minute later); resumed with the same settings, all finished steps kept.
+**Match quality (both multi runs):** mean |Δlogit| < 0.0003, KS < 0.002 for every seed. **Composition:** on 1.7B the
+control is almost identical to multi_targeted in which weaknesses its items carry (share of items above threshold:
+`steps` 0.73 vs 0.74, `n_div` 0.57 vs 0.53, `n_mul` 0.65 vs 0.59, `n_distractors` 0.74 vs 0.72); on 0.6B they differ
+mainly in `steps` (0.53 vs 0.39). Equal predicted difficulty forces similar composition, as expected (PLAN.md §16).
+
+| Arm (mean of 3 seeds) | GSM8K | GSM-Symbolic | probes train fam. | probes held-out fam. |
+|---|---|---|---|---|
+| untrained | 0.815 | 0.773 | 0.625 | 0.583 |
+| targeted 3:1 (§15) | 0.663 (−0.15) | 0.593 (−0.17) | 0.963 (+0.32) | 0.872 (+0.30) |
+| matched_control 3:1 (§15) | 0.652 (−0.16) | 0.578 (−0.18) | 0.946 (+0.30) | 0.919 (+0.35) |
+| untargeted 3:1 (§15) | 0.660 (−0.15) | 0.600 (−0.16) | 0.973 (+0.33) | 0.926 (+0.36) |
+| **multi_targeted 3:1** | 0.666 (−0.15) | 0.600 (−0.16) | 0.980 (+0.34) | 0.884 (+0.31) |
+| **multi_matched_control 3:1** | 0.659 (−0.15) | 0.592 (−0.17) | 0.963 (+0.32) | 0.906 (+0.34) |
+
+**Primary (multi_targeted − multi_matched_control):** GSM8K +0.007 [−0.020, +0.033], p 0.65; GSM-Symbolic +0.008
+[−0.027, +0.043], p 0.66; train-family probes +0.017 [+0.000, +0.037], p 0.06; held-out probes −0.022 [−0.052,
++0.007], p 0.14 — **no difference anywhere.** multi_targeted − targeted: all n.s. (held-out +0.012). multi_targeted −
+untargeted: held-out −0.042 [−0.072, −0.015] (the only significant difference).
+
+Held-out probes above each threshold (before → after): multi_targeted `steps` 0.41 → 0.86, `n_div` 0.18 → 0.81,
+`n_mul` 0.44 → 0.89, `n_distractors` 0.52 → 0.88; multi control 0.88 / 0.81 / 0.88 / 0.89; single targeted 0.86 /
+0.76 / 0.88 / 0.87; untargeted 0.89 / 0.89 / 0.93 / 0.92.
+
+**Findings**
+1. Same as every other comparison: no targeting benefit on real problems (all trained arms −0.15 to −0.16 on GSM8K).
+2. Unlike 0.6B (§16), multi-targeting gives no edge on held-out probes: the 1.7B probes are near the ceiling
+   (0.88-0.98) and the multi control's composition is almost the same as multi_targeted's.
+3. Multi-targeting raised `n_div` (0.76 → 0.81 vs single targeted) but untargeted data still does best (0.89).
+4. Answer-level GSM8K check (§17 method): both multi arms on both models write 4-line answers (≈210 chars vs 728/808);
+   lost answers are 56-57% PLAN_ERROR and 23-28% ARITHMETIC_SLIP — the same style cost.
+
+## 19. Check of the error labels and an answer-reading fault — CPU analysis of stored GPU outputs, 2026-11-11
+**What:** the 150-answer sheets `annotate_errors.csv` of both single-weakness diagnosis runs (300 wrong answers of the
+untrained models, stratified by classifier label) were relabelled blind by an LLM annotator (Claude Opus 5.5), not by
+humans. The annotator used the same five labels and the same order, and checked every equation with Python. Result
+file: `paper/annotation/error_label_check.csv` (classifier label, LLM label, a short note, `boxed_equals_gold`).
+
+| Set | n | Agreement | Cohen's κ |
+|---|---|---|---|
+| All | 300 | 0.46 | 0.33 |
+| 0.6B | 150 | 0.51 | 0.38 |
+| 1.7B | 150 | 0.41 | 0.27 |
+| Truly wrong only | 284 | 0.44 | 0.30 |
+| … with UNVERIFIABLE counted as PLAN_ERROR | 284 | — | 0.42 |
+
+The κ is below the 0.6 bar from §3. The causes, read from the disagreements:
+1. `parse_equations` misses many calculations (e.g. with `×`, or inside `**bold**`), so the answer becomes
+   UNVERIFIABLE; the LLM called 49 of the 71 UNVERIFIABLE answers PLAN_ERROR.
+2. Chained equalities such as `17265 - 6469 - 3447 = 17265 - 9916 = 7349` are parsed as false, which gives false
+   ARITHMETIC_SLIPs; the LLM called 23 of the 74 slips PLAN_ERROR.
+3. For a cut-off answer the classifier still reads the last number; the LLM calls it FORMAT_ERROR.
+
+On the 284 truly wrong answers the LLM gives PLAN_ERROR to 149 (the classifier to 73) and ARITHMETIC_SLIP to 36 (the
+classifier to 74). So "plan errors dominate the lost GSM8K answers" (§17) holds even more strongly, and the slip shares
+there are upper bounds.
+
+**Answer-reading fault:** 16 of the 300 answers (15 from 1.7B) are in fact correct. `extract_answer` gives `####` first
+priority, so a Markdown heading such as `#### 7. **Spends $2437**` is read as the answer 7, ahead of `oxed{1325}`.
+Rescoring every stored answer with `oxed{}` first (scratch script, read-only) gives these changes:
+- 1.7B diagnosis: 25 of 2,592 answers change (0.6389 → 0.6485); 0.6B diagnosis: 1 of 2,592.
+- 1.7B base GSM8K: 0.815 → 0.818; 1.7B base training-family probes: 0.625 → 0.630.
+- Fine-tuned models: none of their answers change in any of the 4 paper runs, because they never write `####` headings.
+
+The paper keeps the logged numbers and reports this (paper §5.5). The fix (put `oxed` before `####` for `qwen_boxed`,
+plus parse `×`, bold text and chained equalities) is a code change to a scorer, so it waits for the team's OK.
+
+**Fixed 2026-11-11 (the user's OK):**
+- `extract_answer`: `#### n` must now end its line.
+- `parse_equations`: bold `**` markers are removed, and a chain `a - b - c = a - d = e` is accepted when the left side
+  equals the whole middle expression; the running-total style `25 * 9 = 225 + 5 = 230` still works.
+
+Tests are in `tests/test_diagnosis.py`. Re-classifying the 300 answers with the fixed code gives κ = 0.39 (0.41 on the
+284 truly wrong answers; 0.6B 0.52, 1.7B 0.27); the result is the column `classifier_label_fixed` in
+`paper/annotation/error_label_check.csv`. What is left: cut-off answers (LLM FORMAT_ERROR 63 vs classifier 17) and
+slips (70 vs 36). The paper runs keep their logged numbers; future runs score with the fixed code.
+

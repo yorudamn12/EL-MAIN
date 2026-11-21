@@ -1,0 +1,48 @@
+{
+  "strategy": "multi",
+  "feature": null,
+  "threshold": null,
+  "targets": [
+    {
+      "feature": "steps",
+      "threshold": 4.0,
+      "weight": 0.48688453102360046,
+      "eta": 0.3737033223367065,
+      "effect": 1.8685166116835326,
+      "ci_low": 0.2643867374865474,
+      "ci_high": 0.4804907781713842
+    },
+    {
+      "feature": "n_div",
+      "threshold": 0.0,
+      "weight": 0.2873161301640063,
+      "eta": 1.1026330224281682,
+      "effect": 1.1026330224281682,
+      "ci_low": 0.8904100387573405,
+      "ci_high": 1.3379539088296644
+    },
+    {
+      "feature": "n_mul",
+      "threshold": 0.0,
+      "weight": 0.13926231220454338,
+      "eta": 0.2672234658889116,
+      "effect": 0.5344469317778232,
+      "ci_low": 0.0784851156550033,
+      "ci_high": 0.4832840539799537
+    },
+    {
+      "feature": "n_distractors",
+      "threshold": 0.0,
+      "weight": 0.08653702660784987,
+      "eta": 0.33210311981472573,
+      "effect": 0.33210311981472573,
+      "ci_low": 0.15491736586213026,
+      "ci_high": 0.5013037695726489
+    }
+  ],
+  "eta": null,
+  "ci_low": null,
+  "ci_high": null,
+  "significant": true,
+  "warnings": []
+}
