@@ -489,7 +489,7 @@ real benchmarks carry no such bias, which is why we treat them as the primary ou
 <p><span class="para">Result 3: targeting all weaknesses removes this deficit.</span>  For 0.6B, multi-weakness targeting is far better
 than single-weakness targeting on generated problems (+0.168 held-out) and slightly better than its own control
 (+0.052, <i>p</i>=0.014 over problems, but not significant once seed variation is included). For 1.7B none of these differences is significant; generated probes are close to their ceiling for
-every arm (0.87&ndash;0.98).</p>
+every arm trained on generated data (0.87&ndash;0.98).</p>
 <h3 class="sub">5.3&nbsp;&nbsp;Why targeting does not help: two mechanisms</h3>
 <p><span class="para">Single-factor targeting neglects co-occurring weaknesses.</span> 
 Refitting the LLTM after training (0.6B) shows that the single-weakness arm lowered the cost of an extra step far more
@@ -499,7 +499,7 @@ control), so the intervention worked on its own terms. It barely changed the cos
 multiplications and divisions, so the broader data produced higher accuracy even on long problems. Table&nbsp;6
 shows the same pattern per weakness: the single-weakness arm left division almost unsolved for 0.6B (0.07 to 0.35),
 while multi-weakness targeting lifted every weakness to 0.70&ndash;0.77. For 1.7B the post-training refit is poorly
-identified because trained models answer 87&ndash;97% of probes correctly, so we do not interpret its &Delta;&eta;.</p>
+identified because models trained on generated data answer 87&ndash;98% of probes correctly, so we do not interpret its &Delta;&eta;.</p>
 <div class="fig"><p class="cap"><b>Table 6.</b> Held-out probe accuracy above each weakness's threshold, before &rarr; after training (mean of three
 seeds; <i>n</i> = number of problems in the slice).</p><table>
 <thead>
@@ -644,7 +644,7 @@ asked again without the shared cost.</p>
   tokens, so the single-weakness targeted arm contains 22&ndash;26% fewer distinct generated problems than its control (seed
   0: 4,598 versus 5,930 for 0.6B, 3,857 versus 5,225 for 1.7B). This may add to its narrower coverage. The
   multi-weakness arms are balanced (5,321 versus 5,387 and 4,125 versus 4,104) and reach the same conclusion on
-  the real benchmarks.</li><li><b>Ceiling effects.</b> Fine-tuned 1.7B models answer 87&ndash;97% of generated probes, which limits how well arms
+  the real benchmarks.</li><li><b>Ceiling effects.</b> 1.7B models trained on generated data answer 87&ndash;98% of generated probes, which limits how well arms
   can be separated on probes and makes post-training LLTM refits unreliable for that model.</li><li><b>Statistical power.</b> With 300 GSM8K and 200 GSM-Symbolic problems per model, paired intervals are about
   &plusmn;3 points; effects of one to two points would not be detected, and equivalence within &plusmn;3 points is shown for
   only one of eight comparisons (Table&nbsp;5). With three seeds per arm, training-seed variation is
@@ -695,29 +695,29 @@ explain every claim, and take full responsibility for the content.</p>
 <p>[5] Q. Li et al. Forewarned is Forearmed: Leveraging LLMs for Data Synthesis through Failure-Inducing Exploration. arXiv:2410.16736, 2024.</p>
 <p>[6] E. Yu et al. Self-Error-Instruct: Generalizing from Errors for LLMs Mathematical Reasoning. In <i>Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)</i>, pages 8504&ndash;8519, 2025.</p>
 <p>[7] Z. He, M. T. Ribeiro and F. Khani. Targeted Data Generation: Finding and Fixing Model Weaknesses. In <i>Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)</i>, pages 8506&ndash;8520, 2023.</p>
-<p>[8] B. Sorscher, R. Geirhos, S. Shekhar, S. Ganguli and A. S. Morcos. Beyond neural scaling laws: beating power law scaling via data pruning. In <i>Advances in Neural Information Processing Systems (NeurIPS)</i>, 2022.</p>
+<p>[8] B. Sorscher, R. Geirhos, S. Shekhar, S. Ganguli and A. S. Morcos. Beyond neural scaling laws: beating power law scaling via data pruning. In <i>Advances in Neural Information Processing Systems</i>, pages 19523&ndash;19536, 2022.</p>
 <p>[9] T. Ye, Z. Xu, Y. Li and Z. Allen-Zhu. Physics of Language Models: Part 2.1, Grade-School Math and the Hidden Reasoning Process. In <i>International Conference on Learning Representations (ICLR)</i>, 2025.</p>
 <p>[10] I. Mirzadeh, K. Alizadeh, H. Shahrokhi, O. Tuzel, S. Bengio and M. Farajtabar. GSM-Symbolic: Understanding the Limitations of Mathematical Reasoning in Large Language Models. In <i>International Conference on Learning Representations (ICLR)</i>, 2025.</p>
 <p>[11] G. H. Fischer. The Linear Logistic Test Model as an Instrument in Educational Research. <i>Acta Psychologica</i>, 37(6):359&ndash;374, 1973.</p>
 <p>[12] A. Yang et al. Qwen3 Technical Report. arXiv:2505.09388, 2025.</p>
 <p>[13] B. Liu, S. Bubeck, R. Eldan, J. Kulkarni, Y. Li, A. Nguyen, R. Ward and Y. Zhang. TinyGSM: achieving &gt;80% on GSM8k with small language models. arXiv:2312.09241, 2023.</p>
-<p>[14] Y. Fu, H. Peng, L. Ou, A. Sabharwal and T. Khot. Specializing Smaller Language Models towards Multi-Step Reasoning. arXiv:2301.12726, 2023.</p>
-<p>[15] N. Gangwar, S. P. Bhat and N. Kani. Integrating Arithmetic Learning Improves Mathematical Reasoning in Smaller Models. arXiv:2502.12855, 2025.</p>
+<p>[14] Y. Fu, H. Peng, L. Ou, A. Sabharwal and T. Khot. Specializing Smaller Language Models towards Multi-Step Reasoning. In <i>Proceedings of the 40th International Conference on Machine Learning</i>, pages 10421&ndash;10430, 2023.</p>
+<p>[15] N. Gangwar, S. P. Bhat and N. Kani. Integrating Arithmetic Learning Improves Mathematical Reasoning in Smaller Models. In <i>Proceedings of the Fifteenth Language Resources and Evaluation Conference (LREC 2026)</i>, pages 5078&ndash;5094, 2026.</p>
 <p>[16] K. Cobbe et al. Training Verifiers to Solve Math Word Problems. arXiv:2110.14168, 2021.</p>
 <p>[17] P. De Boeck and M. Wilson, editors. Explanatory Item Response Models: A Generalized Linear and Nonlinear Approach. Springer, 2004.</p>
-<p>[18] P. Rodriguez, J. Barrow, A. M. Hoyle, J. P. Lalor, R. Jia and J. Boyd-Graber. Evaluation Examples are not Equally Informative: How should that change NLP Leaderboards? In <i>Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)</i>, pages 4486&ndash;4503, 2021.</p>
-<p>[19] F. M. Polo, L. Weber, L. Choshen, Y. Sun, G. Xu and M. Yurochkin. tinyBenchmarks: evaluating LLMs with fewer examples. In <i>International Conference on Machine Learning (ICML)</i>, 2024.</p>
-<p>[20] Y. Tong, X. Zhang, R. Wang, R. Wu and J. He. DART-Math: Difficulty-Aware Rejection Tuning for Mathematical Problem-Solving. In <i>Advances in Neural Information Processing Systems (NeurIPS)</i>, 2024.</p>
+<p>[18] P. Rodriguez, J. Barrow, A. M. Hoyle, J. P. Lalor, R. Jia and J. Boyd-Graber. Evaluation Examples are not Equally Informative: How should that change NLP Leaderboards? In <i>Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers)</i>, pages 4486&ndash;4503, 2021.</p>
+<p>[19] F. Maia Polo, L. Weber, L. Choshen, Y. Sun, G. Xu and M. Yurochkin. tinyBenchmarks: evaluating LLMs with fewer examples. In <i>Proceedings of the 41st International Conference on Machine Learning</i>, pages 34303&ndash;34326, 2024.</p>
+<p>[20] Y. Tong, X. Zhang, R. Wang, R. Wu and J. He. DART-Math: Difficulty-Aware Rejection Tuning for Mathematical Problem-Solving. In <i>Advances in Neural Information Processing Systems</i>, pages 7821&ndash;7846, 2024.</p>
 <p>[21] J. Kirkpatrick et al. Overcoming Catastrophic Forgetting in Neural Networks. <i>Proceedings of the National Academy of Sciences</i>, 114(13):3521&ndash;3526, 2017.</p>
 <p>[22] E. J. Hu, Y. Shen, P. Wallis, Z. Allen-Zhu, Y. Li, S. Wang, L. Wang and W. Chen. LoRA: Low-Rank Adaptation of Large Language Models. arXiv:2106.09685, 2021.</p>
-<p>[23] T. Dettmers, A. Pagnoni, A. Holtzman and L. Zettlemoyer. QLoRA: Efficient Finetuning of Quantized LLMs. arXiv:2305.14314, 2023.</p>
+<p>[23] T. Dettmers, A. Pagnoni, A. Holtzman and L. Zettlemoyer. QLoRA: Efficient Finetuning of Quantized LLMs. In <i>Advances in Neural Information Processing Systems</i>, pages 10088&ndash;10115, 2023.</p>
 <p>[24] D. Biderman et al. LoRA Learns Less and Forgets Less. <i>Transactions on Machine Learning Research</i>, 2024.</p>
-<p>[25] C. Zhou et al. LIMA: Less Is More for Alignment. arXiv:2305.11206, 2023.</p>
+<p>[25] C. Zhou et al. LIMA: Less Is More for Alignment. In <i>Advances in Neural Information Processing Systems</i>, pages 55006&ndash;55021, 2023.</p>
 <p>[26] D. Li et al. LLMs Can Easily Learn to Reason from Demonstrations: Structure, not content, is what matters! arXiv:2502.07374, 2025.</p>
 <p>[27] Z. Yang, T. Pang, H. Feng, H. Wang, W. Chen, M. Zhu and Q. Liu. Self-Distillation Bridges Distribution Gap in Language Model Fine-Tuning. In <i>Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)</i>, pages 1028&ndash;1043, 2024.</p>
 <p>[28] Y. Sun, M. Chen, T. Zhao, P. Miao, Z. Zhang, H. Shen, R. Zhu and J. Yin. Talking to Yourself: Defying Forgetting in Large Language Models. arXiv:2602.20162, 2026.</p>
 <p>[29] I. Shenfeld, J. Pari and P. Agrawal. RL's Razor: Why Online Reinforcement Learning Forgets Less. arXiv:2509.04259, 2025.</p>
-<p>[30] T. Chu et al. SFT Memorizes, RL Generalizes: A Comparative Study of Foundation Model Post-training. arXiv:2501.17161, 2025.</p>
+<p>[30] T. Chu et al. SFT Memorizes, RL Generalizes: A Comparative Study of Foundation Model Post-training. In <i>Proceedings of the 42nd International Conference on Machine Learning</i>, pages 10818&ndash;10838, 2025.</p>
 <p>[31] B. Efron and R. J. Tibshirani. An Introduction to the Bootstrap. Chapman &amp; Hall, 1993.</p>
 <p>[32] D. McFadden. Conditional Logit Analysis of Qualitative Choice Behavior. In P. Zarembka, editor, <i>Frontiers in Econometrics</i>, pages 105&ndash;142. Academic Press, 1974.</p>
-<p>[33] E. Zelikman, Y. Wu, J. Mu and N. D. Goodman. STaR: Bootstrapping Reasoning With Reasoning. arXiv:2203.14465, 2022.</p></div></body></html>
+<p>[33] E. Zelikman, Y. Wu, J. Mu and N. D. Goodman. STaR: Bootstrapping Reasoning With Reasoning. In <i>Advances in Neural Information Processing Systems</i>, pages 15476&ndash;15488, 2022.</p></div></body></html>

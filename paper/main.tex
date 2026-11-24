@@ -463,7 +463,7 @@ real benchmarks carry no such bias, which is why we treat them as the primary ou
 \paragraph{Result 3: targeting all weaknesses removes this deficit.} For 0.6B, multi-weakness targeting is far better
 than single-weakness targeting on generated problems ($+0.168$ held-out) and slightly better than its own control
 ($+0.052$, $p=0.014$ over problems, but not significant once seed variation is included). For 1.7B none of these differences is significant; generated probes are close to their ceiling for
-every arm (0.87--0.98).
+every arm trained on generated data (0.87--0.98).
 
 \subsection{Why targeting does not help: two mechanisms}
 
@@ -475,7 +475,7 @@ control), so the intervention worked on its own terms. It barely changed the cos
 multiplications and divisions, so the broader data produced higher accuracy even on long problems. Table~\ref{tab:slices}
 shows the same pattern per weakness: the single-weakness arm left division almost unsolved for 0.6B (0.07 to 0.35),
 while multi-weakness targeting lifted every weakness to 0.70--0.77. For 1.7B the post-training refit is poorly
-identified because trained models answer 87--97\% of probes correctly, so we do not interpret its $\Delta\eta$.
+identified because models trained on generated data answer 87--98\% of probes correctly, so we do not interpret its $\Delta\eta$.
 
 \begin{table}[t]
 \centering
@@ -680,7 +680,7 @@ asked again without the shared cost.
   0: 4{,}598 versus 5{,}930 for 0.6B, 3{,}857 versus 5{,}225 for 1.7B). This may add to its narrower coverage. The
   multi-weakness arms are balanced (5{,}321 versus 5{,}387 and 4{,}125 versus 4{,}104) and reach the same conclusion on
   the real benchmarks.
-  \item \textbf{Ceiling effects.} Fine-tuned 1.7B models answer 87--97\% of generated probes, which limits how well arms
+  \item \textbf{Ceiling effects.} 1.7B models trained on generated data answer 87--98\% of generated probes, which limits how well arms
   can be separated on probes and makes post-training LLTM refits unreliable for that model.
   \item \textbf{Statistical power.} With 300 GSM8K and 200 GSM-Symbolic problems per model, paired intervals are about
   $\pm3$ points; effects of one to two points would not be detected, and equivalence within $\pm3$ points is shown for
